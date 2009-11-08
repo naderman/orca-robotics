@@ -32,8 +32,9 @@ MainThread::initialise()
     const int stride = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Stride", 20 );
     const string fileprefix = orcaice::getPropertyWithDefault( prop, prefix+"FilenamePrefix", "histogram" );
     const int maxCount = orcaice::getPropertyAsIntWithDefault( prop, prefix+"MaxCount", -1 );
+    const int sendWarningMs = orcaice::getPropertyAsIntWithDefault( prop, prefix+"SendWarningMs", 1000 );
 
-    consumer_ = new HistogramRangeScanner2dConsumerImpl( context_, start,end,stride, fileprefix, maxCount );
+    consumer_ = new HistogramRangeScanner2dConsumerImpl( context_, start,end,stride, fileprefix, maxCount, sendWarningMs );
     // subscribe for data updates (multi-try)
     consumer_->subscribeWithTag( "LaserScanner2d", this, subsysName() );
 }

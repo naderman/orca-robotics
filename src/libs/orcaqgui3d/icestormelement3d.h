@@ -30,7 +30,6 @@ namespace orcaqgui3d {
         //! (timoutMs = -1 means we never timeout)
         IceStormElement3d( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
                            const orcaice::Context                     &context,
-                           const std::string                          &proxyString,
                            PainterType                                &painter,
                            const double                                timeoutMs = 5000.0 )
             : GuiElement3d(guiElementInfo),
@@ -38,7 +37,7 @@ namespace orcaqgui3d {
                                                    ProxyType,
                                                    ConsumerType,
                                                    ConsumerPrxType>(
-              context,proxyString,timeoutMs),
+              context,guiElementInfo.uniqueId.toStdString(),timeoutMs),
               painter_(painter)
             {}
 

@@ -115,7 +115,7 @@ MainThread::initialise()
         orcalog::parseRequiredTag( requiredTags[i], interfaceType, interfaceTypeSuffix );
 
         // look up format
-        std::string format = orcaice::getPropertyWithDefault( props, prefix+requiredTags[i]+".Format", "ice" );
+        std::string format = orcaice::getPropertyWithDefault( props, prefix+requiredTags[i]+".Format", "asciigenerated" );
 
         orcalog::LogWriterInfo logWriterInfo( context_ );
         logWriterInfo.interfaceType = interfaceType;

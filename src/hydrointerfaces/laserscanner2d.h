@@ -110,8 +110,8 @@ public:
 // Function for dynamically instantiating drivers.
 // A driver must have a function like so:
 // extern "C" {
-//     hydrointerfaces::LaserScanner2dFactory *createDriverFactory();
+//     hydrointerfaces::LaserScanner2dFactory *createLaserScannerDriverFactory();
 // }
-typedef hydrointerfaces::LaserScanner2dFactory *DriverFactoryMakerFunc();
+typedef hydrointerfaces::LaserScanner2dFactory *LaserScanner2dDriverFactoryMakerFunc();
 
 #endif

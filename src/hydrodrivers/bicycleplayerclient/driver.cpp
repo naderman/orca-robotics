@@ -279,7 +279,7 @@ Driver::getStatus( std::string &status, bool &isWarn, bool &isFault )
 } // namespace
 
 extern "C" {
-    hydrointerfaces::BicycleFactory *createDriverFactory()
+    hydrointerfaces::BicycleFactory *createBicycleDriverFactory()
     { return new bicycleplayerclient::Factory; }
 }
 

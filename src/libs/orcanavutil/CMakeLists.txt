@@ -4,7 +4,7 @@ GBX_ADD_LICENSE( LGPL )
 set( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
 
-set( dep_libs HydroNavUtil OrcaObjects )
+set( dep_libs HydroNavUtil OrcaObjects OrcaBros1 )
 GBX_REQUIRE_LIBS( build LIB ${LIB_NAME} ${dep_libs} )
 
 if( build )

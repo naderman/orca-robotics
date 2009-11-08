@@ -26,9 +26,7 @@ class PixMapElement
 
 public:
     PixMapElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
-                   const orcaice::Context                     &context,
-                   const std::string                          &proxyString,
-                   hydroqguielementutil::IHumanManager*        humanManager );
+                   const orcaice::Context                     &context );
 
     virtual bool isInGlobalCS() { return true; }
     virtual QStringList contextMenu();
@@ -40,7 +38,6 @@ public:
 
 private:
     PixMapBackgroundPainter painter_;
-    hydroqguielementutil::IHumanManager *humanManager_;
     QString mapFileName_;
     bool mapFileNameSet_;
 };

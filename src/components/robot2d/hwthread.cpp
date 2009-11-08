@@ -41,7 +41,7 @@ HwThread::HwThread( const orcaice::Context &context ) :
     try {
         driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) ); 
         driverFactory.reset(  
-            hydrodll::dynamicallyLoadClass<hydrointerfaces::Robot2dFactory,DriverFactoryMakerFunc>
+            hydrodll::dynamicallyLoadClass<hydrointerfaces::Robot2dFactory,Robot2dDriverFactoryMakerFunc>
             ( *driverLib_, "createDriverFactory" ) );
     }
     catch (hydrodll::DynamicLoadException &e)

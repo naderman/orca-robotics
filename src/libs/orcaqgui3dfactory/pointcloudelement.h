@@ -31,18 +31,17 @@ class PointCloudElement
 public:
     PointCloudElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
                        const orcaice::Context                     &context,
-                       const std::string                          &proxyString,
                        int                                         timeoutMs    = 5000 )
         : IceStormElement3d<PointCloudPainter,
                                orca::PointCloudData,
                                orca::PointCloudPrx,
                                orca::PointCloudConsumer,
-                               orca::PointCloudConsumerPrx>( guiElementInfo, context, proxyString, painter_, timeoutMs )
+                               orca::PointCloudConsumerPrx>( guiElementInfo, context, painter_, timeoutMs )
         {};
     virtual ~PointCloudElement(){};
 
     virtual bool isInGlobalCS() { return true; }
-    virtual void actionOnConnection() { }
+    virtual void iceStormConnectedEvent() { }
     virtual QStringList contextMenu();
     virtual void execute( int action );
 //     virtual void setColor( QColor color ) { painter_.setColor(color); }

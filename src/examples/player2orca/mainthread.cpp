@@ -77,6 +77,8 @@ MainThread::walk()
         odometry2dData.motion.v.y = positionProxy.GetYSpeed();
         odometry2dData.motion.w   = positionProxy.GetYawSpeed();
 
+        odometry2dData.odometryWasReset = false;
+
         // check that we were not told to terminate while we were sleeping
         if ( !isStopping() ) {
             context_.tracer().debug( "Setting data", 5 );

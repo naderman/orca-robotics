@@ -36,8 +36,12 @@ ComponentThread::walk()
     context_.status().infrastructureInitialising();
 
     Ice::PropertiesPtr props = context_.properties();
+
     bool hasStatusInterface = props->getPropertyAsInt( "Orca.Component.EnableStatus" );
+
     bool hasHomeInterface = props->getPropertyAsInt( "Orca.Component.EnableHome" );
+
+    bool needPokeHistory = context_.history().isEnabled() && context_.history().autoSaveInterval()>0;
     
 //     cout<<"DEBUG: hasStatusInterface="<<hasStatusInterface<<" hasHomeInterface="<<hasHomeInterface<<endl;
 
@@ -59,9 +63,9 @@ ComponentThread::walk()
     try {
         while ( !isStopping() )
         {
-            bool needToRegisterHome = hasHomeInterface && !registeredHome;
+            bool needRegisterHome = hasHomeInterface && !registeredHome;
 
-            if ( !needToRegisterHome && !hasStatusInterface )
+            if ( !needRegisterHome && !hasStatusInterface && !needPokeHistory )
             {
                 context_.tracer().info( "Component infrastructure: nothing left to do, quitting" );
                 return;
@@ -76,6 +80,8 @@ ComponentThread::walk()
             {
                 context_.status().process();
             }
+
+            context_.history().report();
 
             IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(sleepIntervalMs));
         }

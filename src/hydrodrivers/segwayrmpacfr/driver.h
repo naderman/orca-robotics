@@ -16,22 +16,21 @@
 #include "rmpio.h"
 #include "rxdata.h"
 #include "unitconverter.h"
+#include <memory>
 
 namespace segwayrmpacfr
 {
 
 //
-// An implementation of HwHandler that knows how to talk Segway's
-// protocol.  Requires a hardware interface implementation to be
-// passed to the constructor.
+// Knows how to talk Segway's protocol.
 //
-// All public member functions throw hydrointerfaces::SegwayRmp::Exceptions on error conditions.
+// All public member functions throw exceptions on error conditions.
 //
 class Driver : public hydrointerfaces::SegwayRmp
 {
 public:
 
-    Driver( const hydroutil::Context& context );
+    Driver( const std::string &powerbaseName, const hydroutil::Context& context );
     virtual ~Driver();
 
     // from SegwayRmp
@@ -81,7 +80,7 @@ private:
     RmpDriverConfig config_;
 
     // driver/hardware interface
-    RmpIo*         rmpIo_;
+    std::auto_ptr<RmpIo> rmpIo_;
 
     // integrated odometry (in SI units)
     double odomX_;
@@ -89,15 +88,15 @@ private:
     double odomYaw_;
     
     // Converts between units
-    // stored as a pointer because it needs model number to be initialized
-    UnitConverter* converter_;
+    std::auto_ptr<UnitConverter> converter_;
 
     // Most-recently-received data
-    // stored as a pointer because it needs model number to be initialized
-    RxData* rxData_;
+    std::auto_ptr<RxData> rxData_;
 
     // For logging CAN data for debugging
-    std::ofstream *canDataFile_;
+    std::auto_ptr<std::ofstream> canDataFile_;
+
+    const std::string powerbaseName_;
 
     hydroutil::Context context_;
 };
@@ -107,9 +106,9 @@ class Factory : public hydrointerfaces::SegwayRmpFactory
 {
 public:
     hydrointerfaces::SegwayRmp*
-    createDriver( const hydroutil::Context &context ) const
+    createDriver( const std::string &powerbaseName, const hydroutil::Context &context ) const
     {
-        return new Driver( context );
+        return new Driver( powerbaseName, context );
     }
 };
 
@@ -117,7 +116,7 @@ public:
 
 // Used for dynamically loading driver
 extern "C" {
-    hydrointerfaces::SegwayRmpFactory *createDriverFactory();
+    hydrointerfaces::SegwayRmpFactory *createSegwayRmpDriverFactory();
 }
 
 #endif

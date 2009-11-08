@@ -36,8 +36,15 @@ std::string enumToString( orca::DiscreteSignalLevel level )
 
 MainThread::MainThread( const orcaice::Context& context ) :
     orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
-    context_(context)
+    context_(context),
+    driver_(0)
 {
+}
+
+MainThread::~MainThread()
+{
+    if (driver_!=0)
+        delete driver_;
 }
 
 void 

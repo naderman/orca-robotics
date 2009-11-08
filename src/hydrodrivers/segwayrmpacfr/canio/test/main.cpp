@@ -20,6 +20,8 @@
 #include <canio/canpeakrmpio.h>
 #include <rmpdefs.h>
 
+#include <hydrotime/time.h>
+
 using namespace std;
 using namespace segwayrmpacfr;
 
@@ -38,19 +40,34 @@ volatile bool add_jitter = false;
 int main(int argc, char* argv[]){
 
     int SendTriggerMsgID = 0;
+    std::string portName = "/dev/pcan40";
+    bool move = false;
 
-    switch(argc){
-    case 1:
-        //timing done by timer
-        SendTriggerMsgID = 0;
-        break;
-    case 2:
-        SendTriggerMsgID = atoi(argv[1]);
-        cout << " Will trigger sending on MSG ID " << SendTriggerMsgID << endl;
-        break;
-    default: 
-        cout << "Too many command line args. Will terminate\n";
-        return 0;
+    const std::string USAGE_ARGS = "[--triggerMsgId <id>] [-p <portName>] [--move]";
+    for ( int i=1; i < argc; i++ )
+    {
+        if ( !strcmp(argv[i],"--triggerMsgId") &&
+             i+1 < argc )
+        {
+            SendTriggerMsgID = atoi(argv[i+1]);
+            cout << " Will trigger sending on MSG ID " << SendTriggerMsgID << endl;
+            i++;
+        }
+        else if ( !strcmp(argv[i],"-p") &&
+                  i+1 < argc )
+        {
+            portName = argv[i+1];
+            i++;
+        }
+        else if ( !strcmp(argv[i],"--move" ) )
+        {
+            move = true;
+        }
+        else
+        {
+            cout << "USAGE: " << USAGE_ARGS;
+            exit(1);
+        }
     }
 
     segwayrmpacfr::CanPacket dataMovePacket;           //Store a motion command
@@ -60,8 +77,6 @@ int main(int argc, char* argv[]){
     gbxiceutilacfr::Timer delayTimer;
     gbxiceutilacfr::Timer waitTimer;
 
-
-    std::string portName("/dev/pcan40");
 
     //declare our Can Driver object
     segwayrmpacfr::CanPeakRmpIo testCan( portName );
@@ -81,11 +96,13 @@ int main(int argc, char* argv[]){
 
     
 
-    cerr << "\n\nWarning This code is going to spin the wheels on the segway\n";
-    cerr << "Hit return to continue\n";
-    cin.get();
-
-    cerr << "Use i / k to increase / kill loop speed\n";
+    if ( move )
+    {
+        cerr << "\n\nWarning This code is going to spin the wheels on the segway\n";
+        cerr << "Hit return to continue\n";
+        cin.get();
+        cerr << "Use i / k to increase / kill loop speed\n";
+    }
     
     double msecs;
 
@@ -104,11 +121,15 @@ int main(int argc, char* argv[]){
 
     while(true){ //**??** how should this be escaped?
       //Keep trying to read data from the CAN interface
-        if ( testCan.readPacket(dataPacketCollected) == RmpIo::OK ){ 
-            cout<< dataPacketCollected.toString() << endl;
-            if((int)(dataPacketCollected.id()) == SendTriggerMsgID){
+        if ( testCan.readPacket(dataPacketCollected) == RmpIo::OK )
+        { 
+            cout<< "received at "<<hydrotime::getNow()<<": "<<dataPacketCollected.toString() << endl;
+            if((int)(dataPacketCollected.id()) == SendTriggerMsgID)
+            {
                 sendCounter++;
-            }else{
+            }
+            else
+            {
                 cout << dataPacketCollected.id() << " Trigger " << SendTriggerMsgID << endl;
             }
         }
@@ -133,8 +154,11 @@ int main(int argc, char* argv[]){
         delayTimer.restart();
 
         //If we got here time to send a move command
-        cout << "Sending " << dataMovePacket.toString()<<"delta T  " << msecs <<endl;
-        testCan.writePacket(dataMovePacket);
+        if ( move )
+        {
+            cout << "Sending " << dataMovePacket.toString()<<"delta T  " << msecs <<endl;
+            testCan.writePacket(dataMovePacket);
+        }
         
         if(add_jitter){
             jitter = (rand() % 20) + 1;

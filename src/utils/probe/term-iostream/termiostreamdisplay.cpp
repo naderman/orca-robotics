@@ -139,42 +139,42 @@ TermIostreamDisplay::enable( orcaprobe::IBrowser* browser )
         case NetworkActivityChanged : {
             //cout<<"net activity event"<<endl;
             NetworkActivityChangedEventPtr e = NetworkActivityChangedEventPtr::dynamicCast( event );
-            if ( !e ) break;
+            assert( e );
             printNetworkActivity( e->isActive_ );
             break;
         }
         case RegistryDataChanged : {
             //cout<<"registry event"<<endl;
             RegistryDataChangedEventPtr e = RegistryDataChangedEventPtr::dynamicCast( event );
-            if ( !e ) break;
+            assert( e );
             registryData_ = e->data_;
             break;
         }
         case PlatformDataChanged : {
             //cout<<"platform event"<<endl;
             PlatformDataChangedEventPtr e = PlatformDataChangedEventPtr::dynamicCast( event );
-            if ( !e ) break;
+            assert( e );
             platformData_ = e->data_;
             break;
         }
         case ComponentDataChanged : {
             //cout<<"component event"<<endl;
             ComponentDataChangedEventPtr e = ComponentDataChangedEventPtr::dynamicCast( event );
-            if ( !e ) break;
+            assert( e );
             componentData_ = e->data_;
             break;
         }
         case InterfaceDataChanged : {
             //cout<<"interface event"<<endl;
             InterfaceDataChangedEventPtr e = InterfaceDataChangedEventPtr::dynamicCast( event );
-            if ( !e ) break;
+            assert( e );
             interfaceData_ = e->data_;
             break;
         }
         case OperationDataChanged : {
             //cout<<"operation event"<<endl;
             OperationDataChangedEventPtr e = OperationDataChangedEventPtr::dynamicCast( event );
-            if ( !e ) break;
+            assert( e );
             operationData_ = e->data_;
             break;
         }

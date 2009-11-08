@@ -19,7 +19,7 @@ namespace orcalocalnav {
 
 //
 // Constrains the speed according to the next goal taking into account the time
-// left remaining to reach that goal.
+// remaining to reach that goal.
 // The goal is in the robot's local frame of reference.
 //
 // @author Alex Brooks
@@ -39,11 +39,8 @@ public:
 
 private: 
 
-//     void maybeSendHeartbeat( double secondsBehindSchedule );
-    
     double intendedSpeedThisLeg_;
 
-//     orcaice::Heartbeater heartbeater_;
     orcaice::Context  context_;
 };
 

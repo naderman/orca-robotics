@@ -53,7 +53,7 @@ public:
 
 // Used for dynamically loading driver
 extern "C" {
-    hydrointerfaces::Robot2dFactory *createDriverFactory();
+    hydrointerfaces::Robot2dFactory *createRobot2dDriverFactory();
 }
 
 #endif

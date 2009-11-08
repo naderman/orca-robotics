@@ -55,6 +55,10 @@ public:
     virtual void startServer( const std::string &serverId, int timeoutMs=-1 );
     virtual void stopServer( const std::string &serverId, int timeoutMs=-1 );
 
+    virtual void removeObject( const Ice::Identity& id );
+    virtual Ice::StringSeq getAllAdapterIds();
+    virtual void removeAdapter( const std::string& adapterId );
+
     virtual IceGridManagerState state();
     virtual void setObserver( IceGridManagerObserver* observer );
 
@@ -67,13 +71,15 @@ private:
     class Operation;
     void performOp( Operation &op, int timeoutMs );
 
-    IceGrid::AdminPrx        iceGridAdmin_;
-    IceUtil::Mutex   adminMutex_;
+    IceGrid::AdminPrx iceGridAdmin_;
+    IceUtil::Mutex adminMutex_;
 
     IceGridManagerObserver* observer_;
 
     orcaice::Context context_;
 };
+//! A smart pointer to the IceGridManager class.
+typedef IceUtil::Handle<IceGridManager> IceGridManagerPtr;
 
 } // namespace
 

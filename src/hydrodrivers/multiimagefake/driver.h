@@ -57,7 +57,7 @@ public:
 
 // Used for dynamically loading driver
 extern "C" {
-    hydrointerfaces::MultiImageFactory *createDriverFactory();
+    hydrointerfaces::MultiImageFactory *createMultiImageDriverFactory();
 }
 
 #endif

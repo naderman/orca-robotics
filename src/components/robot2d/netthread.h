@@ -13,7 +13,6 @@
 
 #include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
-#include <gbxsickacfr/gbxiceutilacfr/notify.h>
 
 #include <orcaifaceimpl/odometry2d.h>
 #include <orcaifaceimpl/velocitycontrol2d.h>
@@ -26,7 +25,7 @@ namespace robot2d
 // Handles network interface
 //
 class NetThread : public orcaice::SubsystemThread,
-                  public gbxiceutilacfr::NotifyHandler<orca::VelocityControl2dData>
+                  public orcaifaceimpl::AbstractVelocityControl2dCallback
 {
 public:
 
@@ -34,8 +33,8 @@ public:
                 const orca::VehicleDescription &descr,
                 const orcaice::Context         &context );
 
-    // from NotifyHandler
-    virtual void handleData(const orca::VelocityControl2dData& obj);
+    // from orcaifaceimpl::AbstractVelocityControl2dCallback
+    virtual void setCommand(const orca::VelocityControl2dData &cmd);
 
 private:
     // from SubsystemThread

@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
@@ -22,15 +22,13 @@ namespace hydroiceutil {
 //////////////////////////////////////////////
 
 namespace {
-    
+
     class Worker : public gbxiceutilacfr::SafeThread
     {
     public:
         Worker( JobQueue &q, gbxutilacfr::Tracer& tracer, bool traceStartEvents, bool traceDoneEvents );
 
-        virtual void walk();
-
-        // all of the following aquire jobMutex_
+        // all of the following are thread safe (acquire jobMutex_)
 
         void takeJob( const JobPtr& newJob );
         void dropJob();
@@ -38,8 +36,13 @@ namespace {
         void cancelJob();
         // returns FALSE if the worker has no current job
         bool isJobStalled( std::string& jobInfo );
+        // returns empty string if the worker has no current job
+        std::string toString();
 
     private:
+
+        virtual void walk();
+
         JobQueue& q_;
         JobPtr job_;
         IceUtil::Mutex jobMutex_;
@@ -72,17 +75,17 @@ namespace {
             {
                 // blocks until a new job arrives
                 JobPtr newJob = q_.get( this );
-    
+
                 // we woke up but there's no job
                 // this probably means that we are stopping, but may as well go to the top of while
                 if ( newJob == 0 )
                     continue;
-    
+
                 // make this job officially ours
                 takeJob( newJob );
             }
 
-            try 
+            try
             {
                 if ( job_->isTracable_ || traceStartEvents_ ) {
                     stringstream ss;
@@ -100,7 +103,7 @@ namespace {
                     ss << "Worker "<<this->getThreadControl().id()<<": finished executing job "<<job_->toString();
                     tracer_.info( ss.str() );
                 }
-    
+
                 // forget about this job
                 // this is safer in case it holds pointers to resources which may become unavailable
                 dropJob();
@@ -156,12 +159,12 @@ namespace {
     bool Worker::isJobStalled( std::string& jobInfo )
     {
         IceUtil::Mutex::Lock lock(jobMutex_);
-        if ( job_ && 
-             job_->expectedDuration() >= 0 && 
-             (double)job_->expectedDuration() < jobTimer_.elapsedMs() ) 
+        if ( job_ &&
+             job_->expectedDuration() >= 0 &&
+             (double)job_->expectedDuration() < jobTimer_.elapsedMs() )
         {
             std::stringstream ss;
-            ss << "Job " << job_->toString() << "has been running for " 
+            ss << "Job " << job_->toString() << "has been running for "
                << jobTimer_.elapsedMs() << "ms (expected " << job_->expectedDuration() << "ms)";
             jobInfo = ss.str();
             return true;
@@ -169,24 +172,34 @@ namespace {
 
         return false;
     }
+
+    std::string Worker::toString()
+    {
+        string s;
+        IceUtil::Mutex::Lock lock(jobMutex_);
+        if ( job_ )
+            s = job_->toString();
+
+        return s;
+    }
 }
 
 //////////////////////////////////////////////
 
 Job::Job() :
     isTracable_(false),
-    isCancelled_(false) 
+    isCancelled_(false)
 {
 }
 
-void 
+void
 Job::cancel()
 {
     IceUtil::Mutex::Lock lock(isCancelledMutex_);
     isCancelled_ = true;
 }
 
-bool 
+bool
 Job::isCancelled()
 {
     IceUtil::Mutex::Lock lock(isCancelledMutex_);
@@ -195,7 +208,7 @@ Job::isCancelled()
 
 //////////////////////////////////////////////
 
-void 
+void
 JobQueue::Config::validate( gbxutilacfr::Tracer& tracer )
 {
     if ( threadPoolSize<1 ) {
@@ -225,7 +238,7 @@ JobQueue::JobQueue( gbxutilacfr::Tracer& tracer, const Config& config ) :
 }
 
 JobQueue::~JobQueue()
-{  
+{
     // if the user called stop() than all worder threads would already be dead
     // otherwise, some will still be alive, call stop()
 
@@ -252,25 +265,21 @@ JobQueue::stop()
     }
 
     std::vector<IceUtil::ThreadControl> controls;
-    
+
     // first tell the workers to stop and cancel their jobs (if any)
-    for ( size_t i=0; i<workerPool_.size(); ++i ) 
+    for ( size_t i=0; i<workerPool_.size(); ++i )
     {
-        if ( workerPool_[i] ) 
+        if ( workerPool_[i] )
         {
             // get the control object first
             controls.push_back( workerPool_[i]->getThreadControl() );
-            
+
             // Stop the worker first so it doesn't grab another job, when the current one is cancelled
             workerPool_[i]->stop();
-    
+
             // if it's working this will interrupt the job
             WorkerPtr w = WorkerPtr::dynamicCast( workerPool_[i] );
             w->cancelJob();
-            // this is unsafe, the first line may return true, but the job may terminate by the time
-            // we get to the 2nd line.
-//             if ( w->job() )
-//                 w->job()->cancel();
         }
     }
 
@@ -284,7 +293,7 @@ JobQueue::stop()
     // now all workers should be shutting down
     // make sure that we wait until they all exit
 
-    for ( size_t i=0; i<controls.size(); ++i ) 
+    for ( size_t i=0; i<controls.size(); ++i )
     {
 //         cout<<"JobQueue::stop(): waiting for thread "<<i<<endl;
         controls[i].join();
@@ -292,7 +301,7 @@ JobQueue::stop()
 
     // now we can forget about the workers
     // this is important because stop() may be called twice: by the end-user and the destructor
-    for ( size_t i=0; i<workerPool_.size(); ++i ) 
+    for ( size_t i=0; i<workerPool_.size(); ++i )
     {
         workerPool_[i] = 0;
     }
@@ -310,16 +319,16 @@ JobQueue::add( const JobPtr& job )
 
     if ( job->isTracable_ || config_.traceAddEvents )
         tracer_.info( "Added "+job->toString()+" to the job queue" );
-    
+
     if ( config_.queueSizeWarn>0 && pendingJobs_.size()>=(size_t)config_.queueSizeWarn ) {
-        std::stringstream ss; 
+        std::stringstream ss;
         ss << "Job queue size " << pendingJobs_.size() << " after adding "<<job->toString();
         tracer_.warning( ss.str() );
     }
 
     if ( config_.traceStalledJobs ) {
         std::string jobInfo;
-        for ( size_t i=0; i<workerPool_.size(); ++i ) 
+        for ( size_t i=0; i<workerPool_.size(); ++i )
         {
             WorkerPtr w = WorkerPtr::dynamicCast( workerPool_[i] );
             if ( w->isJobStalled( jobInfo ) )
@@ -354,16 +363,47 @@ JobQueue::get( gbxiceutilacfr::Thread* thread )
     return job;
 }
 
-JobQueueStatus 
+JobQueueStatus
 JobQueue::status()
 {
     IceUtil::Monitor<IceUtil::Mutex>::Lock lock(*this);
-    
+
     JobQueueStatus status;
     status.activeJobCount = activeJobCount_;
     status.queuedJobCount = pendingJobs_.size();
 
     return status;
+}
+
+std::string
+JobQueue::toString()
+{
+    stringstream ss;
+
+    IceUtil::Monitor<IceUtil::Mutex>::Lock lock(*this);
+
+    if ( activeJobCount_ )
+        ss<<"ACTIVE JOBS (maybe out of sync):"<<endl;
+    for ( size_t i=0; i<workerPool_.size(); ++i )
+    {
+        string s;
+        if ( workerPool_[i] )
+        {
+            WorkerPtr w = WorkerPtr::dynamicCast( workerPool_[i] );
+            s = w->toString();
+            if ( !s.empty() )
+                ss << "  " << w->toString() << endl;
+        }
+    }
+
+    if ( !pendingJobs_.empty() )
+        ss<<"PENDING JOBS:"<<endl;
+    for ( std::list<JobPtr>::const_iterator it=pendingJobs_.begin(); it!=pendingJobs_.end(); ++it ) {
+        const JobPtr job = *it;
+        ss << "  " << job->toString() << endl;
+    }
+
+    return ss.str();
 }
 
 } // namespace

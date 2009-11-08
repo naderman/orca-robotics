@@ -49,7 +49,7 @@ public:
     // virtual GuiElementType type() { return orcaqgui::LaserType; };
     // virtual void setColor( QColor color ) { painter_.setColor(color); }
     // virtual void setFocus( bool inFocus ) { painter_.setFocus( inFocus ); };
-    virtual void actionOnConnection() {}
+    virtual void iceStormConnectedEvent() {}
 
     // Access to platform location estimate.
     virtual float x() const { return painter_.pose().p.x; }

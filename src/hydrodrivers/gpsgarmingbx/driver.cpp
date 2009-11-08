@@ -12,10 +12,73 @@
 #include <IceUtil/IceUtil.h>
 #include <hydroutil/hydroutil.h>
 #include "driver.h"
+#include <gbxutilacfr/exceptions.h>
 
 using namespace std;
 
 namespace gpsgarmingbx {
+
+namespace {
+
+    void convert( const gbxgarminacfr::GgaData &ggaData,
+                  const gbxgarminacfr::VtgData &vtgData,
+                  const gbxgarminacfr::RmeData &rmeData,
+                  hydrointerfaces::Gps::Data   &data )
+    {
+        if ( ( !vtgData.isValid ||
+               !rmeData.isValid  ) &&
+             ggaData.fixType != gbxgarminacfr::Invalid )
+        {
+            stringstream ss;
+            ss << "Bad combination of packets, invalid vtg/rme with valid fix:" << endl
+               << "ggaData: " << ggaData << endl
+               << "vtgData: " << vtgData << endl
+               << "rmeData: " << rmeData;
+            throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+        }
+
+        data.timeStampSec  = ggaData.timeStampSec;
+        data.timeStampUsec = ggaData.timeStampUsec;
+        data.utcTimeHrs    = ggaData.utcTimeHrs;
+        data.utcTimeMin    = ggaData.utcTimeMin;
+        data.utcTimeSec    = ggaData.utcTimeSec;
+        switch ( ggaData.fixType ) 
+        {
+        case gbxgarminacfr::Invalid : 
+            data.positionType = hydrointerfaces::Gps::GpsPositionTypeNotAvailable;
+            break;
+        case gbxgarminacfr::Autonomous :  
+            data.positionType = hydrointerfaces::Gps::GpsPositionTypeAutonomous;
+            break;
+        case gbxgarminacfr::Differential : 
+            data.positionType = hydrointerfaces::Gps::GpsPositionTypeDifferential;
+            break;
+        }
+        data.latitude          = ggaData.latitude;
+        data.longitude         = ggaData.longitude;
+        if ( ggaData.isAltitudeKnown )
+        {
+            data.altitude          = ggaData.altitude;
+        }
+        else
+        {
+            // TODO: handle this better...
+            data.altitude = -999999;
+        }
+        data.satellites        = ggaData.satellites;
+        data.geoidalSeparation = ggaData.geoidalSeparation;
+
+        // VTG
+        data.speed   = vtgData.speed;
+        data.heading = vtgData.headingTrue;
+
+        // RME
+        data.horizontalPositionError      = rmeData.horizontalPositionError;
+        data.isVerticalPositionErrorValid = rmeData.isVerticalPositionErrorValid;
+        data.verticalPositionError        = rmeData.verticalPositionError;                
+    }
+
+}
 
 Driver::Driver( const hydrointerfaces::Gps::Config &cfg, const hydroutil::Context &context ) :
     config_(cfg),
@@ -40,11 +103,8 @@ Driver::read( hydrointerfaces::Gps::Data& data )
 {      
     std::auto_ptr<gbxgarminacfr::GenericData> gbxData;
 
-    //How many messages are we looking for to make our frame
-    const int N_MSGS_IN_FRAME = 3;
-    bool haveGga = false;
-    bool haveVtg = false;
-    bool haveRme = false;
+    // If there's no complete hydrointerfaces::Gps::Data structure after this many messages, something is wrong.
+    const int MAX_MESSAGES = 5;
     int msgCount = 0;
 
     // these are not reported by this driver
@@ -52,9 +112,23 @@ Driver::read( hydrointerfaces::Gps::Data& data )
     data.observationCountOnL1 = 0;
     data.observationCountOnL2 = 0;
 
-    while( !( haveGga && haveVtg && haveRme ) && !(msgCount > N_MSGS_IN_FRAME) )
+    std::auto_ptr<gbxgarminacfr::GgaData> ggaDataPtr;
+    std::auto_ptr<gbxgarminacfr::VtgData> vtgDataPtr;
+    std::auto_ptr<gbxgarminacfr::RmeData> rmeDataPtr;
+
+    while( !( ggaDataPtr.get() && vtgDataPtr.get() && rmeDataPtr.get() ) )
     {
-        // catch exceptions!!!
+        if ( ++msgCount > MAX_MESSAGES )
+        {
+            stringstream ss;
+            const bool haveGga = ggaDataPtr.get();
+            const bool haveVtg = vtgDataPtr.get();
+            const bool haveRme = rmeDataPtr.get();
+            ss << "Failed to receive all message types after " << msgCount << " msgs." << endl
+               << "haveGga: " << haveGga << ", haveVtg: " << haveVtg << ", haveRme: " << haveRme;
+            throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+        }
+
         try {
             gbxData = device_->read();
         }
@@ -66,70 +140,44 @@ Driver::read( hydrointerfaces::Gps::Data& data )
         // find out which data type it is
         switch ( gbxData->type() )
         {
-            case gbxgarminacfr::GpGga :
-            {
-//                 cout<<"GPGGA"<<endl;
-                gbxgarminacfr::GgaData* d = (gbxgarminacfr::GgaData*)gbxData.get();
-                data.timeStampSec = d->timeStampSec;
-                data.timeStampUsec = d->timeStampUsec;
-                data.utcTimeHrs = d->utcTimeHrs;
-                data.utcTimeMin = d->utcTimeMin;
-                data.utcTimeSec = d->utcTimeSec;
-                switch ( d->fixType ) 
-                {
-                case gbxgarminacfr::Invalid : 
-                    data.positionType = hydrointerfaces::Gps::GpsPositionTypeNotAvailable;
-                    break;
-                case gbxgarminacfr::Autonomous :  
-                    data.positionType = hydrointerfaces::Gps::GpsPositionTypeAutonomous;
-                    break;
-                case gbxgarminacfr::Differential : 
-                    data.positionType = hydrointerfaces::Gps::GpsPositionTypeDifferential;
-                    break;
-                }
-                data.latitude = d->latitude;
-                data.longitude = d->longitude;
-                data.altitude = d->altitude;
-                data.satellites = d->satellites;
-                data.geoidalSeparation = d->geoidalSeparation;
-                haveGga = true;
-                break;
-            }
-            case gbxgarminacfr::GpVtg :
-            {
-                // wait for GPGGA message
-                if ( !haveGga )
-                    break;
-//                 cout<<"GPVTG"<<endl;
-                gbxgarminacfr::VtgData* d = (gbxgarminacfr::VtgData*)gbxData.get();
-                data.speed = d->speed;
-                data.heading = d->headingTrue;
-                haveVtg = true;
-                break;
-            }
-            case gbxgarminacfr::PgRme :
-            {
-                // wait for GPGGA message
-                if ( !haveGga )
-                    break;
-//                 cout<<"PGRME"<<endl;
-                gbxgarminacfr::RmeData* d = (gbxgarminacfr::RmeData*)gbxData.get();
-                data.horizontalPositionError = d->horizontalPositionError;
-                data.verticalPositionError = d->verticalPositionError;
-                haveRme = true;
-                break;
-            }
-            default :
-                cout<<"?????"<<endl;
+        case gbxgarminacfr::GpGga :
+        {
+            ggaDataPtr.reset( (gbxgarminacfr::GgaData*)gbxData.release() );
+            break;
         }
-
-        ++msgCount;
+        case gbxgarminacfr::GpVtg:
+        {
+            // wait for GPGGA message
+            if ( !ggaDataPtr.get() )
+                break;
+            vtgDataPtr.reset( (gbxgarminacfr::VtgData*)gbxData.release() );
+            break;
+        }
+        case gbxgarminacfr::PgRme:
+        {
+            // wait for GPGGA message
+            if ( !ggaDataPtr.get() )
+                break;
+            rmeDataPtr.reset( (gbxgarminacfr::RmeData*)gbxData.release() );
+            break;
+        }
+        default:
+        {
+            stringstream ss;
+            ss << "Unknown message type: " << gbxData->type();
+            cout << ss.str() << endl << "sending message upwards regardless (TODO: fix me)" << endl;
+            //throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+            break;
+        }
+        }
     }
+
+    convert( *ggaDataPtr, *vtgDataPtr, *rmeDataPtr, data );
 }
 
 } // namespace
 
 extern "C" {
-    hydrointerfaces::GpsFactory *createDriverFactory()
+    hydrointerfaces::GpsFactory *createGpsDriverFactory()
     { return new gpsgarmingbx::Factory; }
 }

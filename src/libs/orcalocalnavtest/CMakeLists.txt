@@ -5,7 +5,7 @@ set( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
 GBX_REQUIRE_VAR( build LIB ${LIB_NAME} GBX_OS_LINUX "only Linux OS is supported" )
 
-set( dep_libs OrcaObjects HydroNavUtil OrcaObjectUtil OrcaIfaceImpl OrcaOgMap HydroGeom2d OrcaSim2d )
+set( dep_libs OrcaObjects HydroNavUtil OrcaObjectUtil OrcaIfaceImpl OrcaOgMap HydroGeom2d OrcaPublish OrcaScanUtil HydroSim2d )
 GBX_REQUIRE_LIBS( build LIB ${LIB_NAME} ${dep_libs} )
 
 if( build )

@@ -16,7 +16,6 @@
 #include <QMenuBar>
 #include <QToolBar>
 #include <QStatusBar>
-#include <hydroqguielementutil/guielement.h>
 #include <hydroutil/uncopyable.h>
 
 namespace hydroqguielementutil {

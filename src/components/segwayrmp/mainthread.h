@@ -17,17 +17,17 @@
 #include <orcaifaceimpl/power.h>
 #include <orcaifaceimpl/velocitycontrol2d.h>
 #include <orcaifaceimpl/estop.h>
-#include "driverthread/driverthread.h"
-#include <hydrodll/dynamicload.h>
+#include <orcaestoputil/estopmonitor.h>
+#include <orcarmputil/powerbasemanager.h>
 #include "publisherthread.h"
-#include <orcarobotdriverutil/estopmonitor.h>
+#include <hydrodll/dynamicload.h>
 
 namespace segwayrmp
 {
 
 class MainThread : public orcaice::SubsystemThread,
-                   public segwayrmpdriverthread::Callback,
-                   public gbxiceutilacfr::NotifyHandler<orca::VelocityControl2dData>,
+                   public orcarmputil::AggregatorCallback,
+                   public orcaifaceimpl::AbstractVelocityControl2dCallback,
                    public gbxiceutilacfr::NotifyHandler<orca::EStopData>
 {
 public:
@@ -42,16 +42,17 @@ private:
     // this subsystem maintain a work thread after initialisation!
     virtual void finalise();
 
-    // from NotifyHandler<orca::VelocityControl2dData>
+    // from orcaifaceimpl::AbstractVelocityControl2dCallback
     // this call originates in orcaifaceimpl::VelocityControl2dImpl
-    virtual void handleData( const orca::VelocityControl2dData &incomingCommand );
+    virtual void setCommand( const orca::VelocityControl2dData &incomingCommand );
 
     // from NotifyHandler<orca::EStopData>
     virtual void handleData( const orca::EStopData &incomingEStopData );
 
-    // from segwayrmpdriverthread::Callback
-    virtual void hardwareInitialised();
-    virtual void receiveData( const hydrointerfaces::SegwayRmp::Data &data );
+    // from orcarmputil::AggregatorCallback
+    void hardwareInitialised( int powerbaseID );
+    void receiveData( int                                     powerbaseID,
+                      const hydrointerfaces::SegwayRmp::Data &data );
 
     void instantiateHydroDriver( const std::string &driverLibName );
 
@@ -64,20 +65,16 @@ private:
     // required interfaces
     orcaifaceimpl::NotifyingEStopConsumerImplPtr eStopConsumerI_;
 
-    std::auto_ptr<orcarobotdriverutil::EStopMonitor> eStopMonitor_;
+    std::auto_ptr<orcaestoputil::EStopMonitor> eStopMonitor_;
 
     hydrointerfaces::SegwayRmp::Capabilities capabilities_;
-
-    segwayrmpdriverthread::DriverThread *segwayRmpDriverThread_;
-    gbxiceutilacfr::ThreadPtr segwayRmpDriverThreadPtr_;
 
     PublisherThread *publisherThread_;
     gbxiceutilacfr::ThreadPtr publisherThreadPtr_;
     
-    // The library that contains the hydro driver factory (must be declared first so it's destructed last!!!)
     std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> hydroDriverLib_;
-    // Generic hydro driver for the hardware
-    std::auto_ptr<hydrointerfaces::SegwayRmp> hydroDriver_;
+
+    std::vector<orcarmputil::PowerbaseManagerPtr> powerbaseManagers_;
 
     orcaice::Context context_;
 };

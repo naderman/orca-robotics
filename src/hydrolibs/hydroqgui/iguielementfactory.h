@@ -64,12 +64,7 @@ public:
 
     //! Creates a GuiElement using the the information stored in guiElementInfo. 
     //! Returns a NULL pointer if something goes wrong
-    virtual ::hydroqguielementutil::GuiElement* create( const ::hydroqguielementutil::GuiElementInfo &guiElementInfo,
-                                                         ::hydroqguielementutil::IHumanManager        &humanManager,
-                                                         ::hydroqguielementutil::MouseEventManager    &mouseEventManager,
-                                                         ::hydroqguielementutil::ShortcutKeyManager   &shortcutKeyManager,
-                                                         const GuiElementSet                          &guiElementSet,
-                                                         QSplitter                                    *spaceBottomRight = 0 ) const = 0;
+    virtual ::hydroqguielementutil::GuiElement* create( const ::hydroqguielementutil::GuiElementInfo &guiElementInfo ) const = 0;
                                                                  
 protected:
 

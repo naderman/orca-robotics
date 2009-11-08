@@ -108,6 +108,6 @@ Driver::read( hydrointerfaces::Image::Data &data )
 } // namespace
 
 extern "C" {
-    hydrointerfaces::ImageFactory *createDriverFactory()
+    hydrointerfaces::ImageFactory *createImageDriverFactory()
     { return new imagefile::Factory; }
 }

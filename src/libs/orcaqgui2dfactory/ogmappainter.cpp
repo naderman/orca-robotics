@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
@@ -21,82 +21,75 @@ using namespace std;
 
 namespace orcaqgui2d {
 
-OgMapPainter::OgMapPainter()
-{    
-    pixmapPainter_ = new PixmapPainter();
-}
-
-
-OgMapPainter::~OgMapPainter()
-{
-    delete pixmapPainter_;
-}
-
-void 
+void
 OgMapPainter::paint( QPainter *p, int z )
 {
     if (z!=hydroqguielementutil::Z_OG_MAP) return;
-    pixmapPainter_->paint(p); 
+    pixmapPainter_.paint(p);
 }
 
 void
 OgMapPainter::setData( const orca::OgMapData& data )
 {
 //     cout << orcaobj::toVerboseString(data);
-    data_ = data;
 
-    if ( data.offset.o != 0.0 ) 
+    if ( data.offset.o != 0.0 )
     {
         stringstream ss;
         ss << "OgMapPainter: Don't know how to display non-axis-aligned map: " << orcaobj::toString( data );
         throw hydroqgui::Exception( ERROR_INFO, ss.str() );
     }
-    
+
+    // remember our map type
+    mapType_ = data.mapType;
+
     // assemble information to give to pixmapPainter
-    PixmapData pixmapData;
-    pixmapData.cellSize = data.metresPerCell;
-    pixmapData.mapSizePix = QSize(data.numCellsX,data.numCellsY);
-    pixmapData.offset = QPointF(data.offset.p.x,data.offset.p.y);
-    
-    if (data.mapType==orca::OgMapHazard) 
+    pixmapData_.cellSize = data.metresPerCell;
+    pixmapData_.mapSizePix = QSize(data.numCellsX,data.numCellsY);
+    pixmapData_.offset = QPointF(data.offset.p.x,data.offset.p.y);
+    const int numCells = data.numCellsX*data.numCellsY;
+    pixmapData_.rgbR.resize( numCells );
+    pixmapData_.rgbG.resize( numCells );
+    pixmapData_.rgbB.resize( numCells );
+
+    switch ( mapType_ )
     {
-        for (int i=0; i<(data.numCellsX*data.numCellsY); i++)
-        {   
-            // unoccupied: yellow, occupied: red
-            pixmapData.rgbR.push_back(255);
-            pixmapData.rgbG.push_back(255-data.data[i]);
-            pixmapData.rgbB.push_back(0);
+        case orca::OgMapHazard : {
+            for (int i=0; i<numCells; i++) {
+                // unoccupied: yellow, occupied: red
+                pixmapData_.rgbR[i] = 255;
+                pixmapData_.rgbG[i] = 255-data.data[i];
+                pixmapData_.rgbB[i] = 0;
+            }
+            break;
         }
-    } 
-    else 
-    {
-        for (int i=0; i<(data.numCellsX*data.numCellsY); i++)
-        {
-            // unoccupied: white, occupied: black
-            pixmapData.rgbR.push_back(255-data.data[i]);
-            pixmapData.rgbG.push_back(255-data.data[i]);
-            pixmapData.rgbB.push_back(255-data.data[i]);
+        case orca::OgMapOccupancy : {
+            for (int i=0; i<numCells; i++) {
+                // unoccupied: white, occupied: black
+                pixmapData_.rgbR[i] = 255-data.data[i];
+                pixmapData_.rgbG[i] = 255-data.data[i];
+                pixmapData_.rgbB[i] = 255-data.data[i];
+            }
+            break;
         }
+        default :
+            assert( !"unhandled OG map type" );
     }
-    
-    pixmapPainter_->setData( pixmapData );
+
+    pixmapPainter_.setData( pixmapData_ );
 }
 
 ImageFileType
 OgMapPainter::checkFileExtension( QString &fe, hydroqguielementutil::IHumanManager *humanManager )
 {
-    if ( fe.isEmpty() ) 
+    if ( fe.isEmpty() )
     {
         fe="png";
         return BITMAP;
     }
     else if (fe=="png" || fe=="bmp" || fe=="jpg" || fe=="jpeg" || fe=="ppm" || fe=="xbm" || fe=="xpm")
     {
-        return BITMAP;    
-    }
-    else if (fe=="bin")
-    {
-        return ICE_STREAM;
+        return BITMAP;
     }
     else
     {
@@ -106,53 +99,42 @@ OgMapPainter::checkFileExtension( QString &fe, hydroqguielementutil::IHumanManag
     }
 }
 
-int 
+int
 OgMapPainter::saveMap( const orcaice::Context   &context,
                        const QString            &fileName,
                        hydroqguielementutil::IHumanManager *humanManager )
 {
     QString fileExtension = fileName.section('.',-1,-1);
     ImageFileType type = checkFileExtension( fileExtension, humanManager );
-    
-    if ( type == NOT_SUPPORTED )
+
+    if ( type == BITMAP )
+    {
+        pixmapPainter_.saveMap( fileName, fileExtension, humanManager );
+    }
+    else
     {
         return -1;
     }
-    else if ( type == BITMAP )
-    {
-        pixmapPainter_->saveMap( fileName, fileExtension, humanManager );
-    }
-    else if ( type == ICE_STREAM )
-    {
-        // create data file
-        std::ofstream *dataFile = new ofstream( fileName.toStdString().c_str(),ios::binary );
-        if ( !dataFile->is_open() ) 
-        {
-            cout << "ERROR(ogmappainter.cpp): Could not create data file " << fileName.toStdString() << endl;
-            humanManager->showDialogError( "Could not create ICE_STREAM file " + fileName ); 
-            return -1;
-        }
-                
-        // create stream
-        vector<Ice::Byte> byteData;
-        Ice::OutputStreamPtr outStreamPtr = Ice::createOutputStream( context.communicator() );
-        ice_writeOgMapData(outStreamPtr, data_);
-        outStreamPtr->writePendingObjects();
-        outStreamPtr->finished(byteData);
-                
-        // write stream to binary file
-        size_t length = byteData.size();
-        dataFile->write( (char*)&length, sizeof(size_t) );
-        dataFile->flush();
-        dataFile->write( (char*)&byteData[0], length);
-        dataFile->flush();
-        dataFile->close();
-        delete dataFile;
-        cout << "INFO(ogmappainter.cpp): Successfully saved map to file " << fileName.toStdString() << endl;
-        humanManager->showStatusInformation("Successfully saved ogMap to file: " + fileName);
-    }
-    
+
     return 0;
+}
+
+void
+OgMapPainter::drawCircle ( const QPoint& center, qreal diameter )
+{
+    QColor color;
+    switch ( mapType_ )
+    {
+        case orca::OgMapHazard :
+            color = Qt::red;
+            break;
+        case orca::OgMapOccupancy :
+            color = Qt::black;
+            break;
+        default :
+            assert( !"unhandled OG map type" );
+    }
+    pixmapPainter_.drawCircle( color, center, diameter);
 }
 
 }

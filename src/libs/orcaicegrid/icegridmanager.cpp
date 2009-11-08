@@ -326,6 +326,64 @@ IceGridManager::getApplicationInfo( const std::string &appName, int timeoutMs )
     return op.appInfo_;
 }
 
+void 
+IceGridManager::removeObject( const Ice::Identity& objectId )
+{
+    class RemoveObjectOp : public Operation {
+    public:
+        RemoveObjectOp( const Ice::Identity& id ) :
+            objecId_(id) {};
+
+        virtual void perform( IceGrid::AdminPrx &iceGridAdmin )
+            { iceGridAdmin->removeObject( objecId_ ); }
+        
+        virtual std::string toString() const { return "removeObject"; }
+
+        Ice::Identity objecId_;
+    };
+
+    RemoveObjectOp op(objectId);
+    performOp( op, -1 );
+}
+
+Ice::StringSeq 
+IceGridManager::getAllAdapterIds()
+{
+    class GetApplicationInfoOp : public Operation {
+    public:
+        virtual void perform( IceGrid::AdminPrx &iceGridAdmin )
+            { adapterIds_ = iceGridAdmin->getAllAdapterIds(); }
+        
+        virtual std::string toString() const { return "getAllAdapterIds"; }
+
+        Ice::StringSeq adapterIds_;
+    };
+
+    GetApplicationInfoOp op;
+    performOp( op, -1 );
+    return op.adapterIds_;
+}
+
+void 
+IceGridManager::removeAdapter( const std::string& adapterId )
+{
+    class RemoveObjectOp : public Operation {
+    public:
+        RemoveObjectOp( const std::string& id ) :
+            adapterId_(id) {};
+
+        virtual void perform( IceGrid::AdminPrx &iceGridAdmin )
+            { iceGridAdmin->removeAdapter( adapterId_ ); }
+        
+        virtual std::string toString() const { return "removeAdapter"; }
+
+        std::string adapterId_;
+    };
+
+    RemoveObjectOp op(adapterId);
+    performOp( op, -1 );
+}
+
 IceGridManagerState 
 IceGridManager::state()
 {

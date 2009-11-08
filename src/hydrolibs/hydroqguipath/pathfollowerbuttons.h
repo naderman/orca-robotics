@@ -12,11 +12,12 @@
 #define PATHFOLLOWER2D_BUTTONS_H
 
 #include <QObject>
+#include <memory>
+#include <hydroqguielementutil/shortcutkeymanager.h>
 
 class QAction;
 
 namespace hydroqguielementutil {
-    class ShortcutKeyManager;
     class IHumanManager;   
 }
 
@@ -31,20 +32,23 @@ class PathfollowerButtons : public QObject
 {
     Q_OBJECT
             
-    public:
-        PathfollowerButtons( QObject                                  *parent,
-                             hydroqguielementutil::IHumanManager      &humanManager,
-                             hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
-                             std::string                               proxyString,
-                             bool                                      haveGoButton=true);
-        ~PathfollowerButtons();
+public:
+    PathfollowerButtons( QObject                                  *parent,
+                         hydroqguielementutil::IHumanManager      &humanManager,
+                         hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
+                         std::string                               proxyString,
+                         bool                                      haveActivatePathButton=true);
     
-        void setWpButton( bool onOff );
+    void setWpButton( bool onOff );
 
-    private:
-        QAction *hiWaypoints_;
-        hydroqguielementutil::IHumanManager &humanManager_;
-        hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager_;
+private:
+    QAction *hiWaypoints_;
+    hydroqguielementutil::IHumanManager &humanManager_;
+
+    std::auto_ptr<hydroqguielementutil::ShortcutKeyReservation> stopShortcutKey_;
+    std::auto_ptr<hydroqguielementutil::ShortcutKeyReservation> drawWaypointsShortcutKey_;
+    std::auto_ptr<hydroqguielementutil::ShortcutKeyReservation> sendPathShortcutKey_;
+    std::auto_ptr<hydroqguielementutil::ShortcutKeyReservation> activatePathShortcutKey_;
 };
 
 }

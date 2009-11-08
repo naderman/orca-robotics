@@ -18,7 +18,7 @@ using namespace std;
 namespace orcaqgui3d {
 
 void
-Localise3dElement::actionOnConnection()
+Localise3dElement::iceStormConnectedEvent()
 {
     if (!isConnected_) return;
 
@@ -32,7 +32,7 @@ Localise3dElement::tryToGetGeometry()
     
     if ( listener_.proxy()==0 )
     {
-        humanManager_->showStatusError( "Localise3dElement::tryToGetGeometry(): listener_.proxy()==0" );
+        _stuff.humanManager->showStatusError( "Localise3dElement::tryToGetGeometry(): listener_.proxy()==0" );
     }
     try 
     {
@@ -45,7 +45,7 @@ Localise3dElement::tryToGetGeometry()
     }
     catch ( std::exception &e)
     {
-        humanManager_->showStatusError( "Localise3dElement::tryToGetGeometry(): Exception when trying to get geometry: " + QString(e.what()) );
+        _stuff.humanManager->showStatusError( "Localise3dElement::tryToGetGeometry(): Exception when trying to get geometry: " + QString(e.what()) );
     }
     
     if (haveGeometry_ && geom->type==orca::VehicleGeometryCuboid)
@@ -65,7 +65,7 @@ Localise3dElement::tryToGetGeometry()
     }
     else
     {
-        humanManager_->showStatusWarning("Localise3dElement: unknown geometry!");
+        _stuff.humanManager->showStatusWarning("Localise3dElement: unknown geometry!");
         const double radius = 0.375;
         const double height = 1.0;
         painter_.setCylindricalDescr( radius, height, orcaobj::zeroFrame3d() );

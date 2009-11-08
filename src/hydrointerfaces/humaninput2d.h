@@ -106,8 +106,8 @@ public:
 // Function for dynamically instantiating drivers.
 // A driver must have a function like so:
 // extern "C" {
-//     hydrointerfaces::HumanInput2dFactory *createDriverFactory();
+//     hydrointerfaces::HumanInput2dFactory *createHumanInput2dDriverFactory();
 // }
-typedef hydrointerfaces::HumanInput2dFactory *DriverFactoryMakerFunc();
+typedef hydrointerfaces::HumanInput2dFactory *HumanInput2dDriverFactoryMakerFunc();
 
 #endif

@@ -29,6 +29,9 @@ MainThread::initialise()
 {
     setMaxHeartbeatInterval( 20.0 );
 
+    persistanceFile_ = orcaice::getPropertyWithDefault( context_.properties(),
+                                                        context_.tag()+".Config.PersistanceFile",
+                                                        "" );
     initPropertiesDb();
     initNetworkInterface();
 }
@@ -70,6 +73,14 @@ MainThread::work()
             orcaice::catchMainLoopExceptions( health() );
         }
     } // end of while
+
+    //
+    // Save our properties
+    //
+    if ( !persistanceFile_.empty() )
+    {
+        propertyDb_.writePropertiesToFile( persistanceFile_ );
+    }
 }
 
 /////////////////////////
@@ -77,8 +88,29 @@ MainThread::work()
 void
 MainThread::initPropertiesDb()
 {
+    //
+    // Read from the persistance file
+    //
+
+    if ( !persistanceFile_.empty() )
+    {
+        try {
+            std::map<std::string,std::string> propsFromFile = readFromFile( persistanceFile_ );
+            cout<<"Properties loaded from persistance file: " << toString(propsFromFile) << endl;
+            propertyDb_.addProperties( propsFromFile );
+        }
+        catch ( std::exception &e )
+        {
+            health().fault( e.what() );
+        }
+    }
+
+    //
+    // Read from the config file
+    //
+
     // Only insert properties with this prefix (which gets stripped)
-    std::string prefix = context_.tag()+".Config.";
+    std::string prefix = context_.tag()+".Config.InitProperty.";
     map<string,string> props = context_.properties()->getPropertiesForPrefix(prefix);
 
     map<string,string> strippedProps;
@@ -86,10 +118,7 @@ MainThread::initPropertiesDb()
     {
         strippedProps.insert( make_pair(it->first.substr(prefix.size()),it->second) );
     }
-
-    stringstream ss;
-    ss << "MainThread: Properties loaded from file: " << toString(strippedProps);
-    context_.tracer().debug( ss.str() );
+    cout << "Properties loaded from config file: " << toString(strippedProps) << endl;
 
     propertyDb_.addProperties( strippedProps );
 }

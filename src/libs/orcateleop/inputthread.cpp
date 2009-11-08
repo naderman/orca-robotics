@@ -42,7 +42,7 @@ InputThread::walk()
         // Dynamically load the driver from its library
         driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
         driverFactory.reset( 
-            hydrodll::dynamicallyLoadClass<hydrointerfaces::HumanInput2dFactory,DriverFactoryMakerFunc>
+            hydrodll::dynamicallyLoadClass<hydrointerfaces::HumanInput2dFactory,HumanInput2dDriverFactoryMakerFunc>
             ( *driverLib_, "createDriverFactory" ) );
     }
     catch (hydrodll::DynamicLoadException &e)

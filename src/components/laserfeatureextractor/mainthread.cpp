@@ -172,7 +172,7 @@ MainThread::initDriver()
         //   [HYDRO]/src/hydrodrivers/laserfeatureextractor/driver.h
         //
         driverFactory.reset( 
-            hydrodll::dynamicallyLoadClass<hydrointerfaces::LaserFeatureExtractorFactory,DriverFactoryMakerFunc>
+            hydrodll::dynamicallyLoadClass<hydrointerfaces::LaserFeatureExtractorFactory,LaserFeatureExtractorDriverFactoryMakerFunc>
             ( *driverLib_, "createDriverFactory" ) );
     }
     catch (hydrodll::DynamicLoadException &e)
@@ -201,6 +201,7 @@ MainThread::initDriver()
                                                         laserDescr_.startAngle,
                                                         orcaobj::calcAngleIncrement( laserDescr_.fieldOfView, 
                                                                                      laserDescr_.numberOfSamples ),
+                                                        laserDescr_.numberOfSamples,
                                                         context_.toHydroContext() ) );
             break;
         }

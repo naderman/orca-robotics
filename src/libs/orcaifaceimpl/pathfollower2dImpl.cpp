@@ -71,24 +71,21 @@ void
 PathFollower2dImpl::init()
 {
     topicHandler_.reset( new PathFollower2dTopicHandler( orcaice::toTopicAsString(context_.name(),interfaceName_), context_ ) );
-
     ptr_ = new PathFollower2dI( *this, callback_ );
 }
 
 void
 PathFollower2dImpl::initInterface()
 {
-    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_ );
-
     topicHandler_->connectToTopic();
+    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_ );
 }
 
 void 
 PathFollower2dImpl::initInterface( gbxutilacfr::Stoppable* activity, const std::string& subsysName, int retryInterval )
 {
-    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, activity, subsysName, retryInterval );
-
     topicHandler_->connectToTopic( activity, subsysName, retryInterval );
+    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, activity, subsysName, retryInterval );
 }
 
 ::orca::PathFollower2dData
@@ -114,7 +111,7 @@ PathFollower2dImpl::internalSubscribe(const orca::PathFollower2dConsumerPrx& sub
 {
     if ( !topicHandler_.get() ) 
     {
-        throw orca::SubscriptionFailedException("Component does not have a topic to publish its traces.");
+        throw orca::SubscriptionFailedException("topicHandler_ does not exist.");
     }
     
     // if we have data, send all the information we have to the new subscriber (and to no one else)
@@ -129,6 +126,12 @@ PathFollower2dImpl::internalSubscribe(const orca::PathFollower2dConsumerPrx& sub
     
         return topicHandler_->subscribe( subscriber, data );
     }
+}
+
+void
+PathFollower2dImpl::localSend( const orca::PathFollower2dData& data )
+{
+    topicHandler_->publish( data );
 }
 
 void

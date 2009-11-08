@@ -33,9 +33,11 @@ bool operator==( const Frame2d &f1, const Frame2d &f2 )
 std::string toString( const MetaData &m )
 {
     std::stringstream ss;
+    ss << "\n";
     ss << "\toffset:        [" << m.offset << "]\n"
        << "\tnumCells:      [" << m.numCellsX << ", " << m.numCellsY << "]\n"
-       << "\tmetresPerCell: [" << m.metresPerCell << "]";
+       << "\tmetresPerCell: [" << m.metresPerCell << "]\n"
+       << "\tworldSize:     [" << m.worldSizeX() << ", " << m.worldSizeY() << "]";
     return ss.str();
 }
 bool operator==( const MetaData &m1, const MetaData &m2 )

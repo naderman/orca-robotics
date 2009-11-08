@@ -230,7 +230,7 @@ hydrointerfaces::MitsubishiPA10* MitsubishiPA106CFactory::createDriver( const hy
 
 extern "C" {
     
-hydrointerfaces::MitsubishiPA10Factory *createDriverFactory()
+hydrointerfaces::MitsubishiPA10Factory *createMitsubishiPA10DriverFactory()
 { 
 	return new mhipa10arc::MitsubishiPA106CFactory; 
 }

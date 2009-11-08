@@ -34,10 +34,6 @@ public:
     
     //! reports the elements position in the world
     virtual QPointF pos() const { return QPointF(-9999.9999, -9999.9999); };
-    
-private: 
-
-
 };
 
 }

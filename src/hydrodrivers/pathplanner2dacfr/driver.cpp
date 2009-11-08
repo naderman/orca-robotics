@@ -348,6 +348,6 @@ Driver::computePath( const Point &start,
 } // namespace
 
 extern "C" {
-    hydrointerfaces::PathPlanner2dFactory *createDriverFactory()
+    hydrointerfaces::PathPlanner2dFactory *createPathPlanner2dDriverFactory()
     { return new pathplanner2dacfr::Factory; }
 }

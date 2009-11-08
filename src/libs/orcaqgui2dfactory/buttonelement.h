@@ -21,15 +21,10 @@ class ButtonElement : public hydroqguielementutil::GuiElement
 public: 
 
     ButtonElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
-                   const orcaice::Context                     &context,
-                   const std::string                          &proxyString,
-                   hydroqguielementutil::IHumanManager        &humanManager );
+                   const orcaice::Context                     &context );
 
     virtual QStringList contextMenu();
     virtual void execute( int action );
-
-    // This function doesn't need an implementation coz we don't paint anything.
-    bool isInGlobalCS() { return false; }  
 
     void press();
 
@@ -40,8 +35,6 @@ private:
     orcaice::Context context_;
     std::string      proxyString_;
     orca::ButtonPrx  buttonPrx_;
-
-    hydroqguielementutil::IHumanManager &humanManager_;
 
     bool isConnected_;
 };

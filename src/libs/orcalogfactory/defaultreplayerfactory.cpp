@@ -22,6 +22,7 @@ DefaultReplayerFactory::DefaultReplayerFactory()
     addSupportedType("Camera");
     addSupportedType("DriveBicycle");
     addSupportedType("LaserScanner2d");
+    addSupportedType("RangeScanner2d");
     addSupportedType("Localise2d");
     addSupportedType("Localise3d");
     addSupportedType("Odometry2d");
@@ -29,6 +30,7 @@ DefaultReplayerFactory::DefaultReplayerFactory()
     addSupportedType("Power");
     addSupportedType("Wifi");
     addSupportedType("Gps");
+    addSupportedType("PathFollower2d");
 }
 
 orcalog::Replayer* 
@@ -47,6 +49,10 @@ DefaultReplayerFactory::create( const orcalog::LogReaderInfo &logReaderInfo )
     else if ( logReaderInfo.interfaceType == "LaserScanner2d" )
     {
         return new LaserScanner2dReplayer( logReaderInfo );
+    }
+    else if ( logReaderInfo.interfaceType == "RangeScanner2d" )
+    {
+        return new RangeScanner2dReplayer( logReaderInfo );
     }
     else if ( logReaderInfo.interfaceType == "Localise2d" )
     {
@@ -75,6 +81,10 @@ DefaultReplayerFactory::create( const orcalog::LogReaderInfo &logReaderInfo )
     else if ( logReaderInfo.interfaceType == "Gps" )
     {
         return new GpsReplayer( logReaderInfo );
+    }
+    else if ( logReaderInfo.interfaceType == "PathFollower2d" )
+    {
+        return new PathFollower2dReplayer( logReaderInfo );
     }
     else
     {

@@ -43,6 +43,9 @@ private:
     // The database of properties
     PropertyDb propertyDb_;
 
+    // Where we load/save our properties
+    std::string persistanceFile_;
+
     orcaice::Context context_;
 };
 

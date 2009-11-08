@@ -166,17 +166,13 @@ void WifiWidget::setupDisplay()
 
 WifiElement::WifiElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
                           const orcaice::Context  &context,
-                          const std::string       &proxyString,
-                          QSplitter               *spaceBottomRight,
                           int                      timeoutMs )
     : orcaqguielementutil::IceStormGuiElement<orca::WifiData,
                                               orca::WifiPrx,
                                               orca::WifiConsumer,
-                                              orca::WifiConsumerPrx>( guiElementInfo, context, proxyString, timeoutMs ),
+                                              orca::WifiConsumerPrx>( guiElementInfo, context, timeoutMs ),
         wifiWidget_(0),
-        proxyString_(proxyString),
-        spaceBottomRight_(spaceBottomRight)
-                
+        proxyString_(guiElementInfo.uniqueId.toStdString())
 {
 }
 
@@ -194,8 +190,8 @@ WifiElement::update()
         if (wifiWidget_==0) 
         {
             wifiWidget_ = new WifiWidget( data_.interfaces.size(), proxyString_ );
-            if (spaceBottomRight_!=0)
-                spaceBottomRight_->addWidget( wifiWidget_ );
+            if (_stuff.spaceBottomRight!=0)
+                _stuff.spaceBottomRight->addWidget( wifiWidget_ );
         }
         wifiWidget_->refresh( data_ );
         if (wifiWidget_->isHidden()) {
@@ -203,7 +199,3 @@ WifiElement::update()
         }
     }
 }
-
-
-
-

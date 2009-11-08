@@ -862,6 +862,6 @@ Driver::novatel2Hydro(hnu::RAWIMUSB_LOG &rawImu){
 } //namespace
 
 extern "C" {
-    hif::InsGpsFactory *createDriverFactory()
+    hif::InsGpsFactory *createInsGpsDriverFactory()
     { return new insgpsnovatelspan::Factory; }
 }

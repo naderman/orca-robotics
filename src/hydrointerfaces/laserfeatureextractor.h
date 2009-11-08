@@ -64,6 +64,7 @@ public:
     virtual LaserFeatureExtractor *createDriver( double laserMaxRange,
                                                  double laserStartAngle,
                                                  double laserAngleIncrement,
+                                                 int    laserNumReturns,
                                                  const hydroutil::Context &context ) const=0;
 };
 
@@ -73,8 +74,8 @@ public:
 // Function for dynamically instantiating drivers.
 // A driver must have a function like so:
 // extern "C" {
-//     hydrointerfaces::LaserFeatureExtractorFactory *createDriverFactory();
+//     hydrointerfaces::LaserFeatureExtractorFactory *createLaserFeatureExtractorDriverFactory();
 // }
-typedef hydrointerfaces::LaserFeatureExtractorFactory *DriverFactoryMakerFunc();
+typedef hydrointerfaces::LaserFeatureExtractorFactory *LaserFeatureExtractorDriverFactoryMakerFunc();
 
 #endif

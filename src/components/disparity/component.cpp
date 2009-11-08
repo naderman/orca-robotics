@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2008 Tom Burdick, Alex Brooks, Alexei Makarenko, Tobias Kaupp, Ben Upcroft
  *
@@ -29,14 +29,9 @@ Component::start()
     // create mainthread, which will own everything
     IceUtil::Handle<MainThread> threadPtr = new MainThread( context() );
     mainThread_ = threadPtr;
-       
+
     // start thread
     mainThread_->start();
-
-    // give MainThread a chance to write something to the history
-    bool forceHistory = false;
-    context().history().autoStart( forceHistory );
-    context().history().flush();
 
     // if the plugin requires an event loop, run it and handle shutdowns properly
     if( threadPtr->hasPluginEventLoop() )
@@ -56,10 +51,6 @@ Component::stop()
 
     // cause mainThread to be destroyed
     mainThread_ = 0;
-
-    bool forceHistory = false;
-    context().history().autoFinish( forceHistory );
-    context().history().flush();
 }
 
 } // namespace

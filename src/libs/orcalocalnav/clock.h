@@ -12,7 +12,7 @@
 #define ORCA_LOCALNAV_CLOCK_H
 
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
-#include <orca/common.h>
+#include <hydrotime/time.h>
 
 namespace orcalocalnav {
 
@@ -28,24 +28,23 @@ class Clock
 
 public: 
 
-    Clock( const orca::Time &initialTime )
+    Clock( const hydrotime::Time &initialTime )
         { setTime( initialTime ); }
 
-    void setTime( const orca::Time &time )
+    void setTime( const hydrotime::Time &time )
         {
             timeStore_.set( time );
         }
-    orca::Time time() const
+    hydrotime::Time time() const
         {
-            orca::Time t;
+            hydrotime::Time t;
             timeStore_.get( t );
             return t;
         }
 
 private: 
 
-    mutable gbxiceutilacfr::Store<orca::Time> timeStore_;
-
+    mutable gbxiceutilacfr::Store<hydrotime::Time> timeStore_;
 };
 
 }

@@ -92,6 +92,8 @@ template<class ObjectType>
 class AbstractConsumer
 {
 public:
+    virtual ~AbstractConsumer() {}
+
     // Implement this callback in the derived class. 
     virtual void dataEvent( const ObjectType& data )=0;
 };
@@ -135,7 +137,10 @@ Oct 25 03:26:49 tango /usr/bin/icebox[2474]: Topic: status/ast@tango/localnav: u
 Oct 25 03:26:49 tango /usr/bin/icebox[2474]: Subscriber: 0x81182e0 07394FBF-586C-4128-AA28-1727B9DA2E19: subscriber errored out: OutgoingAsync.cpp:305: Ice::ObjectNotExistException: object does not exist: identity: `07394FBF-586C-4128-AA28-1727B9DA2E19' facet:  operation: setData retry: 0/0
 @endverbatim
 */
-template<class ProviderType, class ConsumerType, class ObjectType>
+template<class ProviderType, 
+         class ConsumerType, 
+         class ObjectType,
+         class ConsumerTypeIType=ConsumerTypeI<ConsumerType,ObjectType> >
 class ConsumerImpl : public ConsumerSubscriber, 
                      public AbstractConsumer<ObjectType>,
                      public IceUtil::Shared
@@ -157,7 +162,7 @@ public:
     ConsumerImpl( const orcaice::Context &context ) :
         ConsumerSubscriber(context)
     {
-        consumerPtr_ = new ConsumerTypeI<ConsumerType,ObjectType>( *this );
+        consumerPtr_ = new ConsumerTypeIType( *this );
         // this function does not throw, because it never talks to the Registry
         // we do NOT currently convert to a one-way proxy, but maybe we should for efficiency.
         consumerPrx_ = orcaice::createConsumerInterface<ConsumerPrxType>(context_,consumerPtr_);

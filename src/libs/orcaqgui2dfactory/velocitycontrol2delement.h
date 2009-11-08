@@ -14,12 +14,12 @@
 #include <QObject>
 #include <orcaice/context.h>
 #include <hydroqguielementutil/guielement.h>
+#include <hydroqguielementutil/shortcutkeymanager.h>
 
 class QSplitter;
 
 namespace hydroqguielementutil {
     class IHumanManager;
-    class ShortcutKeyManager;
 }
 
 namespace orcateleop {
@@ -41,16 +41,9 @@ class VelocityControl2dElement : public QObject,
 
     public: 
         VelocityControl2dElement(const hydroqguielementutil::GuiElementInfo &guiElementInfo,
-                                 const orcaice::Context                     &context,
-                                 const std::string                          &proxyString,
-                                 hydroqguielementutil::IHumanManager        &humanManager,
-                                 hydroqguielementutil::ShortcutKeyManager   &shortcutKeyManager,
-                                 QSplitter                                  *spaceBottomRight = 0 ); 
+                                 const orcaice::Context                     &context ); 
         ~VelocityControl2dElement();
-        
-        virtual bool isInGlobalCS() {return false;};
-
-        
+                
     private slots:
         void incrementSpeed();
         void decrementSpeed();
@@ -62,8 +55,15 @@ class VelocityControl2dElement : public QObject,
         
     private:
         void setupButtons();
-        hydroqguielementutil::IHumanManager &humanManager_;
-        hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager_;
+
+        std::auto_ptr<hydroqguielementutil::ShortcutKeyReservation> speedUpKey_;
+        std::auto_ptr<hydroqguielementutil::ShortcutKeyReservation> slowDownKey_;
+        std::auto_ptr<hydroqguielementutil::ShortcutKeyReservation> incrementTurnrateKey_;
+        std::auto_ptr<hydroqguielementutil::ShortcutKeyReservation> decrementTurnrateKey_;
+        std::auto_ptr<hydroqguielementutil::ShortcutKeyReservation> stopRotationKey_;
+        std::auto_ptr<hydroqguielementutil::ShortcutKeyReservation> stopTranslationKey_;
+        std::auto_ptr<hydroqguielementutil::ShortcutKeyReservation> stopAllKey_;
+
         orcateleop::NetworkThread* networkThread_;
         VelocityControlDisplay* teleopDisplay_;
 };

@@ -87,4 +87,39 @@ constrain( SegwayRmp::Capabilities &capabilities,
     capabilities.maxLateralAcceleration = MIN( capabilities.maxLateralAcceleration, limits.maxLateralAcceleration );
 }
 
+bool operator==( const SegwayRmp::Capabilities &c1, const SegwayRmp::Capabilities &c2 )
+{
+    const double EPS = 1e-5;
+    return ( NEAR( c1.maxForwardSpeed,        c2.maxForwardSpeed, EPS ) &&
+             NEAR( c1.maxReverseSpeed,        c2.maxReverseSpeed, EPS ) &&
+             NEAR( c1.maxTurnrate,            c2.maxTurnrate, EPS ) &&
+             NEAR( c1.maxLateralAcceleration, c2.maxLateralAcceleration, EPS ) );
+}
+
+bool commandPossible( const hydrointerfaces::SegwayRmp::Command      &cmd,
+                      const hydrointerfaces::SegwayRmp::Capabilities &capabilities )
+{
+    if ( cmd.vx >  capabilities.maxForwardSpeed ) return false;
+    if ( cmd.vx < -capabilities.maxReverseSpeed ) return false;
+    if ( cmd.w >  capabilities.maxTurnrate ) return false;
+    if ( cmd.w < -capabilities.maxTurnrate ) return false;        
+
+    const double lateralAcceleration = cmd.vx*cmd.w;
+    if ( lateralAcceleration > capabilities.maxLateralAcceleration ) return false;
+
+    return true;
+}
+
+void limit( hydrointerfaces::SegwayRmp::Command            &cmd,
+            const hydrointerfaces::SegwayRmp::Capabilities &capabilities )
+{
+    // Note that maxReverseSpeed is a positive number.
+    CLIP_TO_LIMITS( -capabilities.maxReverseSpeed, cmd.vx, capabilities.maxForwardSpeed );
+    CLIP_TO_LIMITS( -capabilities.maxTurnrate, cmd.w, capabilities.maxTurnrate );
+    
+    const double maxTurnrateToSatisfyLateralAcc = capabilities.maxLateralAcceleration / fabs(cmd.vx);
+    CLIP_TO_LIMITS( -maxTurnrateToSatisfyLateralAcc, cmd.w, maxTurnrateToSatisfyLateralAcc );
+}
+
+
 } // namespace

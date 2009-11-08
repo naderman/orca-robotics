@@ -6,7 +6,7 @@ GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 set( not_os_win NOT GBX_OS_WIN )
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} not_os_win "Windows OS is not  supported" )
 
-set( dep_libs OrcaCompModel )
+set( dep_libs OrcaCompModel OrcaIceGrid)
 GBX_REQUIRE_LIBS( build EXE ${APP_NAME} ${dep_libs} )
 
 if( build )
@@ -14,6 +14,7 @@ if( build )
     include( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     file( GLOB srcs *.cpp )
+    # we link to this one but don't check
     set( dep_libs ${dep_libs} IceGrid )  
     
     ORCA_WRAP_MAINTHREAD_INTO_APP( ${srcs} )

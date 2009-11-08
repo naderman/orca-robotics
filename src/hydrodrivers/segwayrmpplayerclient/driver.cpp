@@ -12,7 +12,7 @@
 #include <sstream>
 #include <stdlib.h>
 #include <assert.h>
-
+#include <gbxutilacfr/exceptions.h>
 #include <libplayerc++/playerc++.h>
 #include <hydroiceutil/timeutils.h>
 
@@ -64,12 +64,14 @@ Driver::Config::fromProperties( const hydroutil::Properties& props )
 
 /////////////////////////////////
 
-Driver::Driver( const hydroutil::Context & context )
+Driver::Driver( const std::string        &powerbaseName,
+                const hydroutil::Context &context )
     : enabled_( false ),
       robot_(0),
       position2dProxy_(0),
       position3dProxy_(0),
       powerProxy_(0),
+      powerbaseName_(powerbaseName),
       context_(context)
 {
     // parse configuration parameters
@@ -100,7 +102,7 @@ Driver::enable()
         stringstream ss;
         ss << "Driver: " << e;
         disable();
-        throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 
     try {
@@ -111,7 +113,7 @@ Driver::enable()
     {
         stringstream ss;
         ss << "Driver: failed to connect to position3d: " << e << ", trying position2d";
-        context_.tracer().warning( ss.str() );
+        context_.tracer().warning( powerbaseName_, ss.str() );
 
         try {
             position2dProxy_ = new PlayerCc::Position2dProxy( robot_, 0 );
@@ -122,7 +124,7 @@ Driver::enable()
             stringstream ss;
             ss << "Driver: Failed to set up position2d" << e;
             disable();
-            throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
+            throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
         }
     }
     assert( position2dProxy_ || position3dProxy_ );
@@ -135,7 +137,7 @@ Driver::enable()
         stringstream ss;
         ss << "Driver: " << e;
         disable();
-        throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
     enabled_ = true;
 }
@@ -158,7 +160,7 @@ Driver::read( Data& data )
     if ( ! enabled_ ) {
         stringstream ss;
         ss << "Driver: Can't read: not connected to Player/Stage yet.";
-        throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 
     // player throws exceptions on creation if we fail
@@ -170,7 +172,7 @@ Driver::read( Data& data )
     {
         stringstream ss;
         ss << "Driver::read() Error reading from robot: " << e;
-        throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
         enabled_ = false;
     }
 
@@ -232,7 +234,7 @@ Driver::write( const Command& command )
     {
         stringstream ss;
         ss << "Driver::write(): " << e;
-        throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 }
 
@@ -251,7 +253,7 @@ Driver::capabilities() const
 } // namespace
 
 extern "C" {
-    hydrointerfaces::SegwayRmpFactory *createDriverFactory()
+    hydrointerfaces::SegwayRmpFactory *createSegwayRmpDriverFactory()
     { return new segwayrmpplayerclient::Factory; }
 }
 

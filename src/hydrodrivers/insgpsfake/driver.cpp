@@ -182,6 +182,6 @@ namespace{
 }
 
 extern "C" {
-    hif::InsGpsFactory *createDriverFactory()
+    hif::InsGpsFactory *createInsGpsDriverFactory()
     { return new insgpsfake::Factory; }
 }

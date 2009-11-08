@@ -41,7 +41,7 @@ interface VelocityControl2d
 
     //! Set desired velocity command
     idempotent void setCommand( VelocityControl2dData data )
-        throws HardwareFailedException, EStopTriggeredException;
+        throws HardwareFailedException, EStopTriggeredException, MotorStalledException;
 };
 
 //! @}

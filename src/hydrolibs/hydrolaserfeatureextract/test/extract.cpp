@@ -32,7 +32,7 @@ getScan( const char                          *mapFileName,
                                                          scannerConfig.startAngle,
                                                          scannerConfig.angleIncrement,
                                                          181 );
-    hydrosim2d::NullRangeScanPublisher nullPublisher;
+    hydropublish::DummyRangeScanner2dPublisher nullPublisher;
     hydrosim2d::RangeScannerSimulator scannerSimulator( simConfig, ogMap, nullPublisher );
 
     scannerSimulator.getRangesFromPose( hydronavutil::Pose(0,0,0), ranges );
@@ -51,7 +51,8 @@ int main( int argc, char **argv )
     }
 
     const double maxRange=16.0, startAngle=-90.0*M_PI/180.0, angleIncrement=1.0*M_PI/180.0;
-    hydroscanutil::ScannerConfig scannerConfig( maxRange, startAngle, angleIncrement );
+    const int numReturns=181;
+    hydroscanutil::ScannerConfig scannerConfig( maxRange, startAngle, angleIncrement, numReturns );
 
     std::vector<float> ranges;
     std::vector<unsigned char>  intensities;

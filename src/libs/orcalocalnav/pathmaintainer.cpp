@@ -21,21 +21,52 @@ namespace orcalocalnav {
 
 namespace {
 
+    orca::Time convert( const hydrotime::Time &time )
+    {
+        orca::Time orcaTime;
+        orcaTime.seconds  = time.seconds();
+        orcaTime.useconds = time.useconds();
+        return orcaTime;
+    }
+
     // Convert from global to local coords
     void
     convert( const orca::Waypoint2d   &wp,
+             const orca::Waypoint2d   *prevWp,
              orcalocalnav::Goal       &goal,
              const hydronavutil::Pose &pose,
              double                    secSinceActivation )
     {
-        double secToWp = wp.timeTarget - secSinceActivation;
-    
+//         cout<<"TRACE(pathmaintainer.cpp): " << __func__ << ": " << ifaceutil::toString(wp) << endl;
+//         if ( !prevWp )
+//             cout<<"TRACE(pathmaintainer.cpp): No prev goal." << endl;
+//         else
+//             cout<<"TRACE(pathmaintainer.cpp): have a prev goal:" << ifaceutil::toString(*prevWp) << endl;
+
+        const double secToWp = wp.timeTarget - secSinceActivation;
+//        cout<<"TRACE(pathmaintainer.cpp): secToWp: " << secToWp << "(target="<<wp.timeTarget<<",secSinceActivation="<<secSinceActivation<<")" << endl;
+
+        double intendedSpeed = wp.maxApproachSpeed;
+        if ( prevWp )
+        {
+            const double dtThisLeg = wp.timeTarget - prevWp->timeTarget;
+            // cout<<"TRACE(pathmaintainer.cpp): dtThisLeg: " << dtThisLeg << endl;
+            if ( dtThisLeg > 0 )
+            {
+                const double distFromPrevWp = hypot( wp.target.p.y - prevWp->target.p.y,
+                                                     wp.target.p.x - prevWp->target.p.x );
+                const double intendedSpeedPreThreshold = distFromPrevWp/dtThisLeg;
+                intendedSpeed = MIN( wp.maxApproachSpeed, intendedSpeedPreThreshold );
+            }
+        }
+        
         goal.set( wp.target.p.x,
                   wp.target.p.y,
                   wp.target.o,
                   wp.distanceTolerance,
                   wp.headingTolerance,
                   secToWp,
+                  intendedSpeed,
                   wp.maxApproachSpeed,
                   wp.maxApproachTurnrate );
 
@@ -127,7 +158,7 @@ PathMaintainer::getActiveGoals( std::vector<orcalocalnav::Goal> &goals,
     }
 
     // Time now relative to start time
-    double timeNow = orcaice::timeDiffAsDouble( clock_.time(), pathStartTime_ );
+    double timeNow = orcaice::timeDiffAsDouble( convert(clock_.time()), pathStartTime_ );
 
     // Peel off waypoints if they're reached
     wpIncremented = justStartedNewPath_;
@@ -163,7 +194,10 @@ PathMaintainer::getActiveGoals( std::vector<orcalocalnav::Goal> &goals,
     {
         orcalocalnav::Goal goal;
         assert( pI >= 0 && pI < path_.path.size() );
-        convert( path_.path[pI], goal, pose, secSinceActivation() );
+        const orca::Waypoint2d *prevWp = NULL;
+        if ( pI > 0 )
+            prevWp = &(path_.path[pI-1]);
+        convert( path_.path[pI], prevWp, goal, pose, secSinceActivation() );
         goals.push_back( goal );
     }
     
@@ -212,8 +246,7 @@ PathMaintainer::incrementWpIndex()
 double
 PathMaintainer::secSinceActivation() const
 {
-    double diff = orcaice::timeDiffAsDouble( clock_.time(), pathStartTime_ );
-
+    double diff = orcaice::timeDiffAsDouble( convert(clock_.time()), pathStartTime_ );
     return diff;
 }
 

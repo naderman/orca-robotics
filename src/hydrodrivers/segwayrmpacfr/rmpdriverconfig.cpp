@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <sstream>
-#include <hydrointerfaces/segwayrmp.h> // for Exception
+#include <gbxutilacfr/exceptions.h>
 
 #include "rmpdriverconfig.h"
 #include "rmpdefs.h"
@@ -33,7 +33,7 @@ GainSchedule gainScheduleAsEnum( const std::string &gainSchedule )
         stringstream ss;
         ss << "gainScheduleAsEnum(): Unknown GainSchedule: '" << gainSchedule
            << "'. Valid gain schedule types are {'normal', 'tall', 'heavy'}";
-        throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 }
 
@@ -49,7 +49,7 @@ std::string gainScheduleAsString( GainSchedule gainSchedule )
     {
         stringstream ss;
         ss << "gainScheduleAsString(): Unknown GainSchedule: '" << gainSchedule;
-        throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 }
 
@@ -68,7 +68,7 @@ RmpModel modelAsEnum( const std::string &m )
         stringstream ss;
         ss << "modelAsEnum(): Unknown RMP model: '" << m
            << "'. Valid values are {'RMP50','RMP100','RMP200','RMP400'}";
-        throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 }
 
@@ -138,10 +138,10 @@ readFromProperties( const hydroutil::Context& context, RmpDriverConfig& c )
     std::string gainSchedule = props.getPropertyWithDefault( prefix+"GainSchedule", "normal" );
     c.gainSchedule = gainScheduleAsEnum( gainSchedule );
 
-    c.maxVelocityScale = props.getPropertyAsDoubleWithDefault( prefix+"MaxVelocityScale", 0.75 );
-    c.maxTurnrateScale = props.getPropertyAsDoubleWithDefault( prefix+"MaxTurnrateScale", 0.75 );
-    c.maxAccelerationScale = props.getPropertyAsDoubleWithDefault( prefix+"MaxAccelerationScale", 0.75 );
-    c.maxCurrentLimitScale = props.getPropertyAsDoubleWithDefault( prefix+"MaxCurrentLimitScale", 0.75 );
+    c.maxVelocityScale = props.getPropertyAsDoubleWithDefault( prefix+"MaxVelocityScale", 1.0 );
+    c.maxTurnrateScale = props.getPropertyAsDoubleWithDefault( prefix+"MaxTurnrateScale", 1.0 );
+    c.maxAccelerationScale = props.getPropertyAsDoubleWithDefault( prefix+"MaxAccelerationScale", 1.0 );
+    c.maxCurrentLimitScale = props.getPropertyAsDoubleWithDefault( prefix+"MaxCurrentLimitScale", 1.0 );
 
     std::string model = props.getPropertyWithDefault( prefix+"ProductModel", "RMP200" );
     c.model = modelAsEnum( model );

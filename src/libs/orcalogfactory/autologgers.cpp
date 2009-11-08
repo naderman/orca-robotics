@@ -43,6 +43,43 @@ LaserScanner2dAutoLogger::startLogging()
 
 //////////////////////////////////////////////////////////////////////
 
+RangeScanner2dAutoLogger::RangeScanner2dAutoLogger( const orcaice::Context &context ) :
+        orcaifaceimpl::ConsumerImpl<orca::RangeScanner2d, orca::RangeScanner2dConsumer,
+                          orca::RangeScanner2dDataPtr>( context )
+{
+}
+
+void 
+RangeScanner2dAutoLogger::dataEvent(const orca::RangeScanner2dDataPtr& data )
+{ 
+    logWriter_->write(data,orcaice::getNow());
+}
+
+void 
+RangeScanner2dAutoLogger::init( const orcalog::LogWriterInfo &logWriterInfo, 
+                    orcalog::MasterFileWriter    &masterFileWriter )
+{
+    logWriter_.reset( new RangeScanner2dLogWriter );
+    logWriter_->checkFormat( logWriterInfo.format );
+    logWriter_->init( logWriterInfo, masterFileWriter );
+}
+
+void 
+RangeScanner2dAutoLogger::startLogging()
+{
+    orca::RangeScanner2dPrx providerPrx;
+    orcaice::connectToInterfaceWithTag( context_,
+                                        providerPrx,
+                                        logWriter_->logWriterInfo().interfaceTag );
+    orca::RangeScanner2dDescription descr = providerPrx->getDescription();
+
+    logWriter_->write( descr );
+
+    subscribeWithTag( logWriter_->logWriterInfo().interfaceTag );
+}
+
+//////////////////////////////////////////////////////////////////////
+
 CameraAutoLogger::CameraAutoLogger( const orcaice::Context &context ) :
         orcaifaceimpl::ConsumerImpl<orca::Image, orca::ImageConsumer, orca::ImageDataPtr>( context )
 {

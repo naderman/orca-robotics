@@ -11,10 +11,11 @@
 #ifndef HYDROQGUI_MOUSEEVENTMANAGER_H
 #define HYDROQGUI_MOUSEEVENTMANAGER_H
 
-#include <hydroqguielementutil/guielement.h>
 #include <hydroutil/uncopyable.h>
 
 namespace hydroqguielementutil {
+
+class GuiElement;
 
 //!
 //! @brief Manages sharing of mouse events: a global resource.

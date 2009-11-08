@@ -64,8 +64,6 @@ class WifiElement
 public:
     WifiElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
                  const orcaice::Context                     &context,
-                 const std::string                          &proxyString,
-                 QSplitter                                  *spaceBottomRight,
                  int                                         timeoutMs = 30000 );
     ~WifiElement();
 
@@ -74,7 +72,6 @@ public:
 private:
     WifiWidget *wifiWidget_;
     std::string proxyString_;
-    QSplitter *spaceBottomRight_;
 };
 
 }

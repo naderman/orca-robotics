@@ -12,8 +12,6 @@
 #include <QAction>
 #include <QSplitter>
 #include <hydrointerfaces/humaninput2d.h>
-#include <hydroqguielementutil/ihumanmanager.h>
-#include <hydroqguielementutil/shortcutkeymanager.h>
 #include <orcaice/orcaice.h>
 #include <orcateleop/networkthread.h>
 #include "velocitycontroldisplay.h"
@@ -24,16 +22,10 @@ using namespace std;
 namespace orcaqgui2d {
     
 VelocityControl2dElement::VelocityControl2dElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
-                                                    const orcaice::Context                     &context,
-                                                    const std::string                          &proxyString,
-                                                    hydroqguielementutil::IHumanManager        &humanManager,
-                                                    hydroqguielementutil::ShortcutKeyManager   &shortcutKeyManager,
-                                                    QSplitter                                  *spaceBottomRight )
-    : GuiElement(guiElementInfo),
-      humanManager_(humanManager),
-      shortcutKeyManager_(shortcutKeyManager)
+                                                    const orcaice::Context                     &context )
+    : GuiElement(guiElementInfo)
 {
-    humanManager.showDialogWarning("You are about to connect a Teleoperation element. Be careful...");
+    _stuff.humanManager->showDialogWarning("You are about to connect a Teleoperation element. Be careful...");
     
     // setup the buttons and connect to slots
     setupButtons();
@@ -42,7 +34,7 @@ VelocityControl2dElement::VelocityControl2dElement( const hydroqguielementutil::
     // interface properties
     //
     Ice::PropertiesPtr prop = context.properties();
-    prop->setProperty( context.tag()+".Requires.Generic.Proxy", proxyString );
+    prop->setProperty( context.tag()+".Requires.Generic.Proxy", guiElementInfo.uniqueId.toStdString() );
     
     std::string prefix = context.tag() + ".Config.";
     double repeatInterval = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"VelocityControl2d.RepeatInterval", 0.2 );
@@ -50,7 +42,7 @@ VelocityControl2dElement::VelocityControl2dElement( const hydroqguielementutil::
     prop->setProperty( prefix+"RepeatInterval", ss.str() );
     
     // setup display
-    teleopDisplay_ = new VelocityControlDisplay( guiElementInfo.platform.toStdString(), spaceBottomRight );
+    teleopDisplay_ = new VelocityControlDisplay( guiElementInfo.platform.toStdString(), _stuff.spaceBottomRight );
     
     // setup network thread
     networkThread_ = new orcateleop::NetworkThread( (orcateleop::Display*)teleopDisplay_, context );
@@ -62,17 +54,6 @@ VelocityControl2dElement::~VelocityControl2dElement()
 {
     // send a stop command to robot
     stop();
-    
-    //
-    // clean up key subscriptions
-    //
-    shortcutKeyManager_.unsubscribeFromShortcutKey( QKeySequence(Qt::Key_I), this );
-    shortcutKeyManager_.unsubscribeFromShortcutKey( QKeySequence(Qt::Key_J), this );
-    shortcutKeyManager_.unsubscribeFromShortcutKey( QKeySequence(Qt::Key_K), this );
-    shortcutKeyManager_.unsubscribeFromShortcutKey( QKeySequence(Qt::Key_L), this );
-    shortcutKeyManager_.unsubscribeFromShortcutKey( QKeySequence(Qt::Key_U), this );
-    shortcutKeyManager_.unsubscribeFromShortcutKey( QKeySequence(Qt::Key_O), this );
-    shortcutKeyManager_.unsubscribeFromShortcutKey( QKeySequence(Qt::Key_Space), this );
     
     // clean up networkthread
     gbxiceutilacfr::stopAndJoin( networkThread_ );
@@ -89,49 +70,77 @@ VelocityControl2dElement::setupButtons()
     {
         QAction* incrementSpeed = new QAction(this);
         connect( incrementSpeed, SIGNAL(triggered()), this, SLOT(incrementSpeed()) ); 
-        shortcutKeyManager_.subscribeToShortcutKey( incrementSpeed, QKeySequence(Qt::Key_I), true, this );
+        speedUpKey_.reset( new hydroqguielementutil::ShortcutKeyReservation( incrementSpeed,
+                                                                             QKeySequence(Qt::Key_I),
+                                                                             true,
+                                                                             this,
+                                                                             *_stuff.shortcutKeyManager ) );
     }   
     
     // decrement speed
     {
         QAction* decrementSpeed = new QAction(this);
         connect( decrementSpeed, SIGNAL(triggered()), this, SLOT(decrementSpeed()) ); 
-        shortcutKeyManager_.subscribeToShortcutKey( decrementSpeed, QKeySequence(Qt::Key_K), true, this );
+        slowDownKey_.reset( new hydroqguielementutil::ShortcutKeyReservation( decrementSpeed,
+                                                                              QKeySequence(Qt::Key_K),
+                                                                              true,
+                                                                              this,
+                                                                              *_stuff.shortcutKeyManager ) );
     } 
     
     // increment turnrate
     {
         QAction* incrementTurnrate = new QAction(this);
-        connect( incrementTurnrate, SIGNAL(triggered()), this, SLOT(incrementTurnrate()) ); 
-        shortcutKeyManager_.subscribeToShortcutKey( incrementTurnrate, QKeySequence(Qt::Key_J), true, this );
+        connect( incrementTurnrate, SIGNAL(triggered()), this, SLOT(incrementTurnrate()) );
+        incrementTurnrateKey_.reset( new hydroqguielementutil::ShortcutKeyReservation( incrementTurnrate,
+                                                                                       QKeySequence(Qt::Key_J),
+                                                                                       true,
+                                                                                       this,
+                                                                                       *_stuff.shortcutKeyManager ) );
     } 
     
-    // increment turnrate
+    // decrement turnrate
     {
         QAction* decrementTurnrate = new QAction(this);
         connect( decrementTurnrate, SIGNAL(triggered()), this, SLOT(decrementTurnrate()) ); 
-        shortcutKeyManager_.subscribeToShortcutKey( decrementTurnrate, QKeySequence(Qt::Key_L), true, this );
+        decrementTurnrateKey_.reset( new hydroqguielementutil::ShortcutKeyReservation( decrementTurnrate,
+                                                                                       QKeySequence(Qt::Key_L),
+                                                                                       true,
+                                                                                       this,
+                                                                                       *_stuff.shortcutKeyManager ) );
     }
     
     // stop turning
     {
         QAction* stopTurn = new QAction(this);
-        connect( stopTurn, SIGNAL(triggered()), this, SLOT(stopTurn()) ); 
-        shortcutKeyManager_.subscribeToShortcutKey( stopTurn, QKeySequence(Qt::Key_U), true, this );
+        connect( stopTurn, SIGNAL(triggered()), this, SLOT(stopTurn()) );
+        stopRotationKey_.reset( new hydroqguielementutil::ShortcutKeyReservation( stopTurn,
+                                                                                  QKeySequence(Qt::Key_U),
+                                                                                  true,
+                                                                                  this,
+                                                                                  *_stuff.shortcutKeyManager ) );
     }    
     
     // stop moving but still turn
     {
         QAction* stopMovementButTurn = new QAction(this);
         connect( stopMovementButTurn, SIGNAL(triggered()), this, SLOT(stopMovementButTurn()) ); 
-        shortcutKeyManager_.subscribeToShortcutKey( stopMovementButTurn, QKeySequence(Qt::Key_O), true, this );
+        stopTranslationKey_.reset( new hydroqguielementutil::ShortcutKeyReservation( stopMovementButTurn,
+                                                                                     QKeySequence(Qt::Key_O),
+                                                                                     true,
+                                                                                     this,
+                                                                                     *_stuff.shortcutKeyManager ) );
     }
         
     // stop
     {
         QAction* stop = new QAction(this);
         connect( stop, SIGNAL(triggered()), this, SLOT(stop()) ); 
-        shortcutKeyManager_.subscribeToShortcutKey( stop, QKeySequence(Qt::Key_Space), true, this );
+        stopAllKey_.reset( new hydroqguielementutil::ShortcutKeyReservation( stop,
+                                                                             QKeySequence(Qt::Key_Space),
+                                                                             true,
+                                                                             this,
+                                                                             *_stuff.shortcutKeyManager ) );
     }
 }
 
@@ -200,4 +209,3 @@ VelocityControl2dElement::stop()
 }
 
 }
-

@@ -37,10 +37,18 @@ GuiElementModel::GuiElementModel(   const std::vector<hydroqgui::IGuiElementFact
       coordinateFrameManager_(coordinateFrameManager),
       platformFocusManager_(platformFocusManager),
       platformColorMap_(platformColorMap),
-      view_(0),
-      spaceBottomRight_(spaceBottomRight)
+      view_(0)
 {    
     headers_ << "Type" << "Unique ID";
+
+    hydroqguielementutil::GuiElementStuff stuff;
+    stuff.humanManager = &humanManager_;
+    stuff.mouseEventManager = &mouseEventManager_;
+    stuff.shortcutKeyManager = &shortcutKeyManager_;
+    stuff.guiElementSet = &guiElementSet_;
+    stuff.spaceBottomRight = spaceBottomRight;
+
+    hydroqguielementutil::GuiElement::setGuiElementStuff( stuff );
 }
 
 int GuiElementModel::rowCount(const QModelIndex &parent) const
@@ -155,12 +163,7 @@ GuiElementModel::instantiateFromFactories( hydroqguielementutil::GuiElement*    
         // if we get here the interface is supported
         try 
         {
-            element = factories_[i]->create( guiElementInfo,
-                                             humanManager_,
-                                             mouseEventManager_,
-                                             shortcutKeyManager_,
-                                             guiElementSet_,
-                                             spaceBottomRight_ );
+            element = factories_[i]->create( guiElementInfo );
         } 
         catch (gbxutilacfr::Exception &e)
         {

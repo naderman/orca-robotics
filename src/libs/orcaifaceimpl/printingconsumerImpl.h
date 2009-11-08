@@ -27,7 +27,10 @@ namespace orcaifaceimpl
  *  for the data type.
  */
 // template<class ProviderType, class ProviderPrxType, class ConsumerType, class ConsumerPrxType, class ObjectType>
-template<class ProviderType, class ConsumerType, class ObjectType>
+template<class ProviderType, 
+         class ConsumerType, 
+         class ObjectType,
+         class ConsumerTypeIType=ConsumerTypeI<ConsumerType,ObjectType> >
 class PrintingConsumerImpl : 
         public ConsumerImpl<ProviderType,ConsumerType,ObjectType>
 //         public ConsumerImpl<ProviderType,ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>
@@ -38,7 +41,7 @@ public:
     //! Constructor. The optinal parameter @c recurse specifies the level of detail printed
     //! out to @c cout when new data arrives.
     PrintingConsumerImpl( const orcaice::Context &context, int recurse=1000, int expand=-1 ) :
-        ConsumerImpl<ProviderType,ConsumerType,ObjectType>(context), 
+        ConsumerImpl<ProviderType,ConsumerType,ObjectType,ConsumerTypeIType>(context), 
 //         ConsumerImpl<ProviderType,ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>(context), 
         recurse_(recurse),
         expand_(expand) {}

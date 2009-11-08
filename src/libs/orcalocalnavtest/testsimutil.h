@@ -10,6 +10,7 @@ namespace orcalocalnavtest {
     orca::PathFollower2dData getTestPath( const hydroogmap::OgMap &ogMap,
                                           int numWaypoints,
                                           bool stressTiming,
+                                          bool regularWaypointGrid,
                                           bool turnOnSpot,
                                           bool goThruDoor );
 

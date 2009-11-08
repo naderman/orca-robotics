@@ -21,8 +21,9 @@ using namespace std;
 namespace segwayrmpfake
 {
 
-Driver::Driver( const hydroutil::Context& context ) :
-    context_(context)
+Driver::Driver( const std::string        &powerbaseName,
+                const hydroutil::Context &context ) 
+    : context_(context)
 {
     hydroutil::Properties &prop = context_.properties();
     std::string prefix = "Fake.";
@@ -32,18 +33,18 @@ Driver::Driver( const hydroutil::Context& context ) :
 
     stringstream ss;
     ss << "Fake driver: will simulate data rate with " << sleepIntervalMs_ << "ms inteval";
-    context_.tracer().info( ss.str() );
+    context_.tracer().info( powerbaseName_, ss.str() );
 }
 
 Driver::~Driver()
 {
-    context_.tracer().debug( "Driver::~Driver()" );
+    context_.tracer().debug( powerbaseName_, "Driver::~Driver()" );
 }
 
 void
 Driver::enable()
 {
-    context_.tracer().info( "Driver is enabled" );
+    context_.tracer().info( powerbaseName_, "Driver is enabled" );
 }
 
 void
@@ -61,6 +62,8 @@ Driver::read( Data& data )
         data.droll  = double(rand()%100000)/1000.0 - 50.0;
         data.dpitch = double(rand()%100000)/1000.0 - 50.0;
         data.dyaw   = double(rand()%100000)/1000.0 - 50.0;
+        data.leftTorque = double(rand()%100000)/1000.0 - 50.0;
+        data.rightTorque = double(rand()%100000)/1000.0 - 50.0;
     }
     else
     {
@@ -73,6 +76,8 @@ Driver::read( Data& data )
         data.droll  = 0.0;
         data.dpitch = 0.0;
         data.dyaw   = 0.0;
+        data.leftTorque = 0.0;
+        data.rightTorque = 0.0;
     }
 
     data.mainvolt = 80;
@@ -96,12 +101,12 @@ Driver::write( const Command& command )
         ss << "Driver: Wrote: SegwayRmpCommand (vx,w(deg/s)) : ("
             << command.vx << ", "
             << command.w*180.0/Pi << ")";
-        context_.tracer().debug( ss.str() );
+        context_.tracer().debug( powerbaseName_, ss.str() );
     }
     else {
         string s = "Simulating hardware failure for velocity over 2m/s";
-        context_.tracer().info( s );
-        throw hydrointerfaces::SegwayRmp::Exception( s );
+        context_.tracer().info( powerbaseName_, s );
+        throw gbxutilacfr::Exception( ERROR_INFO, s );
     }
 }
 
@@ -119,6 +124,6 @@ Driver::capabilities() const
 } // namespace
 
 extern "C" {
-    hydrointerfaces::SegwayRmpFactory *createDriverFactory()
+    hydrointerfaces::SegwayRmpFactory *createSegwayRmpDriverFactory()
     { return new segwayrmpfake::Factory; }
 }

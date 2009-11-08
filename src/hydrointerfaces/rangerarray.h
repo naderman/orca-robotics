@@ -105,8 +105,8 @@ public:
 // Function for dynamically instantiating drivers.
 // A driver must have a function like so:
 // extern "C" {
-//     hydrointerfaces::RangerArrayFactory *createDriverFactory();
+//     hydrointerfaces::RangerArrayFactory *createRangerArrayDriverFactory();
 // }
-typedef hydrointerfaces::RangerArrayFactory *DriverFactoryMakerFunc();
+typedef hydrointerfaces::RangerArrayFactory *RangerArrayDriverFactoryMakerFunc();
 
 #endif

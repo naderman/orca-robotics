@@ -3,6 +3,7 @@
 #include <fstream>
 #include <orcalog/orcalog.h>
 #include "logstringutils.h"
+#include <orcalog/formatcheckutil.h>
 
 // alexm: I haven't checked which ones are actually used.
 #include <orcaifacelog/datetime.h>
@@ -56,49 +57,6 @@ using namespace std;
 namespace orcalogfactory {
 
 namespace {
-
-    void checkFormats( const std::string              &format,
-                       const std::vector<std::string> &okFormats )
-    {
-        for ( size_t i=0; i < okFormats.size(); i++ )
-        {
-            if ( format == okFormats[i] )
-            {
-                // format is supported
-                return;
-            }
-        }
-
-        // format is not supported: throw exception
-        stringstream ss;
-        ss << "Unknown log format: "<<format<<endl
-           << "  Supported formats are: ";
-        for ( size_t i=0; i < okFormats.size(); i++ )
-        {
-            ss << okFormats[i];
-            if ( i != okFormats.size()-1 ) ss << ", ";
-        }
-        throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
-    }
-
-    void
-    checkFormatIceOnly( const std::string &format )
-    {
-        vector<string> okFormats;
-        okFormats.push_back("ice");
-        okFormats.push_back("asciigenerated"); // auto-generated -> always available; need to adjust function name
-        checkFormats( format, okFormats );
-    }
-
-    void
-    checkFormatIceOrAscii( const std::string &format )
-    {
-        vector<string> okFormats;
-        okFormats.push_back("ice");
-        okFormats.push_back("ascii");
-        okFormats.push_back("asciigenerated");
-        checkFormats( format, okFormats );
-    }
 
     void 
     logToFile( std::ofstream                  *file, 
@@ -353,6 +311,30 @@ namespace {
     void logToFile( std::ofstream       *file, 
                     const std::string   &format,
                     orcaice::Context     context,
+                    const orca::RangeScanner2dDataPtr &obj )
+    {        
+        if ( format == "ice" )
+        {
+            orcalog::IceWriteHelper helper( context.communicator() );
+            ice_writeRangeScanner2dData( helper.stream_, obj );
+            helper.write( file );
+        }
+        else if ( format=="asciigenerated" )
+        {
+            ifacelog::toLogStream( obj, *file);
+            (*file) << endl;
+        }
+        else
+        {
+            stringstream ss;
+            ss << "can't handle format: " << format;
+            throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
+        }
+    }
+
+    void logToFile( std::ofstream       *file, 
+                    const std::string   &format,
+                    orcaice::Context     context,
                     const orca::Localise2dData &obj )
     {        
         if ( format == "ice" )
@@ -422,10 +404,6 @@ namespace {
             ifacelog::toLogStream( obj, *file);
             (*file) << endl;
         }
-        else if ( format == "ascii" )
-        {
-            (*file) << toLogString(obj) << endl;
-        }
         else
         {
             stringstream ss;
@@ -449,10 +427,6 @@ namespace {
         {
             ifacelog::toLogStream( obj, *file);
             (*file) << endl;
-        }
-        else if ( format == "ascii" )
-        {
-            (*file) << toLogString(obj) << endl;
         }
         else
         {
@@ -599,6 +573,30 @@ namespace {
         }
     }
 
+    void logToFile( std::ofstream       *file, 
+                    const std::string   &format,
+                    orcaice::Context     context,
+                    const orca::PathFollower2dData &obj )
+    {        
+        if ( format == "ice" )
+        {
+            orcalog::IceWriteHelper helper( context.communicator() );
+            ice_writePathFollower2dData( helper.stream_, obj );
+            helper.write( file );
+        }
+        else if ( format=="asciigenerated" )
+        {
+            ifacelog::toLogStream( obj, *file);
+            (*file) << endl;
+        }
+        else
+        {
+            stringstream ss;
+            ss << "can't handle format: " << format;
+            throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
+        }
+    }
+
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -606,7 +604,7 @@ namespace {
 void
 CpuLogWriter::checkFormat( const std::string &format )
 {
-    checkFormatIceOrAscii( format );
+    orcalog::checkFormatDefaultsOrAscii( format );
 }
 void 
 CpuLogWriter::write( const orca::CpuData &obj, const orca::Time &arrivalTime  )
@@ -623,7 +621,7 @@ CpuLogWriter::write( const orca::CpuData &obj, const orca::Time &arrivalTime  )
 void
 DriveBicycleLogWriter::checkFormat( const std::string &format )
 {
-    checkFormatIceOrAscii( format );
+    orcalog::checkFormatDefaultsOrAscii( format );
 }
 void 
 DriveBicycleLogWriter::write( const orca::DriveBicycleData &obj, const orca::Time &arrivalTime  )
@@ -650,7 +648,7 @@ DriveBicycleLogWriter::write( const orca::VehicleDescription &descr )
 void
 ImuLogWriter::checkFormat( const std::string &format )
 {
-    checkFormatIceOrAscii( format );
+    orcalog::checkFormatDefaultsOrAscii( format );
 }
 void 
 ImuLogWriter::write( const orca::ImuData &obj, const orca::Time &arrivalTime  )
@@ -667,7 +665,7 @@ ImuLogWriter::write( const orca::ImuData &obj, const orca::Time &arrivalTime  )
 void
 LaserScanner2dLogWriter::checkFormat( const std::string &format )
 {
-    checkFormatIceOrAscii( format );
+    orcalog::checkFormatDefaultsOrAscii( format );
 }
 void 
 LaserScanner2dLogWriter::write( const orca::LaserScanner2dDataPtr &obj, const orca::Time &arrivalTime  )
@@ -692,9 +690,36 @@ LaserScanner2dLogWriter::write( const orca::RangeScanner2dDescription &descr )
 //////////////////////////////////////////////////////////////////////
 
 void
+RangeScanner2dLogWriter::checkFormat( const std::string &format )
+{
+    orcalog::checkFormatDefaultsOnly( format );
+}
+void 
+RangeScanner2dLogWriter::write( const orca::RangeScanner2dDataPtr &obj, const orca::Time &arrivalTime  )
+{
+    writeReferenceToMasterFile(arrivalTime);
+    logToFile( file_,
+               orcalog::LogWriter::logWriterInfo().format,
+               orcalog::LogWriter::logWriterInfo().context,
+               obj );
+}
+void 
+RangeScanner2dLogWriter::write( const orca::RangeScanner2dDescription &descr )
+{
+    if ( orcalog::LogWriter::numItemsLogged() > 0 )
+        throw orcalog::Exception( ERROR_INFO, "Tried to write description after logging started" );
+    logToFile( file_,
+               orcalog::LogWriter::logWriterInfo().format,
+               orcalog::LogWriter::logWriterInfo().context,
+               descr );
+}
+
+//////////////////////////////////////////////////////////////////////
+
+void
 Localise2dLogWriter::checkFormat( const std::string &format )
 {
-    checkFormatIceOrAscii( format );
+    orcalog::checkFormatDefaultsOrAscii( format );
 }
 void 
 Localise2dLogWriter::write( const orca::Localise2dData &obj, const orca::Time &arrivalTime  )
@@ -721,7 +746,7 @@ Localise2dLogWriter::write( const orca::VehicleGeometryDescriptionPtr &descr )
 void
 Localise3dLogWriter::checkFormat( const std::string &format )
 {
-    checkFormatIceOrAscii( format );
+    orcalog::checkFormatDefaultsOrAscii( format );
 }
 void 
 Localise3dLogWriter::write( const orca::Localise3dData &obj, const orca::Time &arrivalTime  )
@@ -748,7 +773,7 @@ Localise3dLogWriter::write( const orca::VehicleGeometryDescriptionPtr &descr )
 void
 Odometry2dLogWriter::checkFormat( const std::string &format )
 {
-    checkFormatIceOrAscii( format );
+    orcalog::checkFormatDefaultsOnly( format );
 }
 void 
 Odometry2dLogWriter::write( const orca::Odometry2dData &obj, const orca::Time &arrivalTime  )
@@ -775,7 +800,7 @@ Odometry2dLogWriter::write( const orca::VehicleDescription &descr )
 void
 Odometry3dLogWriter::checkFormat( const std::string &format )
 {
-    checkFormatIceOrAscii( format );
+    orcalog::checkFormatDefaultsOnly( format );
 }
 void 
 Odometry3dLogWriter::write( const orca::Odometry3dData &obj, const orca::Time &arrivalTime  )
@@ -802,7 +827,7 @@ Odometry3dLogWriter::write( const orca::VehicleDescription &descr )
 void
 PolarFeature2dLogWriter::checkFormat( const std::string &format )
 {
-    checkFormatIceOrAscii( format );
+    orcalog::checkFormatDefaultsOrAscii( format );
 }
 void 
 PolarFeature2dLogWriter::write( const orca::PolarFeature2dData &obj, const orca::Time &arrivalTime  )
@@ -819,7 +844,7 @@ PolarFeature2dLogWriter::write( const orca::PolarFeature2dData &obj, const orca:
 void
 PowerLogWriter::checkFormat( const std::string &format )
 {
-    checkFormatIceOrAscii( format );
+    orcalog::checkFormatDefaultsOrAscii( format );
 }
 void 
 PowerLogWriter::write( const orca::PowerData &obj, const orca::Time &arrivalTime  )
@@ -836,7 +861,7 @@ PowerLogWriter::write( const orca::PowerData &obj, const orca::Time &arrivalTime
 void
 WifiLogWriter::checkFormat( const std::string &format )
 {
-    checkFormatIceOrAscii( format );
+    orcalog::checkFormatDefaultsOrAscii( format );
 }
 void 
 WifiLogWriter::write( const orca::WifiData &obj, const orca::Time &arrivalTime  )
@@ -853,7 +878,7 @@ WifiLogWriter::write( const orca::WifiData &obj, const orca::Time &arrivalTime  
 void
 GpsLogWriter::checkFormat( const std::string &format )
 {
-    checkFormatIceOrAscii( format );
+    orcalog::checkFormatDefaultsOrAscii( format );
 }
 void 
 GpsLogWriter::write( const orca::GpsData &obj, const orca::Time &arrivalTime  )
@@ -880,7 +905,7 @@ GpsLogWriter::write( const orca::GpsDescription &descr )
 void
 ImageLogWriter::checkFormat( const std::string &format )
 {
-    checkFormatIceOnly( format );
+    orcalog::checkFormatDefaultsOnly( format );
 }
 void 
 ImageLogWriter::write( const orca::ImageDataPtr &obj, const orca::Time &arrivalTime  )
@@ -910,7 +935,7 @@ CameraLogWriter::checkFormat( const std::string &format )
     vector<string> okFormats;
     okFormats.push_back("ice");
     okFormats.push_back("jpeg");
-    checkFormats( format, okFormats );
+    orcalog::checkFormats( format, okFormats );
 }
 
 void 
@@ -976,7 +1001,7 @@ MultiCameraLogWriter::checkFormat( const std::string &format )
     okFormats.push_back("ice");
     okFormats.push_back("jpeg");
     okFormats.push_back("avi");
-    checkFormats( format, okFormats );
+    orcalog::checkFormats( format, okFormats );
 }
 
 void
@@ -1037,5 +1062,23 @@ MultiCameraLogWriter::createLogFile( const std::string &filename, const std::str
         throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
     }
 }
+
+//////////////////////////////////////////////////////////////////////
+
+void
+PathFollower2dLogWriter::checkFormat( const std::string &format )
+{
+    orcalog::checkFormatDefaultsOnly( format );
+}
+void 
+PathFollower2dLogWriter::write( const orca::PathFollower2dData &obj, const orca::Time &arrivalTime  )
+{
+    writeReferenceToMasterFile(arrivalTime);
+    logToFile( file_,
+               orcalog::LogWriter::logWriterInfo().format,
+               orcalog::LogWriter::logWriterInfo().context,
+               obj );
+}
+
 }
 

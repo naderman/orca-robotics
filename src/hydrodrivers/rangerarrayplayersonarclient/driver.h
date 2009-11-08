@@ -70,7 +70,7 @@ public:
 
 // Used for dynamically loading driver
 extern "C" {
-    hydrointerfaces::RangerArrayFactory *createDriverFactory();
+    hydrointerfaces::RangerArrayFactory *createRangerArrayDriverFactory();
 }
 
 #endif

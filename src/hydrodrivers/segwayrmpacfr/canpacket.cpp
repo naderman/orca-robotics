@@ -13,7 +13,7 @@
 #include "canpacket.h"
 #include <stdlib.h>
 #include <sstream>
-#include <hydrointerfaces/segwayrmp.h> // for Exception
+#include <gbxutilacfr/exceptions.h>
 
 using namespace std;
 
@@ -71,7 +71,7 @@ checkSpeedLimits( int16_t speedCount )
     {
         stringstream ss;
         ss << "Asked for speed="<<speedCount<<"cnts, max="<<RMP_MAX_TRANS_VEL_COUNT<<"cnts";
-        throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 }
 
@@ -82,7 +82,7 @@ checkTurnrateLimits( int16_t turnrateCount )
     {
         stringstream ss;
         ss << "Asked for turnrate="<<turnrateCount<<"cnts, max="<<RMP_MAX_ROT_VEL_COUNT<<"cnts";
-        throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }    
 }
 

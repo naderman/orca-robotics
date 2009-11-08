@@ -103,6 +103,6 @@ Driver::read( hydrointerfaces::Gps::Data& data )
 } // namespace
 
 extern "C" {
-    hydrointerfaces::GpsFactory *createDriverFactory()
+    hydrointerfaces::GpsFactory *createGpsDriverFactory()
     { return new gpsfake::Factory; }
 }

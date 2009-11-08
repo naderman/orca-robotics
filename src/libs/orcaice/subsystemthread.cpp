@@ -70,10 +70,6 @@ SubsystemThread::run()
     {
         // This is OK: it means the component was told to shutdown
     }
-    catch ( const IceUtil::Exception &e )
-    {
-        ss << "SubstatusThread::run() "<<subsysName()<<": Caught unexpected exception: " << e;
-    }
     catch ( const std::exception &e )
     {
         ss << "SubstatusThread::run() "<<subsysName()<<": Caught unexpected exception: " << e.what();

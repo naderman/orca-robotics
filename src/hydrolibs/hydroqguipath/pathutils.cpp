@@ -8,6 +8,7 @@
  *
  */
 
+#include <iostream>
 #include <hydroqguipath/pathutils.h>
 #include <hydroqguielementutil/paintutils.h>
 
@@ -15,7 +16,7 @@ namespace hydroqguipath {
 
 float straightLineDist( QPointF line )
 {
-    return sqrt(line.x()*line.x() + line.y()*line.y());
+    return sqrtf(line.x()*line.x() + line.y()*line.y());
 };
 
 void drawWaypoint( QPainter *painter,
@@ -24,7 +25,14 @@ void drawWaypoint( QPainter *painter,
                    const QColor &fillColor,
                    const QColor &drawColor )
 {
-    assert( (int)guiPath.size() > index && "pathutils: guipath size is smaller than expected" );
+
+    if ( (int)guiPath.size() <= index )
+    {
+        std::cout << "size of guiPath, index: " << (int)guiPath.size() << ", " << index << std::endl;
+        assert( false && "pathutils: guipath size is smaller than expected" );
+    }
+//     assert( (int)guiPath.size() > index && "pathutils: guipath size is smaller than expected" );
+
     assert( index >= 0 && "pathutils: index needs to be positive" );
 
     painter->save();

@@ -99,7 +99,7 @@ public:
 
 // Used for dynamically loading driver
 extern "C" {
-    hydrointerfaces::BicycleFactory *createDriverFactory();
+    hydrointerfaces::BicycleFactory *createBicycleDriverFactory();
 }
 
 #endif

@@ -151,7 +151,7 @@ HwThread::initHardwareDriver()
     try {
         driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
         driverFactory.reset( 
-            hydrodll::dynamicallyLoadClass<hydrointerfaces::InsGpsFactory,DriverFactoryMakerFunc>
+            hydrodll::dynamicallyLoadClass<hydrointerfaces::InsGpsFactory,InsGpsDriverFactoryMakerFunc>
             ( *driverLib_, "createDriverFactory" ) );
     }
     catch(hydrodll::DynamicLoadException &e){

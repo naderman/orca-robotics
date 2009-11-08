@@ -151,8 +151,8 @@ public:
 // Function for dynamically instantiating drivers.
 // A driver must have a function like so:
 // extern "C" {
-//     hydrointerfaces::Robot2dFactory *createDriverFactory();
+//     hydrointerfaces::Robot2dFactory *createRobot2dDriverFactory();
 // }
-typedef hydrointerfaces::Robot2dFactory *DriverFactoryMakerFunc();
+typedef hydrointerfaces::Robot2dFactory *Robot2dDriverFactoryMakerFunc();
 
 #endif

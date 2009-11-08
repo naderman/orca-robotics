@@ -56,7 +56,7 @@ public:
 
 // Used for dynamically loading driver
 extern "C" {
-    hydrointerfaces::LaserScanner2dFactory *createDriverFactory();
+    hydrointerfaces::LaserScanner2dFactory *createLaserScanner2dDriverFactory();
 }
 
 #endif

@@ -39,6 +39,9 @@ struct Odometry2dData
     //! This means that Vx is forward speed and Vy is side speed
     //! (possible only for some platforms).
     Twist2d motion;
+
+    //! If true, the odometry couters were just reset
+    bool odometryWasReset;
 };
 
 //! Data consumer interface.

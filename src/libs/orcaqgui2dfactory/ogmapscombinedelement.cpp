@@ -18,13 +18,12 @@ using namespace std;
 namespace orcaqgui2d {
 
 OgMapsCombinedElement::OgMapsCombinedElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
-                                              const orcaice::Context  &context,
-                                              const QString           &description)
+                                              const orcaice::Context  &context )
     : hydroqguielementutil::GuiElement2d(guiElementInfo),
       context_(context),
       isConnected_(false)
 {   
-    QStringList proxyStrList = description.split(":");
+    QStringList proxyStrList = guiElementInfo.uniqueId.split(":");
     assert( proxyStrList.size() == 2 && "Only 2 OgMaps supported at this point" );
     
     cout << "TRACE(ogmapscombinedelement.cpp): Constructor" << endl;
@@ -64,7 +63,7 @@ bool OgMapsCombinedElement::needToUpdate()
         { 
             if ( listeners_[i]->connect() == 0 )
             {
-                //actionOnConnection();
+                //iceStormConnectedEvent();
                 isConnected_ = true;
             }
             else

@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
@@ -35,11 +35,13 @@ std::string pathDelimeter();
 //!   - True:  success
 //!   - False: failure (and failReason is set)
 //!
-//! On Linux calls popen : opens a process by creating a pipe, forking, and invoking the shell 
+//! On Linux calls popen : opens a process by creating a pipe, forking, and invoking the shell
 //! (see: man popen). Grabs both stdout and stderr.
 //!
 bool executeSystemCommand( const std::string &command, std::string &failReason, std::string *output=NULL );
 
+//! Returns TRUE if the specified file exists.
+bool fileExists( const std::string& strFilename );
 
 //@}
 } // namespace

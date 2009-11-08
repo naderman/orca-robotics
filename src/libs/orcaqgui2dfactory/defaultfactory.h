@@ -30,12 +30,7 @@ namespace orcaqgui2d
             { context_ = context; isContextSet_ = true; }
 
         // returns a NULL pointer if something goes wrong
-        virtual hydroqguielementutil::GuiElement* create(  const hydroqguielementutil::GuiElementInfo &guiElementInfo,
-                                                           hydroqguielementutil::IHumanManager        &humanManager,
-                                                           hydroqguielementutil::MouseEventManager    &mouseEventManager,
-                                                           hydroqguielementutil::ShortcutKeyManager   &shortcutKeyManager,
-                                                           const hydroqgui::GuiElementSet             &guiElementSet,
-                                                           QSplitter                                  *spaceBottomRight ) const;
+        virtual hydroqguielementutil::GuiElement* create(  const hydroqguielementutil::GuiElementInfo &guiElementInfo ) const;
                 
         bool lookupElementType( const QStringList &ids, QString &elementType ) const;
 

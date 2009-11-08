@@ -21,9 +21,7 @@ class FeatureMap2dElement
 public: 
 
     FeatureMap2dElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
-                         const orcaice::Context                     &context,
-                         const std::string                          &proxyString,
-                         hydroqguielementutil::IHumanManager        *humanManager );
+                         const orcaice::Context                     &context );
 
     virtual bool isInGlobalCS() { return true; }
     virtual QStringList contextMenu();
@@ -37,7 +35,6 @@ public:
 
 private:
     FeatureMap2dPainter painter_;
-    hydroqguielementutil::IHumanManager *humanManager_;
     QString featureMapFileName_;
     bool featureMapFileNameSet_;
 };

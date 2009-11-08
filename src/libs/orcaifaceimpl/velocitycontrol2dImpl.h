@@ -13,28 +13,34 @@
 
 #include <orca/velocitycontrol2d.h>
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
-#include <gbxsickacfr/gbxiceutilacfr/notify.h>
 #include <orcaice/context.h>
 
 namespace gbxutilacfr { class Stoppable; }
 
 namespace orcaifaceimpl {
 
+class AbstractVelocityControl2dCallback {
+ public:
+    virtual ~AbstractVelocityControl2dCallback() {}
+    virtual void setCommand( const orca::VelocityControl2dData &command )=0;
+};
+
 //!
 //! Implements the VelocityControl2d interface: Handles remote calls.
 //!
-class VelocityControl2dImpl : public IceUtil::Shared,
-                              public gbxiceutilacfr::Notify<orca::VelocityControl2dData>
+class VelocityControl2dImpl : public IceUtil::Shared
 {
 friend class VelocityControl2dI;
 
 public:
     //! Constructor using interfaceTag (may throw ConfigFileException)
-    VelocityControl2dImpl( const orca::VehicleDescription& descr,
+    VelocityControl2dImpl( AbstractVelocityControl2dCallback &callback,
+                           const orca::VehicleDescription& descr,
                            const std::string& interfaceTag,
                            const orcaice::Context& context );
     //! constructor using interfaceName
-    VelocityControl2dImpl( const orca::VehicleDescription& descr,
+    VelocityControl2dImpl( AbstractVelocityControl2dCallback &callback,
+                           const orca::VehicleDescription& descr,
                            const orcaice::Context& context,
                            const std::string& interfaceName );
     ~VelocityControl2dImpl();
@@ -54,7 +60,8 @@ private:
         { return description_; }
     void internalSetCommand( const ::orca::VelocityControl2dData& );
 
-    const orca::VehicleDescription    description_;
+    AbstractVelocityControl2dCallback &callback_;
+    const orca::VehicleDescription     description_;
 
     Ice::ObjectPtr ptr_;
     const std::string interfaceName_;

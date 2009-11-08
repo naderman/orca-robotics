@@ -43,7 +43,7 @@ private:
     {    
         if ( !topicPrx_ )
             throw orca::SubscriptionFailedException( "Not connected to topic yet" );
-    
+
         context_.tracer().debug( "TopicHandler::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
         // see Ice Manual sec.45.6 "Publishing to a specific subscriber"
         ConsumerProxyType individualPublisher;

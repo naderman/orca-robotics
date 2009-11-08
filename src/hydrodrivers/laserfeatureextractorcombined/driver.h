@@ -99,9 +99,10 @@ public:
     createDriver( double laserMaxRange,
                   double laserStartAngle,
                   double laserAngleIncrement,
+                  int    laserNumReturns,
                   const hydroutil::Context &context ) const
     {
-        hydroscanutil::ScannerConfig scannerConfig( laserMaxRange, laserStartAngle, laserAngleIncrement );
+        hydroscanutil::ScannerConfig scannerConfig( laserMaxRange, laserStartAngle, laserAngleIncrement, laserNumReturns );
         return new Driver( scannerConfig, context );
     }
 };
@@ -110,7 +111,7 @@ public:
 
 // Used for dynamically loading driver
 extern "C" {
-    hydrointerfaces::LaserFeatureExtractorFactory *createDriverFactory();
+    hydrointerfaces::LaserFeatureExtractorFactory *createLaserFeatureExtractorDriverFactory();
 }
 
 #endif

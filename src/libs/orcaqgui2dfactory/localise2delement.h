@@ -34,16 +34,13 @@ class Localise2dElement
 public:
     Localise2dElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
                        const orcaice::Context  &context,
-                       const std::string       &proxyString,
-                       hydroqguielementutil::IHumanManager *humanManager,
                        bool                     beginDisplayHistory=false,
                        int                      timeoutMs=30000 )
         : orcaqguielementutil::IceStormGuiElement2d<Localise2dPainter,
                             orca::Localise2dData,
                             orca::Localise2dPrx,
                             orca::Localise2dConsumer,
-                            orca::Localise2dConsumerPrx>(guiElementInfo, context, proxyString, painter_, timeoutMs ),
-          humanManager_(humanManager),
+                            orca::Localise2dConsumerPrx>(guiElementInfo, context, painter_, timeoutMs ),
           painter_( beginDisplayHistory ),
           x_(0),
           y_(0),
@@ -53,7 +50,7 @@ public:
         };
 
     virtual bool isInGlobalCS() { return true; }
-    virtual void actionOnConnection();
+    virtual void iceStormConnectedEvent();
     virtual QStringList contextMenu();
     virtual void execute( int action );
     
@@ -75,7 +72,6 @@ public:
     virtual QPointF pos() const { return QPointF(x_,y_); };
 
 private:
-    hydroqguielementutil::IHumanManager *humanManager_;
     Localise2dPainter painter_;
 
     double x_;

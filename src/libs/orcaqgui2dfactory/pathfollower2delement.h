@@ -50,12 +50,7 @@ class PathFollower2dElement : public hydroqguielementutil::GuiElement2d
 public: 
 
     PathFollower2dElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
-                           const orcaice::Context                     &context,
-                           const std::string                          &proxyString,
-                           hydroqguielementutil::IHumanManager        &humanManager,
-                           hydroqguielementutil::MouseEventManager    &mouseEventManager,
-                           hydroqguielementutil::ShortcutKeyManager   &shortcutKeyManager,
-                           const hydroqgui::GuiElementSet             &guiElementSet );
+                           const orcaice::Context                     &context );
 
     // inherited from guielement
     void update();
@@ -113,11 +108,6 @@ private:
     std::string proxyString_;
 
     orcaice::Context context_;
-    
-    hydroqguielementutil::IHumanManager       &humanManager_;
-    hydroqguielementutil::MouseEventManager   &mouseEventManager_;
-    hydroqguielementutil::ShortcutKeyManager  &shortcutKeyManager_;
-    const hydroqgui::GuiElementSet            &guiElementSet_;
     
     std::auto_ptr<hydroqguipath::PathInputFactory> inputFactory_;
     

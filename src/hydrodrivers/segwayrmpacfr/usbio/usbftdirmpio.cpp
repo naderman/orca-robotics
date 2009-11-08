@@ -16,7 +16,7 @@
 #include "../rmpdefs.h"
 #include "../canpacket.h"
 #include "usbftdi/usbftdi.h"
-#include <hydrointerfaces/segwayrmp.h> // for Exception
+#include <gbxutilacfr/exceptions.h>
 
 // USB magic numbers
 #define SEGWAY_USB_VENDOR_ID                    0x0403
@@ -67,7 +67,7 @@ UsbFtdiRmpIo::enable( int debugLevel )
     {
         stringstream ss;
         ss << "UsbFtdiRmpIo::constructor(): Error: "<<e.what();
-        throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 
     if ( debugLevel_ > 0 )
@@ -150,7 +150,7 @@ UsbFtdiRmpIo::readPacket(CanPacket &pkt)
     {
         stringstream ss;
         ss << "UsbFtdiRmpIo::readPacket(): Error: " << e.what();
-        throw hydrointerfaces::SegwayRmp::Exception(ss.str());
+        throw gbxutilacfr::Exception(ERROR_INFO,ss.str());
     }
 }
 
@@ -298,7 +298,7 @@ UsbFtdiRmpIo::writePacket( const CanPacket &pkt )
             ss << endl << " --> The Segway is not writing to us.  Looks like it's powered off.";
         }
 
-        throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }    
 }
 
@@ -373,7 +373,7 @@ UsbFtdiRmpIo::readFromUsbToBufferBlocking()
     {
         stringstream ss;
         ss << "UsbFtdiRmpIo::readFromUsbToBufferBlocking(): Error: " << e.what();
-        throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
     if ( ret == usbftdi::USBFTDI_OK )
     {
@@ -386,7 +386,7 @@ UsbFtdiRmpIo::readFromUsbToBufferBlocking()
     }
     else
     {
-        throw hydrointerfaces::SegwayRmp::Exception( "UsbFtdiRmpIo::readFromUsbToBufferBlocking(): Unknown return type" );
+        throw gbxutilacfr::Exception( ERROR_INFO, "UsbFtdiRmpIo::readFromUsbToBufferBlocking(): Unknown return type" );
     }
 }
 
@@ -423,7 +423,7 @@ UsbFtdiRmpIo::readFromUsbToBufferNonBlocking()
     {
         stringstream ss;
         ss << "UsbFtdiRmpIo::readFromUsbToBufferNonBlocking(): Error: " << e.what();
-        throw hydrointerfaces::SegwayRmp::Exception(ss.str());
+        throw gbxutilacfr::Exception(ERROR_INFO,ss.str());
     }
 }
 

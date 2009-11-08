@@ -43,6 +43,8 @@ convert( const hydrointerfaces::Bicycle::Data& internal,
     odometry2dData.motion.w =
 	internal.vlong * sin( internal.steerAngle ) /
 	(2.0 * M_PI * wheelbase );
+
+    odometry2dData.odometryWasReset = false;
     
     driveBicycleData.timeStamp.seconds = internal.seconds;
     driveBicycleData.timeStamp.useconds = internal.useconds;

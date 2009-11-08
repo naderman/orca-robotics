@@ -31,19 +31,18 @@ class LaserScanner2dElement
 public:
     LaserScanner2dElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
                            const orcaice::Context                     &context,
-                           const std::string                          &proxyString,
                            int                                         timeoutMs    = 5000,
                            QColor                                      outlineColor = QColor( 102,102,153, 255 ) )
         : IceStormElement3d<LaserScanner2dPainter,
                                orca::RangeScanner2dDataPtr,
                                orca::LaserScanner2dPrx,
                                orca::RangeScanner2dConsumer,
-                               orca::RangeScanner2dConsumerPrx>( guiElementInfo, context, proxyString, painter_, timeoutMs ),
+                               orca::RangeScanner2dConsumerPrx>( guiElementInfo, context, painter_, timeoutMs ),
           painter_( outlineColor )
         {};
 
     virtual bool isInGlobalCS() { return false; }
-    virtual void actionOnConnection() { getLaserInfo(); }
+    virtual void iceStormConnectedEvent() { getLaserInfo(); }
     virtual QStringList contextMenu();
     virtual void execute( int action );
     virtual void setColor( QColor color ) { painter_.setColor(color); }

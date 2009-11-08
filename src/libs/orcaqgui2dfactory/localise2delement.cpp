@@ -18,7 +18,7 @@ using namespace std;
 namespace orcaqgui2d {
 
 void
-Localise2dElement::actionOnConnection()
+Localise2dElement::iceStormConnectedEvent()
 {
     if (!isConnected_) return;
 
@@ -32,7 +32,7 @@ Localise2dElement::tryToGetGeometry()
     
     if ( listener_.proxy()==0 )
     {
-        humanManager_->showStatusError("Localise2dElement::tryToGetGeometry(): listener_.proxy()==0");
+        _stuff.humanManager->showStatusError("Localise2dElement::tryToGetGeometry(): listener_.proxy()==0");
     }
     try 
     {
@@ -45,12 +45,12 @@ Localise2dElement::tryToGetGeometry()
     }
     catch ( std::exception &e)
     {
-        humanManager_->showStatusError( "Localise2dElement::tryToGetGeometry(): Exception when trying to get geometry: " + QString(e.what()) );
+        _stuff.humanManager->showStatusError( "Localise2dElement::tryToGetGeometry(): Exception when trying to get geometry: " + QString(e.what()) );
     }
     
     if (!haveGeometry_) 
     {
-        humanManager_->showStatusWarning( "Localise2dElement::tryToGetGeometry(): couldn't get geometry.  Assuming point vehicle." );
+        _stuff.humanManager->showStatusWarning( "Localise2dElement::tryToGetGeometry(): couldn't get geometry.  Assuming point vehicle." );
         const double length = 1e-3, width = 1e-3;
         painter_.setTypeAndGeometry(PlatformTypeCubic, length, width );
         painter_.setOrigin( 0.0, 0.0, 0.0 );
@@ -71,7 +71,7 @@ Localise2dElement::tryToGetGeometry()
     }
     else
     {
-        humanManager_->showStatusWarning("Localise2dElement::Unknown platform type. Will paint a rectangle");
+        _stuff.humanManager->showStatusWarning("Localise2dElement::Unknown platform type. Will paint a rectangle");
         orca::VehicleGeometryCuboidDescriptionPtr cubGeom = orca::VehicleGeometryCuboidDescriptionPtr::dynamicCast( geom );
         painter_.setTypeAndGeometry( PlatformTypeCubic, cubGeom->size.l, cubGeom->size.w );
         painter_.setOrigin( cubGeom->platformToGeometryTransform.p.x, cubGeom->platformToGeometryTransform.p.y, cubGeom->platformToGeometryTransform.o.y );

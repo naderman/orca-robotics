@@ -14,6 +14,7 @@
 #include <orca/power.h>
 #include <orca/wifi.h>
 #include <orca/gps.h>
+#include <orca/pathfollower2d.h>
 
 #include <orca/camera.h>
 #include <orca/image.h>
@@ -63,6 +64,16 @@ class LaserScanner2dLogWriter : public orcalog::LogWriter
 public:
     void checkFormat( const std::string &format );
     void write( const orca::LaserScanner2dDataPtr &obj, const orca::Time &arrivalTime  );
+    void write( const orca::RangeScanner2dDescription &descr );
+};
+
+//////////////////////////////////////////////////////////////////////
+
+class RangeScanner2dLogWriter : public orcalog::LogWriter
+{
+public:
+    void checkFormat( const std::string &format );
+    void write( const orca::RangeScanner2dDataPtr &obj, const orca::Time &arrivalTime  );
     void write( const orca::RangeScanner2dDescription &descr );
 };
 
@@ -182,6 +193,15 @@ private:
 // alen - member class for camera logging so we can handle jpegs
     MultiCameraWriter multiCameraWriter;
 
+};
+
+//////////////////////////////////////////////////////////////////////
+
+class PathFollower2dLogWriter : public orcalog::LogWriter
+{
+public:
+    void checkFormat( const std::string &format );
+    void write( const orca::PathFollower2dData &obj, const orca::Time &arrivalTime  );
 };
 
 //////////////////////////////////////////////////////////////////////

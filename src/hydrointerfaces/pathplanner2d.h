@@ -48,6 +48,8 @@ public:
     //!
     class QGraphics2dPublisher {
     public:
+        virtual ~QGraphics2dPublisher() {}
+
         virtual void init()=0;
         virtual void localSetAndSend( const QPicture &picture )=0;
     };
@@ -137,8 +139,8 @@ public:
 // Function for dynamically instantiating drivers.
 // A driver must have a function like so:
 // extern "C" {
-//     hydrointerfaces::PathPlanner2dFactory *createDriverFactory();
+//     hydrointerfaces::PathPlanner2dFactory *createPathPlanner2dDriverFactory();
 // }
-typedef hydrointerfaces::PathPlanner2dFactory *DriverFactoryMakerFunc();
+typedef hydrointerfaces::PathPlanner2dFactory *PathPlanner2dDriverFactoryMakerFunc();
 
 #endif

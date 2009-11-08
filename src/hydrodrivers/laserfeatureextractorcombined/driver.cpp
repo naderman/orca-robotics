@@ -329,6 +329,6 @@ Driver::extractFeatures( const std::vector<float>         &ranges,
 } // namespace
 
 extern "C" {
-    hydrointerfaces::LaserFeatureExtractorFactory *createDriverFactory()
+    hydrointerfaces::LaserFeatureExtractorFactory *createLaserFeatureExtractorDriverFactory()
     { return new lfecombined::Factory; }
 }

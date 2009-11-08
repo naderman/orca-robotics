@@ -28,6 +28,9 @@ Config.DriveInReverse.Default=0
 
 
 # Common to all drivers
+
+Config.PowerbaseNames=Main
+
 Config.VehicleDescription.Control.Type.Default=VelocityDifferential
 Config.VehicleDescription.Control.VelocityDifferential.MaxForwardSpeed.Default=1.0
 Config.VehicleDescription.Control.VelocityDifferential.MaxReverseSpeed.Default=1.0
@@ -49,10 +52,10 @@ Config.Fake.SleepInterval.Default=100
 
 Config.Acfr.GainSchedule.Comment=SegwayRmpUsb And SegwayRmpCan drivers only
 Config.Acfr.GainSchedule.Default=normal
-Config.Acfr.MaxVelocityScale.Default=0.75
-Config.Acfr.MaxTurnrateScale.Default=0.75
-Config.Acfr.MaxAccelerationScale.Default=0.75
-Config.Acfr.MaxCurrentLimitScale.Default=0.75
+Config.Acfr.MaxVelocityScale.Default=1.0
+Config.Acfr.MaxTurnrateScale.Default=1.0
+Config.Acfr.MaxAccelerationScale.Default=1.0
+Config.Acfr.MaxCurrentLimitScale.Default=1.0
 
 Config.Acfr.ProductModel.Default=RMP200
 Config.Acfr.RequireSpecificBuildId.Default=0

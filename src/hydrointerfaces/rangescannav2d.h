@@ -96,8 +96,8 @@ public:
 // Function for dynamically instantiating drivers.
 // A driver must have a function like so:
 // extern "C" {
-//     hydrointerfaces::RangeScanNav2dFactory *createDriverFactory();
+//     hydrointerfaces::RangeScanNav2dFactory *createRangeScanNav2dDriverFactory();
 // }
-typedef hydrointerfaces::RangeScanNav2dFactory *DriverFactoryMakerFunc();
+typedef hydrointerfaces::RangeScanNav2dFactory *RangeScanNav2dDriverFactoryMakerFunc();
 
 #endif

@@ -64,6 +64,10 @@ private slots:
     void toggleScreenCapture( bool capture );
     void grabWindow();
 
+    void closeEvent(QCloseEvent *event);
+    void readSettings();
+    void writeSettings();
+
     void quit();
     void aboutOrca();
     void aboutApp();

@@ -82,7 +82,7 @@ Component::start()
 {
     Ice::PropertiesPtr props = context().properties();
     std::string prefix = context().tag() + ".Config.";
-    
+
     //
     // Start job queue
     //
@@ -94,6 +94,11 @@ Component::start()
     
     hydroiceutil::JobQueue jobQueue( context().tracer(), jconfig ) ;
     
+    // Qt properties
+    QCoreApplication::setOrganizationName("Orca Robotics");
+    QCoreApplication::setOrganizationDomain("orca-robotics.sf.net");
+    QCoreApplication::setApplicationName("OrcaView2d");
+
     // Set up QT stuff
     char **v = 0;
     int c = 0;

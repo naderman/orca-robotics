@@ -72,9 +72,8 @@ public:
     //! May throw gbxutilacfr::Exceptions.
     void initInterface()
     {
-        orcaice::createInterfaceWithString( context_, ptr_, interfaceName_ );
-    
         topicHandler_->connectToTopic();
+        orcaice::createInterfaceWithString( context_, ptr_, interfaceName_ );    
     }
     //! Same as above but sets the data before initializing the interface and sends it out after.
     void initInterface( const DataType& data )
@@ -83,20 +82,17 @@ public:
         // but not having the data in it.
         localSet( data );
 
-        orcaice::createInterfaceWithString( context_, ptr_, interfaceName_ );
-    
         topicHandler_->connectToTopic();
-
         topicHandler_->publish( data );
+        orcaice::createInterfaceWithString( context_, ptr_, interfaceName_ );    
     }
 
     //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
     //! until sucessful. At every iteration, checks if the activity was stopped.
     void initInterface( gbxutilacfr::Stoppable* activity, const std::string& subsysName="", int retryInterval=2 )
     {
-        orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, activity, subsysName, retryInterval );
-    
         topicHandler_->connectToTopic( activity, subsysName, retryInterval );
+        orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, activity, subsysName, retryInterval );
     }
     //! Same as above but sets the data before initializing the interface and sends it out after.
     void initInterface( const DataType& data, 
@@ -106,11 +102,15 @@ public:
         // but not having the data in it.
         localSet( data );
 
-        orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, activity, subsysName, retryInterval );
-    
         topicHandler_->connectToTopic( activity, subsysName, retryInterval );
-
         topicHandler_->publish( data );
+        orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, activity, subsysName, retryInterval );
+    }
+
+    //! A local call which sends the data through IceStorm
+    void localSend( const DataType& data )
+    {
+        topicHandler_->publish(data);
     }
 
     //! A local call which sets the data reported by the interface
@@ -206,7 +206,7 @@ private:
     {
         if ( !topicHandler_.get() ) 
         {
-            throw orca::SubscriptionFailedException("Component does not have a topic to publish its traces.");
+            throw orca::SubscriptionFailedException("topicHandler_ does not exist.");
         }
 
         // Grab the data in a crit section

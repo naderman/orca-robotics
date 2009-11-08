@@ -16,7 +16,7 @@
 @ingroup orca_linux
 @ingroup orca_win
 @defgroup orca_component_lasermon DelayMon
-@brief A simple monitoring component that computes histogram of intervals between (periodic) messages
+@brief A simple monitoring component that computes histograms of intervals between (periodic) messages for both the sending and receiving end
 
 @par Provides
 
@@ -30,7 +30,10 @@
 
 @par Operation
 
-Computes time elapsed between the arrival of consecutive messages and builds a histogram.
+Computes time intervals elapsed between consecutive messages and builds three histograms:
+  - send delay histogram: time intervals between the send timestamps of consecutive objects are represented
+  - receive delay histogram: time intervals between the arrival of consecutive objects are represented
+  - send-receive histogram: 2-dimensional histogram: x-axis send delays, y-axis receive delays of particular objects
 
 @par Configuration
 None.
@@ -38,7 +41,7 @@ None.
 An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
 @par Authors
-Alex Makarenko
+Alex Makarenko, Tobias Kaupp
 
 */
 

@@ -41,7 +41,7 @@ HwThread::HwThread( const orcaice::Context &context ) :
     try {
         driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) ); 
         driverFactory.reset(  
-            hydrodll::dynamicallyLoadClass<hydrointerfaces::BicycleFactory,DriverFactoryMakerFunc>
+            hydrodll::dynamicallyLoadClass<hydrointerfaces::BicycleFactory,BicycleDriverFactoryMakerFunc>
             ( *driverLib_, "createDriverFactory" ) );
     }
     catch (hydrodll::DynamicLoadException &e)

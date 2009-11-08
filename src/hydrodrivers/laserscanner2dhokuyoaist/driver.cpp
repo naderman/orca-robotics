@@ -174,6 +174,6 @@ Driver::read( hydrointerfaces::LaserScanner2d::Data &data )
 } // namespace
 
 extern "C" {
-    hydrointerfaces::LaserScanner2dFactory *createDriverFactory()
+    hydrointerfaces::LaserScanner2dFactory *createLaserScanner2dDriverFactory()
     { return new laserscanner2dhokuyoaist::Factory; }
 }

@@ -18,15 +18,12 @@ using namespace std;
 namespace orcaqgui3d {
 
 OgMapElement::OgMapElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
-                            const orcaice::Context                     &context,
-                            const std::string                          &proxyString,
-                            hydroqguielementutil::IHumanManager*        humanManager )
+                            const orcaice::Context                     &context )
     : orcaqgui3d::IceStormElement3d<OgMapPainter,
                       orca::OgMapData,
                       orca::OgMapPrx,
                       orca::OgMapConsumer,
-                      orca::OgMapConsumerPrx>( guiElementInfo, context, proxyString, painter_, -1 ),
-      humanManager_(*humanManager),
+                      orca::OgMapConsumerPrx>( guiElementInfo, context, painter_, -1 ),
       mapFileName_("/home"),
       mapFileNameSet_(false)
 {

@@ -47,7 +47,7 @@ public:
     virtual ~IceStormElement() {}
 
     //! Can do special stuff on connection by inheriting and overloading this
-    virtual void actionOnConnection() {};
+    virtual void iceStormConnectedEvent() {};
 
 protected:
 
@@ -91,7 +91,7 @@ IceStormElement<DataType,ProxyType,ConsumerType,ConsumerPrxType>::needToUpdate()
         {
             isConnected_ = true;
             assert( listener_.proxy() != 0 );
-            actionOnConnection();
+            iceStormConnectedEvent();
         }
         return false;
     }
@@ -112,7 +112,7 @@ IceStormElement<DataType,ProxyType,ConsumerType,ConsumerPrxType>::needToUpdate()
         shouldClearPainter_ = true;
         listener_.resetTimer();
         if ( listener_.connect() == 0 )
-            actionOnConnection();
+            iceStormConnectedEvent();
         else
             isConnected_ = false;
     }

@@ -5,7 +5,7 @@
 #include <hydroogmap/oglostracer.h>
 #include <hydronavutil/hydronavutil.h>
 #include <vector>
-#include <hydrosim2d/irangescanpublisher.h>
+#include <hydropublish/rangescanner2dpublisher.h>
 
 namespace hydrosim2d {
 
@@ -37,19 +37,20 @@ public:
     };
     ////////////////////////////////////////
 
-    RangeScannerSimulator( const Config            &config,
-                           const hydroogmap::OgMap &ogMap,
-                           IRangeScanPublisher     &rangeScanPublisher );
+    RangeScannerSimulator( const Config                          &config,
+                           const hydroogmap::OgMap               &ogMap,
+                           hydropublish::RangeScanner2dPublisher &rangeScanPublisher );
 
     void getRangesFromPose( const hydronavutil::Pose &sensorPose,
-                            std::vector<float> &ranges ) const;
+                            std::vector<float>       &ranges,
+                            const hydrotime::Time    &time = hydrotime::Time(0,0) ) const;
 
 private: 
 
-    const Config                     config_;
-    const hydroogmap::OgMap          ogMap_;
-    mutable hydroogmap::OgLosTracer  rayTracer_;
-    mutable IRangeScanPublisher     &rangeScanPublisher_;
+    const Config                                   config_;
+    const hydroogmap::OgMap                        ogMap_;
+    mutable hydroogmap::OgLosTracer                rayTracer_;
+    mutable hydropublish::RangeScanner2dPublisher &rangeScanPublisher_;
 };
 
 bool isSane( const RangeScannerSimulator::Config &config, std::string &reason );

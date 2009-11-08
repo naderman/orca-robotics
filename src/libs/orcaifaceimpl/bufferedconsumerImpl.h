@@ -21,14 +21,17 @@ namespace orcaifaceimpl
 //! Implements a consumer interface whose set method is 'SetData'.
 //! Does nothing more than sticking incoming data into an gbxiceutilacfr::Buffer.
 //!
-template<class ProviderType, class ConsumerType, class ObjectType>
+template<class ProviderType,
+         class ConsumerType,
+         class ObjectType,
+         class ConsumerTypeIType=ConsumerTypeI<ConsumerType,ObjectType> >
 class BufferedConsumerImpl : 
-        public ConsumerImpl<ProviderType,ConsumerType,ObjectType>
+        public ConsumerImpl<ProviderType,ConsumerType,ObjectType,ConsumerTypeIType>
 {
 public:
     //! Constructor.
     BufferedConsumerImpl( int depth, gbxiceutilacfr::BufferType type, const orcaice::Context &context )
-        : ConsumerImpl<ProviderType,ConsumerType,ObjectType>(context),
+        : ConsumerImpl<ProviderType,ConsumerType,ObjectType,ConsumerTypeIType>(context),
           buffer_(depth,type) {}
 
     //! Returns reference to local proxy.

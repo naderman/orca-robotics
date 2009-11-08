@@ -7,4 +7,4 @@ include_directories( ${PROJECT_SOURCE_DIR}/src/hydrodrivers/segwayrmpacfr)
 GBX_ADD_EXECUTABLE( rmptestcan main.cpp )
 
 #The target needs to be linked with these libraries
-target_link_libraries( rmptestcan HydroSegwayRmpAcfrCan HydroIceUtil GbxIceUtilAcfr )
+target_link_libraries( rmptestcan HydroSegwayRmpAcfrCan HydroIceUtil GbxIceUtilAcfr HydroTime )

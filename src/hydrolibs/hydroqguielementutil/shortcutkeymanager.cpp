@@ -11,6 +11,7 @@
 #include <iostream>
 #include <hydroqguielementutil/shortcutkey.h>
 #include "shortcutkeymanager.h"
+#include <assert.h>
 
 using namespace std;
 
@@ -80,6 +81,10 @@ ShortcutKeyManager::unsubscribeFromShortcutKey( QKeySequence key, QObject *trigg
             return;
         }
     }
+
+    // If we get to here then we tried to unsubscribe from a shortcut key that didn't exist.
+    cout << "ShortcutKeyManager::"<<__func__<<": tried to unsubscribe from shortcut key that doesn't exist: " << key.toString().toStdString();
+    assert( false && "There should always bea  key to unsubscribe from." );
 }
 
 

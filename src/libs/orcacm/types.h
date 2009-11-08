@@ -162,6 +162,9 @@ struct HomeHeader
     std::string address;
 };
 
+// needed for sorting
+bool operator<(const HomeHeader& l, const HomeHeader& r);
+
 //! Registry data which lists components
 struct RegistryFlatData
 {

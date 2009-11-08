@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://!orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
@@ -26,7 +26,7 @@ namespace hydroiceutil {
 
 
 //!
-//! A request to perform an operation which may take a long time 
+//! A request to perform an operation which may take a long time
 //! (eg network job).
 //!
 //! Job implementation must interrupt execution when the the job is cancelled.
@@ -34,7 +34,7 @@ namespace hydroiceutil {
 //!
 class Job : public gbxutilacfr::Stoppable, public IceUtil::Shared
 {
-public:        
+public:
     Job();
     virtual ~Job() {}
 
@@ -71,7 +71,7 @@ public:
     bool isTracable_;
 
 private:
-    
+
     bool isCancelled_;
     IceUtil::Mutex isCancelledMutex_;
 
@@ -91,7 +91,7 @@ struct JobQueueStatus
 /*!
 @brief A queue of jobs to be processed.
 
-Rather than tie up the main thread, calls which may take a long time 
+Rather than tie up the main thread, calls which may take a long time
 can be placed on this job queue. They will be processed by a pool of threads.
 
 If you need the jobs to communicate results or status updates to their owners,
@@ -99,11 +99,11 @@ you may want to use the event mechanism, @see Event, EventReceiver.
 
 @author Alex Brooks, Alex Makarenko
 */
-class JobQueue :  public IceUtil::Shared, 
+class JobQueue :  public IceUtil::Shared,
                   public IceUtil::Monitor<IceUtil::Mutex>,
                   private hydroutil::Uncopyable
 {
-public: 
+public:
     //! Job queue configuration structure
     struct Config
     {
@@ -121,7 +121,7 @@ public:
         //! Thread pool size. Zero and negative values are not allowed, a
         //! gbxutilacfr::Exception is thrown. Default is 1.
         int threadPoolSize;
-        //! When the queue of pending jobs reaches this number, a warning is issued through 
+        //! When the queue of pending jobs reaches this number, a warning is issued through
         //! the Tracer. Information about the last added job is also traced.
         //! Zero and negative values produce no warnings. Default is 0;
         int queueSizeWarn;
@@ -140,8 +140,8 @@ public:
 //         bool cancelStalledJobs;
     };
 
-    //! Constructor. 
-    //! For queueSizeWarn>0, a warning will be traced when the queue size 
+    //! Constructor.
+    //! For queueSizeWarn>0, a warning will be traced when the queue size
     //! exceeds specified size.
     //!
     //! Worker threads are started in the constructor.
@@ -162,6 +162,9 @@ public:
     //! Returns current queue status.
     JobQueueStatus status();
 
+    //! Returns a return-separated listing of all active and pending jobs.
+    std::string toString();
+
     //
     // No doxy-tags because these are only used by workers.
     //
@@ -170,7 +173,7 @@ public:
     // Blocks until a job arrives
     JobPtr get( gbxiceutilacfr::Thread* thread );
 
-private: 
+private:
     // incoming job requests
     std::list<JobPtr>               pendingJobs_;
 

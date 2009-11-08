@@ -12,7 +12,6 @@
 #define HYDRO_INTERFACES_SEGWAYRMP_H
 
 #include <hydroutil/context.h>
-#include <exception>
 
 namespace hydrointerfaces
 {
@@ -109,26 +108,6 @@ public:
         std::string toString() const;
     };
 
-    //! Exception thrown by implementations of SegwayRmp interface.
-    class Exception : public std::exception
-    {
-    public:
-        //! Constructor with message
-        Exception(const char *message)
-            : message_(message) {}
-        //! Constructor with message
-        Exception(const std::string &message)
-            : message_(message) {}
-    
-        virtual ~Exception() throw() {}
-        //! Returns the message.
-        virtual const char* what() const throw() { return message_.c_str(); }
-    
-    protected:
-    
-        std::string  message_;
-    };
-
     //! Capabilities of the hardware
     class Capabilities
     {
@@ -170,13 +149,29 @@ class SOEXPORT SegwayRmpFactory {
 public:
     virtual ~SegwayRmpFactory() {};
     //! Instantiates a driver and returns a pointer to it.
-    virtual SegwayRmp *createDriver( const hydroutil::Context& context ) const=0;
+    virtual SegwayRmp *createDriver( const std::string &powerbaseName, const hydroutil::Context& context ) const=0;
 };
+
+// Streaming operators
+inline std::ostream &operator<<( std::ostream &s, const SegwayRmp::Data &data )
+{ return s << data.toString(); }
+inline std::ostream &operator<<( std::ostream &s, const SegwayRmp::Command &cmd )
+{ return s << cmd.toString(); }
+inline std::ostream &operator<<( std::ostream &s, const SegwayRmp::Capabilities &c )
+{ return s << c.toString(); }
 
 //! Helper function for constraining capabilities based on some limits
 //! (does a thresholding operation)
 void constrain( SegwayRmp::Capabilities &capabilities, 
                 const SegwayRmp::Capabilities &limits );
+
+bool operator==( const SegwayRmp::Capabilities &c1, const SegwayRmp::Capabilities &c2 );
+
+bool commandPossible( const hydrointerfaces::SegwayRmp::Command      &cmd,
+                      const hydrointerfaces::SegwayRmp::Capabilities &capabilities );
+
+void limit( hydrointerfaces::SegwayRmp::Command            &cmd,
+            const hydrointerfaces::SegwayRmp::Capabilities &capabilities );
 
 /*! @} */
 } // namespace
@@ -184,8 +179,8 @@ void constrain( SegwayRmp::Capabilities &capabilities,
 // Function for dynamically instantiating drivers.
 // A driver must have a function like so:
 // extern "C" {
-//     hydrointerfaces::SegwayRmpFactory *createDriverFactory();
+//     hydrointerfaces::SegwayRmpFactory *createSegwayRmpDriverFactory();
 // }
-typedef hydrointerfaces::SegwayRmpFactory *DriverFactoryMakerFunc();
+typedef hydrointerfaces::SegwayRmpFactory *SegwayRmpDriverFactoryMakerFunc();
 
 #endif

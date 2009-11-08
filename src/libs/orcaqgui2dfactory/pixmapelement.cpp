@@ -12,22 +12,18 @@
 #include <iostream>
 #include <QFileDialog>
 #include <hydroqgui/exceptions.h>
-#include <hydroqguielementutil/ihumanmanager.h>
 
 using namespace std;
 
 namespace orcaqgui2d {
 
 PixMapElement::PixMapElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
-                              const orcaice::Context                     &context,
-                              const std::string                          &proxyString,
-                              hydroqguielementutil::IHumanManager*        humanManager )
+                              const orcaice::Context                     &context )
     : orcaqguielementutil::IceStormGuiElement2d<PixMapBackgroundPainter,
                       orca::PixMapData,
                       orca::PixMapPrx,
                       orca::PixMapConsumer,
-                      orca::PixMapConsumerPrx>(guiElementInfo, context, proxyString, painter_, -1 ),
-      humanManager_(humanManager),
+                      orca::PixMapConsumerPrx>(guiElementInfo, context, painter_, -1 ),
       mapFileName_("/home"),
       mapFileNameSet_(false)
 {
@@ -81,7 +77,7 @@ void PixMapElement::saveMapAs()
     
     if ( mapFileName_ != "" )
     {
-        painter_.saveMap( context_, mapFileName_, humanManager_ );
+        painter_.saveMap( context_, mapFileName_, _stuff.humanManager );
         mapFileNameSet_ = true;
     }
 }
@@ -94,7 +90,7 @@ void PixMapElement::saveMap()
     }
     else
     {
-        painter_.saveMap( context_, mapFileName_, humanManager_ );
+        painter_.saveMap( context_, mapFileName_, _stuff.humanManager );
     }
 }
 

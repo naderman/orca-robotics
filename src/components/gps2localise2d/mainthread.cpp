@@ -115,6 +115,26 @@ namespace {
         return vehicleDescr;
     }
 
+    void
+    checkSanity( const orca::Localise2dData &locData,
+                 bool                       &isSane,
+                 std::string                &reason )
+    {
+        assert( locData.hypotheses.size() == 1 );
+        
+        isSane = true;
+
+        const orca::Pose2dHypothesis hyp = locData.hypotheses[0];
+
+        const double MAX_DIST_FROM_ORIGIN = 10000; // 10km
+        if ( fabs(hyp.mean.p.x) > MAX_DIST_FROM_ORIGIN ||
+             fabs(hyp.mean.p.y) > MAX_DIST_FROM_ORIGIN )
+        {
+            isSane = false;
+            reason = "Reported pose is a long way from origin: " + ifaceutil::toString(hyp);
+        }
+    }
+
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -199,13 +219,26 @@ MainThread::work()
                 context_.tracer().debug( "MainThread: can't compute localiseData" );
                 continue;
             }
-
+            
             // copy the timestamp
             localiseData.timeStamp = gpsData.timeStamp;
 
             localiseInterface_->localSetAndSend( localiseData );
+            
+            // perform some sanity-checks
+            bool isSane; std::string reason;
+            checkSanity( localiseData, isSane, reason );
 
-            health().ok();
+            if ( isSane )
+            {
+                health().ok();
+            }
+            else
+            {
+                stringstream ss;
+                ss << "LocaliseData appears weird, is something misconfigured?  Reason: " << reason;
+                health().warning( ss.str() );
+            }
 
         } // try
         catch ( ... ) 

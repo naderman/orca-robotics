@@ -1,6 +1,7 @@
 #include "publisherthread.h"
 #include <iostream>
 #include <gbxsickacfr/gbxiceutilacfr/timer.h>
+#include <gbxutilacfr/mathdefs.h>
 
 using namespace std;
 
@@ -10,8 +11,10 @@ namespace {
 
     const double RMP_3D_HEIGHT = 0.35;
 
-    void 
-    convert( const hydrointerfaces::SegwayRmp::Data& internal, orca::Odometry2dData& network )
+    void
+    convert( const hydrointerfaces::SegwayRmp::Data& internal,
+             orca::Odometry2dData&                   network,
+             bool                                    odometryWasReset )
     {
         network.timeStamp.seconds = internal.seconds;
         network.timeStamp.useconds = internal.useconds;
@@ -19,14 +22,18 @@ namespace {
         network.pose.p.x = internal.x;
         network.pose.p.y = internal.y;
         network.pose.o = internal.yaw;
-    
+
         network.motion.v.x = internal.vx;
         network.motion.v.y = 0.0;
         network.motion.w = internal.dyaw;
+
+        network.odometryWasReset = odometryWasReset;
     }
 
-    void 
-    convert( const hydrointerfaces::SegwayRmp::Data& internal, orca::Odometry3dData& network )
+    void
+    convert( const hydrointerfaces::SegwayRmp::Data& internal,
+             orca::Odometry3dData&                   network,
+             bool                                    odometryWasReset )
     {
         network.timeStamp.seconds = internal.seconds;
         network.timeStamp.useconds = internal.useconds;
@@ -38,7 +45,7 @@ namespace {
         network.pose.o.r = internal.roll;
         network.pose.o.p = internal.pitch;
         network.pose.o.y = internal.yaw;
-    
+
         network.motion.v.x = internal.vx;
         network.motion.v.y = 0.0;
         network.motion.v.z = 0.0;
@@ -46,10 +53,12 @@ namespace {
         network.motion.w.x = internal.droll;
         network.motion.w.y = internal.dpitch;
         network.motion.w.z = internal.dyaw;
+
+        network.odometryWasReset = odometryWasReset;
     }
 
     // The CU batteries are the main ones.
-    double
+    int
     cuBatteryPercentRemaining( double cuVoltage )
     {
         const double vMax  = 78;
@@ -57,11 +66,14 @@ namespace {
         const double slope = 100.0 / (vMax-vMin);
         const double b = -vMin * slope;
 
-        double pct = slope * cuVoltage + b;
+        int pct = (int)floor(slope * cuVoltage + b);
+
+        // return a number between 0 and 100
+        CLIP_TO_LIMITS( 0, pct, 100 );
         return pct;
     }
 
-    void 
+    void
     convert( const hydrointerfaces::SegwayRmp::Data& internal, orca::PowerData& network )
     {
         network.timeStamp.seconds = internal.seconds;
@@ -103,7 +115,7 @@ PublisherThread::work()
     gbxiceutilacfr::Timer odometry2dPublishTimer;
     gbxiceutilacfr::Timer odometry3dPublishTimer;
     gbxiceutilacfr::Timer powerPublishTimer;
-    
+
     while ( !isStopping() )
     {
         if ( dataStore_.getNext( data, 1000 ) )
@@ -113,23 +125,25 @@ PublisherThread::work()
         }
 
         // Odometry2d
-        convert( data, odometry2dData );
+        convert( data, odometry2dData, hardwareInitNeedsReporting2d_ );
+        hardwareInitNeedsReporting2d_ = false;
         // check that we were not told to terminate while we were sleeping
         // otherwise, we'll get segfault (there's probably a way to prevent this inside the library)
         if ( !isStopping() && odometry2dPublishTimer.elapsed().toSecondsDouble()>=odometry2dPublishInterval_ ) {
             odometry2dI_->localSetAndSend( odometry2dData );
             odometry2dPublishTimer.restart();
-        } 
+        }
         else {
             odometry2dI_->localSet( odometry2dData );
         }
 
         // Odometry3d
-        convert( data, odometry3dData );
+        convert( data, odometry3dData, hardwareInitNeedsReporting3d_ );
+        hardwareInitNeedsReporting3d_ = false;
         if ( !isStopping() && odometry3dPublishTimer.elapsed().toSecondsDouble()>=odometry3dPublishInterval_ ) {
             odometry3dI_->localSetAndSend( odometry3dData );
             odometry3dPublishTimer.restart();
-        } 
+        }
         else {
             odometry3dI_->localSet( odometry3dData );
         }
@@ -139,7 +153,7 @@ PublisherThread::work()
         if ( !isStopping() && powerPublishTimer.elapsed().toSecondsDouble()>=powerPublishInterval_ ) {
             powerI_->localSetAndSend( powerData );
             powerPublishTimer.restart();
-        } 
+        }
         else {
             powerI_->localSet( powerData );
         }
@@ -152,11 +166,34 @@ PublisherThread::work()
 void
 PublisherThread::finalise()
 {
-    if ( stats_.isValid() ) {
-        stringstream historySS;
-        historySS << stats_.distance()<<" "<<stats_.timeInMotion()<<" "<<stats_.maxSpeed();
-        history_.setWithFinishSequence( historySS.str() );
+    if ( historyStats_.isValid() ) {
+        stringstream ss;
+        ss << historyStats_.distance()<<" "<<historyStats_.timeInMotion()<<" "<<historyStats_.maxSpeed();
+        history_.report( ss.str() );
     }
+}
+
+void
+PublisherThread::publish( const hydrointerfaces::SegwayRmp::Data &data )
+{
+    dataStore_.set( data );
+
+    historyStats_.addData( data );
+
+    if ( historyStats_.isValid() ) {
+        stringstream ss;
+        ss << historyStats_.distance()<<" "<<historyStats_.timeInMotion()<<" "<<historyStats_.maxSpeed();
+        history_.report( ss.str() );
+    }
+}
+
+void
+PublisherThread::hardwareInitialised()
+{
+    hardwareInitNeedsReporting2d_ = true;
+    hardwareInitNeedsReporting3d_ = true;
+
+    historyStats_.resetRawData();
 }
 
 }

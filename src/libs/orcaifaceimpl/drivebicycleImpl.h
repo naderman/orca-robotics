@@ -53,6 +53,9 @@ public:
     //! A local call which sets the data reported by the interface
     void localSet( const orca::DriveBicycleData &data );
 
+    //! A local call which sends the data through IceStorm
+    void localSend( const orca::DriveBicycleData &data );
+
     //! A local call which sets the data reported by the interface, 
     //! and sends it through IceStorm
     void localSetAndSend( const orca::DriveBicycleData &data );

@@ -10,7 +10,6 @@
 
 #include <iostream>
 #include <hydroqguielementutil/ihumanmanager.h>
-#include <hydroqguielementutil/shortcutkeymanager.h>
 #include <hydroqgui/guiicons.h>
 #include "pathfollowerbuttons.h"
 
@@ -22,9 +21,8 @@ PathfollowerButtons::PathfollowerButtons( QObject                               
                                           hydroqguielementutil::IHumanManager       &humanManager,
                                           hydroqguielementutil::ShortcutKeyManager  &shortcutKeyManager,
                                           string                                     proxyString,
-                                          bool                                       haveGoButton )
-    : humanManager_(humanManager),
-    shortcutKeyManager_(shortcutKeyManager)
+                                          bool                                       haveActivatePathButton )
+    : humanManager_(humanManager)
 {
     QPixmap openIcon(fileopen_xpm);
     QPixmap savePathIcon(filesave_path_xpm);
@@ -52,11 +50,11 @@ PathfollowerButtons::PathfollowerButtons( QObject                               
     QAction* hiCancel = new QAction(cancelIcon, QString(proxyString.c_str()) + "\n" + "&Discard PathFollower Path", this);
     connect( hiCancel,SIGNAL(triggered()), parent ,SLOT(cancel()) );
 
-    QAction* hiGo = 0;
-    if (haveGoButton)
+    QAction* hiActivatePath = 0;
+    if (haveActivatePathButton)
     {
-        hiGo = new QAction(goIcon, QString(proxyString.c_str()) + "\n" + "&PathFollower Go All Robots", this);
-        connect( hiGo, SIGNAL(triggered()), parent, SLOT(allGo()) ); 
+        hiActivatePath = new QAction(goIcon, QString(proxyString.c_str()) + "\n" + "&PathFollower ActivatePath All Robots", this);
+        connect( hiActivatePath, SIGNAL(triggered()), parent, SLOT(allGo()) ); 
     }
     
     QAction* hiStop = new QAction(stopIcon, QString(proxyString.c_str()) + "\n" + "&PathFollower Stop All Robots", this);
@@ -67,17 +65,37 @@ PathfollowerButtons::PathfollowerButtons( QObject                               
         humanManager_.fileMenu()->addAction(fileSavePath);
     }
     
-    if ( humanManager_.toolBar() ) {
-        shortcutKeyManager.subscribeToShortcutKey( hiStop, QKeySequence(Qt::Key_Escape), false, this );
+    if ( humanManager_.toolBar() )
+    {
+        stopShortcutKey_.reset( new hydroqguielementutil::ShortcutKeyReservation( hiStop,
+                                                                                  QKeySequence(Qt::Key_Escape),
+                                                                                  false,
+                                                                                  this,
+                                                                                  shortcutKeyManager ) );
         humanManager_.toolBar()->addAction(hiStop);
-        shortcutKeyManager.subscribeToShortcutKey( hiWaypoints_, QKeySequence(Qt::Key_F10), true, this );
+
+        drawWaypointsShortcutKey_.reset( new hydroqguielementutil::ShortcutKeyReservation( hiWaypoints_,
+                                                                                           QKeySequence(Qt::Key_F10),
+                                                                                           true,
+                                                                                           this,
+                                                                                           shortcutKeyManager ) );
         humanManager_.toolBar()->addAction(hiWaypoints_);
-        shortcutKeyManager.subscribeToShortcutKey( hiSend, QKeySequence(Qt::Key_F11), true, this );
+
+        sendPathShortcutKey_.reset( new hydroqguielementutil::ShortcutKeyReservation( hiSend,
+                                                                                      QKeySequence(Qt::Key_F11),
+                                                                                      true,
+                                                                                      this,
+                                                                                      shortcutKeyManager ) );
         humanManager_.toolBar()->addAction(hiSend);
-        if (haveGoButton)
+
+        if (haveActivatePathButton)
         {
-            shortcutKeyManager.subscribeToShortcutKey( hiGo, QKeySequence(Qt::Key_F12), false, this );
-            humanManager_.toolBar()->addAction(hiGo);
+            activatePathShortcutKey_.reset( new hydroqguielementutil::ShortcutKeyReservation( hiActivatePath,
+                                                                                              QKeySequence(Qt::Key_F12),
+                                                                                              false,
+                                                                                              this,
+                                                                                              shortcutKeyManager ) );
+            humanManager_.toolBar()->addAction(hiActivatePath);
         }
         humanManager_.toolBar()->addAction( hiCancel );
         
@@ -89,17 +107,6 @@ PathfollowerButtons::PathfollowerButtons( QObject                               
         QAction *wpDialogAction = new QAction( QString(proxyString.c_str()) + "\n" + "&PathFollower Waypoint settings", this );
         connect( wpDialogAction, SIGNAL(triggered()), parent, SLOT(waypointSettingsDialog()) );
         humanManager_.optionsMenu()->addAction( wpDialogAction );
-    }
-}
-
-PathfollowerButtons::~PathfollowerButtons() 
-{
-    if ( humanManager_.toolBar() )
-    {
-        shortcutKeyManager_.unsubscribeFromShortcutKey( QKeySequence(Qt::Key_Escape), this ); 
-        shortcutKeyManager_.unsubscribeFromShortcutKey( QKeySequence(Qt::Key_F10), this ); 
-        shortcutKeyManager_.unsubscribeFromShortcutKey( QKeySequence(Qt::Key_F11), this ); 
-        shortcutKeyManager_.unsubscribeFromShortcutKey( QKeySequence(Qt::Key_F12), this ); 
     }
 }
 

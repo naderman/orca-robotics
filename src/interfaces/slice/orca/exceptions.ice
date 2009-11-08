@@ -81,6 +81,9 @@ exception MalformedParametersException extends OrcaException {};
 //! Raised when a remote operation is not implemented.
 exception OperationNotImplementedException extends OrcaException {};
 
+//! Raised when a robot is unable to execute the desired command due to a motor-stall
+exception MotorStalledException extends OrcaException {};
+
 }; // module
 
 #endif

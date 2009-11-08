@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
@@ -24,10 +24,10 @@ namespace detail {
 namespace
 {
 
-void 
+void
 convert( const gbxutilacfr::TraceType& internal, orca::TraceType& network )
 {
-    switch ( internal ) 
+    switch ( internal )
     {
     case gbxutilacfr::InfoTrace :
         network = orca::InfoTrace;
@@ -73,7 +73,7 @@ private:
 //////////////////////////////////////////////////////////////
 
 TracerImpl::TracerImpl( const orcaice::Context& context ) :
-    LocalTracer( hydroutil::Properties( 
+    LocalTracer( hydroutil::Properties(
                     context.properties()->getPropertiesForPrefix("Orca.Tracer."),"Orca.Tracer."),
                  orcaice::toString(context.name()) ),
     interfaceName_("tracer"),
@@ -119,22 +119,23 @@ TracerImpl::initTopicHandler()
     bool localReportingOnly = true;
     if ( !topicHandler_->connectToTopic( localReportingOnly ) )
     {
-        if ( isTopicRequired ) 
+        const bool localReportingOnly = true;
+        if ( isTopicRequired )
         {
             std::string s = prefix_+": Failed to connect to an IceStorm tracer topic '"+
                 orcaice::toString(fqTName)+"'\n" +
                 "\tYou may allow to proceed by setting Orca.Tracer.RequireIceStorm=0.";
-            initTracerError( context_, s );
+            initTracerError( context_, s, localReportingOnly );
             // this should kill the app
             exit(1);
         }
-        else 
+        else
         {
             std::string s = prefix_+": Failed to connect to an IceStorm tracer topic\n";
             s += "\tAll trace messages will be local.\n";
             s += "\tYou may enforce connection by setting Orca.Tracer.RequireIceStorm=1.";
-            initTracerWarning( context_, s );
-    
+            initTracerWarning( context_, s, localReportingOnly );
+
             // turn off all outputs toNetwork
             for ( int i=0; i<gbxutilacfr::NumberOfTraceTypes; ++i ) {
                 config_.verbosity[i][gbxutilacfr::ToNetwork] = 0;
@@ -146,18 +147,18 @@ TracerImpl::initTopicHandler()
         // this is how we'll know not to use it.
         topicHandler_.reset( 0 );
     }
-    
+
     isInitialized_.set( true );
 }
 
-::orca::TracerVerbosityConfig 
+::orca::TracerVerbosityConfig
 TracerImpl::internalGetVerbosity()
 {
     ::orca::TracerVerbosityConfig config;
 
     {
         IceUtil::Mutex::Lock lock(mutex_);
-    
+
         config.info = config_.verbosity[gbxutilacfr::InfoTrace][gbxutilacfr::ToNetwork];
         config.warning = config_.verbosity[gbxutilacfr::WarningTrace][gbxutilacfr::ToNetwork];
         config.error = config_.verbosity[gbxutilacfr::ErrorTrace][gbxutilacfr::ToNetwork];
@@ -167,13 +168,13 @@ TracerImpl::internalGetVerbosity()
     return config;
 }
 
-void 
+void
 TracerImpl::internalSetVerbosity( const ::orca::TracerVerbosityConfig& config )
 {
     stringstream ss;
     {
         IceUtil::Mutex::Lock lock(mutex_);
-    
+
         if ( config.info > -1 ) {
             config_.verbosity[gbxutilacfr::InfoTrace][gbxutilacfr::ToNetwork]     = config.info;
         }
@@ -204,28 +205,28 @@ TracerImpl::internalSetVerbosity( const ::orca::TracerVerbosityConfig& config )
     }
     if ( config_.verbosity[gbxutilacfr::InfoTrace][gbxutilacfr::ToFile] ) {
         toFile( gbxutilacfr::InfoTrace, ss.str(), 1 );
-    }   
+    }
     if ( config_.verbosity[gbxutilacfr::InfoTrace][gbxutilacfr::ToLog] ) {
         toLog( gbxutilacfr::InfoTrace, ss.str(), 1 );
-    }  
+    }
     // NOT calling toNetwork() !!!
 }
 
-IceStorm::TopicPrx 
+IceStorm::TopicPrx
 TracerImpl::internalSubscribe(const ::orca::TracerConsumerPrx& subscriber)
 {
     if( !topicHandler_.get() )
     {
         throw orca::SubscriptionFailedException("Component does not have a topic to publish its traces.");
     }
-   
+
     return topicHandler_->subscribe( subscriber );
 }
 
 void
 TracerImpl::toNetwork( gbxutilacfr::TraceType traceType, const std::string& message, int level )
 {
-    // do not publish during initialization 
+    // do not publish during initialization
     // (would lead to more traces which will need to be published which will lead to more traces ...)
     bool isInitialized;
     isInitialized_.get( isInitialized );

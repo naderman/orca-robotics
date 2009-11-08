@@ -59,7 +59,7 @@ public:
 
 // Used for dynamically loading driver
 extern "C" {
-    hydrointerfaces::PathPlanner2dFactory *createDriverFactory();
+    hydrointerfaces::PathPlanner2dFactory *createPathPlanner2dDriverFactory();
 }
 
 #endif

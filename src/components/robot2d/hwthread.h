@@ -17,7 +17,7 @@
 #include <hydrointerfaces/robot2d.h>
 #include <hydrodll/dynamicload.h>
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
-#include <orcarobotdriverutil/statemachine.h>
+#include <hydrorobotdriverutil/statemachine.h>
 
 namespace robot2d {
 
@@ -51,7 +51,7 @@ private:
     void enableDriver();
 
     // Faults can be detected in either read or write threads: have to be careful.
-    orcarobotdriverutil::StateMachine stateMachine_;
+    hydrorobotdriverutil::StateMachine stateMachine_;
 
     // Stores the data most recently received from the hardware
     gbxiceutilacfr::Store<hydrointerfaces::Robot2d::Data>    dataStore_;

@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp, Ben Upcroft
  *
@@ -20,6 +20,10 @@
 #include "mainthread.h"
 #include <orcalocalnavtest/testsimutil.h>
 #include "stats.h"
+#include <orcapublish/rangescanner2dpublisher.h>
+#include <orcapublish/localise2dpublisher.h>
+#include <orcapublish/odometry2dpublisher.h>
+#include <orcapublish/ogmappublisher.h>
 
 using namespace std;
 
@@ -28,8 +32,8 @@ namespace localnav {
 namespace {
 
 // Returns true if the timestamps differ by more than a threshold.
-bool areTimestampsDodgy( const orca::RangeScanner2dDataPtr &rangeData, 
-                         const orca::Localise2dData        &localiseData, 
+bool areTimestampsDodgy( const orca::RangeScanner2dDataPtr &rangeData,
+                         const orca::Localise2dData        &localiseData,
                          const orca::Odometry2dData        &odomData,
                          double                             thresholdSec )
 {
@@ -37,7 +41,7 @@ bool areTimestampsDodgy( const orca::RangeScanner2dDataPtr &rangeData,
         return true;
     if ( fabs( orcaice::timeDiffAsDouble( rangeData->timeStamp, odomData.timeStamp ) ) >= thresholdSec )
         return true;
-    
+
     return false;
 }
 
@@ -45,19 +49,18 @@ bool areTimestampsDodgy( const orca::RangeScanner2dDataPtr &rangeData,
 
 ////////////////////////////////////////////////////////////////////////////////
 
-MainThread::MainThread( const orcaice::Context &context ) 
+MainThread::MainThread( const orcaice::Context &context )
     : orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
       context_(context)
 {
 }
 
-void 
+void
 MainThread::initialise()
 {
     setMaxHeartbeatInterval( 10.0 );
-    
-    orca::Time t; t.seconds=0; t.useconds=0;
-    clock_.reset( new orcalocalnav::Clock( t ) );
+
+    clock_.reset( new orcalocalnav::Clock( hydrotime::Time(0,0) ) );
 
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag();
@@ -80,24 +83,25 @@ MainThread::initialise()
         srand(seed);
 
         orcalocalnavtest::Simulator::Config cfg;
-        cfg.maxLateralAcceleration = 
+        cfg.maxLateralAcceleration =
             orcaice::getPropertyAsDoubleWithDefault( prop, tprefix+"MaxLateralAcceleraton", 1.0 );
-        cfg.checkLateralAcceleration = 
+        cfg.checkLateralAcceleration =
             orcaice::getPropertyAsIntWithDefault( prop, tprefix+"CheckLateralAcceleration", 0 );
-        cfg.checkDifferentialConstraints = 
+        cfg.checkDifferentialConstraints =
             orcaice::getPropertyAsIntWithDefault( prop, tprefix+"CheckDifferentialConstraints", 0 );
-        cfg.checkVelocityConstraints = 
+        cfg.checkVelocityConstraints =
             orcaice::getPropertyAsIntWithDefault( prop, tprefix+"CheckVelocityConstraints", 1 );
-        cfg.useRoom = 
+        cfg.useRoom =
             orcaice::getPropertyAsIntWithDefault( prop, tprefix+"UseRoom", 1 );
-        cfg.batchMode = 
+        cfg.batchMode =
             orcaice::getPropertyAsIntWithDefault( prop, tprefix+"BatchMode", 1 );
-        cfg.numIterationsBatch = 
+        cfg.numIterationsBatch =
             orcaice::getPropertyAsIntWithDefault( prop, tprefix+"NumIterationsBatch", 0 );
-        cfg.numIterationsLimit = 
-            orcaice::getPropertyAsIntWithDefault( prop, tprefix+"NumIterationsLimit", 9999 );            
+        cfg.numIterationsLimit =
+            orcaice::getPropertyAsIntWithDefault( prop, tprefix+"NumIterationsLimit", 9999 );
+        cfg.applyNoises = false;
 
-        int numObstacles = 
+        int numObstacles =
             orcaice::getPropertyAsIntWithDefault( prop, tprefix+"NumObstacles", 25 );
 
         const double WORLD_SIZE = 40.0;
@@ -107,15 +111,32 @@ MainThread::initialise()
         int numWaypoints = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Test.NumWaypoints", 10 );
         bool turnOnSpot = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Test.TurnOnSpot", 1 );
         bool stressTiming = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Test.StressTiming", 1 );
+        bool regularWaypointGrid = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Test.RegularWaypointGrid", 0 );
 
         orca::PathFollower2dData testPath = orcalocalnavtest::getTestPath( ogMap,
                                                                            numWaypoints,
                                                                            stressTiming,
+                                                                           regularWaypointGrid,
                                                                            turnOnSpot,
                                                                            cfg.useRoom );
         pathFollowerInterface_->setData( testPath, true );
 
-        testSimulator_.reset( new orcalocalnavtest::Simulator( context_, ogMap, testPath, cfg ) );
+        hydropublish::RangeScanner2dPublisherFactoryPtr rangeScanner2dPublisherFactory(
+            new orcapublish::RangeScanner2dPublisherFactory( context_ ) );
+        hydropublish::Localise2dPublisherFactoryPtr localise2dPublisherFactory(
+            new orcapublish::Localise2dPublisherFactory( context_ ) );
+        hydropublish::Odometry2dPublisherFactoryPtr odometry2dPublisherFactory(
+            new orcapublish::Odometry2dPublisherFactory( context_ ) );
+        hydropublish::OgMapPublisherFactoryPtr ogMapPublisherFactory(
+            new orcapublish::OgMapPublisherFactory( context_ ) );
+
+        testSimulator_.reset( new orcalocalnavtest::Simulator( *rangeScanner2dPublisherFactory,
+                                                               *localise2dPublisherFactory,
+                                                               *odometry2dPublisherFactory,
+                                                               *ogMapPublisherFactory,
+                                                               ogMap,
+                                                               testPath,
+                                                               cfg ) );
 
         bool evaluateAlg = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Test.EvaluateAlg", 0 );
         if ( evaluateAlg )
@@ -123,18 +144,18 @@ MainThread::initialise()
             std::string saveFile = orcaice::getPropertyWithDefault( prop, prefix+"Test.AlgEvalSaveFile", "algEval.txt" );
             algorithmEvaluator_.reset( new AlgorithmEvaluator(saveFile) );
         }
-    }    
+    }
 
     //
     // Instantiate the driver factory
     //
-    std::string driverLibName = 
+    std::string driverLibName =
         orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libOrcaLocalNavVfh.so" );
     context_.tracer().debug( "Component: Loading driver library "+driverLibName, 4 );
     try {
         // Dynamically load the driver from its library
         driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
-        driverFactory_.reset( 
+        driverFactory_.reset(
             hydrodll::dynamicallyLoadClass<orcalocalnav::DriverFactory,DriverFactoryMakerFunc>
             ( *driverLib_, "createDriverFactory" ) );
     }
@@ -164,12 +185,12 @@ MainThread::work()
     bool prevIsEnabled = pathFollowerInterface_->enabled();
 
     // a simple class which summarizes motion information
-    Stats stats;
+    Stats historyStats;
     std::stringstream historySS;
 
     while ( !isStopping() )
     {
-        try 
+        try
         {
             checkWithOutsideWorld();
 
@@ -181,17 +202,17 @@ MainThread::work()
                        inputs.obsTime );
 
             // Tell everyone what time it is, boyeee
-            clock_->setTime( inputs.obsTime );
+            clock_->setTime( hydrotime::Time( inputs.obsTime.seconds, inputs.obsTime.useconds ) );
 
             // Time how long this takes us
             // hydroutil::RealTimeStopwatch timer;
             hydroutil::CpuStopwatch timer;
 
             // pathMaintainer knows about the whole path in global coords and where
-            // we are in that path. So get the next set of current goals in local 
+            // we are in that path. So get the next set of current goals in local
             // coord system for the pathplanner.
             // Also return a flag indicating if we have an active goal
-            
+
             bool wpIncremented = false;
             bool haveGoal = pathMaintainer_->getActiveGoals( inputs.goals,
                                                              driver_->waypointHorizon(),
@@ -209,8 +230,8 @@ MainThread::work()
                 // If we do have an active goal, limit the max speed for the current goal
                 // and get the pathplanner to work out the next set of actions
                 speedLimiter_->constrainMaxSpeeds( inputs.goals[0], inputs.currentVelocity.lin() );
-            }     
-            
+            }
+
             // The actual driver which determines the path and commands to send to the vehicle.
             // The odometry is required for the velocity, which isn't contained
             // in Localise2d.
@@ -224,11 +245,11 @@ MainThread::work()
                 ss << "(while getting command from driver with inputs: " << orcalocalnav::toString(inputs) << ") failed: " << e.what();
                 throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
             }
-            
+
 
             if ( algorithmEvaluator_.get() )
                 timer.stop();
-            
+
             // For big debug levels, give feedback through tracer.
             {
                 std::stringstream ss;
@@ -249,13 +270,12 @@ MainThread::work()
             prevIsEnabled = isEnabled;
 
             // keep track of our approximate motion for history
-            stats.addData( inputs.poseTime.seconds, inputs.poseTime.useconds, 
-                           inputs.localisePose, inputs.currentVelocity, 
+            historyStats.addData( inputs.poseTime.seconds, inputs.poseTime.useconds,
+                           inputs.localisePose, inputs.currentVelocity,
                            isEnabled );
             historySS.str(" ");
-            historySS << stats.distance()<<" "<<stats.timeInMotion()<<" "<<stats.maxSpeed();
-            // keep history up to date, ready to be dumped to file when the component stops
-            context_.history().setWithFinishSequence( historySS.str() );
+            historySS << historyStats.distance()<<" "<<historyStats.timeInMotion()<<" "<<historyStats.maxSpeed();
+            context_.history().report( historySS.str() );
 
             // Only send the command if we're enabled.
             if ( isEnabled ) {
@@ -306,7 +326,7 @@ MainThread::work()
             ss << "Emergency stop: " << e.what;
             health().warning( ss.str() );
         }
-        catch ( ... ) 
+        catch ( ... )
         {
             // before doing anything else, stop the vehicle!
             stopVehicle();
@@ -402,7 +422,7 @@ MainThread::setup()
         // Set the initial time
         orca::RangeScanner2dDataPtr obs;
         obsConsumer_->store().get( obs );
-        clock_->setTime( obs->timeStamp );
+        clock_->setTime( hydrotime::Time( obs->timeStamp.seconds, obs->timeStamp.useconds ) );
     }
     else
     {
@@ -479,8 +499,10 @@ MainThread::getInputs( hydronavutil::Velocity &velocity,
         velocity                = testSimulator_->velocity();
         localisePose            = testSimulator_->pose();
         isLocalisationUncertain = false;
-        obsTime                 = testSimulator_->time();
-        poseTime                = testSimulator_->time();
+        obsTime.seconds         = testSimulator_->time().seconds();
+        obsTime.useconds        = testSimulator_->time().useconds();
+        poseTime.seconds        = testSimulator_->time().seconds();
+        poseTime.useconds       = testSimulator_->time().useconds();
         testSimulator_->getObsRanges( obsRanges );
     }
     else

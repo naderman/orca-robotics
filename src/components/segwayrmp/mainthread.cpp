@@ -14,6 +14,8 @@
 #include <orcaobj/vehicledescription.h>
 #include <orcaobjutil/vehicleutil.h>
 #include <gbxutilacfr/mathdefs.h>
+#include <hydroutil/stringutils.h>
+#include <orcaifaceutil/velocitycontrol2d.h>
 
 using namespace std;
 
@@ -45,33 +47,6 @@ namespace {
         internal.vx = network.motion.v.x;
         internal.w = network.motion.w;
     }
-
-    bool commandPossible( const hydrointerfaces::SegwayRmp::Command      &cmd,
-                          const hydrointerfaces::SegwayRmp::Capabilities &capabilities )
-    {
-        if ( cmd.vx >  capabilities.maxForwardSpeed ) return false;
-        if ( cmd.vx < -capabilities.maxReverseSpeed ) return false;
-        if ( cmd.w >  capabilities.maxTurnrate ) return false;
-        if ( cmd.w < -capabilities.maxTurnrate ) return false;        
-
-        const double lateralAcceleration = cmd.vx*cmd.w;
-        if ( lateralAcceleration > capabilities.maxLateralAcceleration ) return false;
-
-        return true;
-    }
-
-    void
-    limit( hydrointerfaces::SegwayRmp::Command      &cmd,
-           const hydrointerfaces::SegwayRmp::Capabilities &capabilities )
-    {
-        // Note that maxReverseSpeed is a positive number.
-        CLIP_TO_LIMITS( -capabilities.maxReverseSpeed, cmd.vx, capabilities.maxForwardSpeed );
-        CLIP_TO_LIMITS( -capabilities.maxTurnrate, cmd.w, capabilities.maxTurnrate );
-
-        const double maxTurnrateToSatisfyLateralAcc = capabilities.maxLateralAcceleration / fabs(cmd.vx);
-        CLIP_TO_LIMITS( -maxTurnrateToSatisfyLateralAcc, cmd.w, maxTurnrateToSatisfyLateralAcc );
-    }
-    
 }
 
 MainThread::MainThread( const orcaice::Context &context ) 
@@ -86,8 +61,9 @@ MainThread::MainThread( const orcaice::Context &context )
 
 MainThread::~MainThread()
 {
-    gbxiceutilacfr::stopAndJoin( segwayRmpDriverThread_ );
+    powerbaseManagers_.clear();
     gbxiceutilacfr::stopAndJoin( publisherThread_ );
+    // note: hydroDriverLib_ gets destroyed last
 }
 
 void
@@ -98,21 +74,49 @@ MainThread::initialise()
     //
     // INITIAL CONFIGURATION
     //
-    Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
+    hydroutil::Properties prop = context_.toHydroContext(prefix).properties();
 
     //
-    // Create hardware driver
+    // Create hardware driver factory
     //
     std::string driverLibName = 
-        orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libHydroSegwayRmpAcfrCan.so" );
-    instantiateHydroDriver(driverLibName);
+        prop.getPropertyWithDefault( "DriverLib", "libHydroSegwayRmpAcfrCan.so" );
+    hydroDriverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
+    std::auto_ptr<hydrointerfaces::SegwayRmpFactory> driverFactory( 
+        hydrodll::dynamicallyLoadClass<hydrointerfaces::SegwayRmpFactory,SegwayRmpDriverFactoryMakerFunc>
+        ( *hydroDriverLib_, "createDriverFactory" ) );
+
+    //
+    // Create powerbase managers
+    //
+    std::vector<std::string> powerbaseNames = 
+        hydroutil::toStringSeq( prop.getPropertyWithDefault( "PowerbaseNames", "" ), ' ' );
+    if ( powerbaseNames.size() == 0 )
+        powerbaseNames.push_back( "Main" );
+
+    for ( size_t i=0; i < powerbaseNames.size(); i++ )
+    {
+        std::string stripPrefix = "";
+        if ( powerbaseNames.size() > 1 )
+        {
+            stripPrefix = powerbaseNames[i]+".";
+        }
+        std::auto_ptr<hydrointerfaces::SegwayRmp> hydroDriver( 
+            driverFactory->createDriver( powerbaseNames[i], context_.toHydroContext(stripPrefix) ) );
+        powerbaseManagers_.push_back( orcarmputil::PowerbaseManagerPtr( 
+                                          new orcarmputil::PowerbaseManager( powerbaseNames[i],
+                                                                             i,
+                                                                             *this,
+                                                                             hydroDriver,
+                                                                             context_.toHydroContext(stripPrefix)) ) );
+    }
 
     //
     // Read (user-configured) vehicle description
     //
     orca::VehicleDescription descr;
-    orcaobjutil::readVehicleDescription( context_.properties(), prefix, descr );
+    orcaobjutil::readVehicleDescription( context_.properties(), context_.tag()+".Config.", descr );
     stringstream ss;
     ss<<"TRACE(component.cpp): Read vehicle description from configuration: " 
         << endl << orcaobj::toString(descr) << endl;
@@ -134,29 +138,35 @@ MainThread::initialise()
     // convert the user-configured description into capabilities
     convert( *controlDescr, capabilities_ );
     // constrain based on hardware capabilities
-    hydrointerfaces::constrain( capabilities_, hydroDriver_->capabilities() );
+    hydrointerfaces::constrain( capabilities_, powerbaseManagers_.back()->capabilities() );
     // convert back to orca format
     update( capabilities_, *controlDescr );
 
     //
-    // Instantiate the segwayRmpDriverThread
+    // Initialise the powerbase managers
     //
-    segwayrmpdriverthread::DriverThread::Config cfg;
-    cfg.driveInReverse = (bool)orcaice::getPropertyAsIntWithDefault( prop, prefix+"DriveInReverse", 0 );
-    cfg.isMotionEnabled = (bool)orcaice::getPropertyAsIntWithDefault( prop, prefix+"EnableMotion", 0 );
+    orcarmputil::DriverThread::Config cfg;
+    cfg.driveInReverse = (bool)prop.getPropertyAsIntWithDefault( "DriveInReverse", 0 );
+    cfg.isMotionEnabled = (bool)prop.getPropertyAsIntWithDefault( "EnableMotion", 0 );
     cfg.maxForwardAcceleration = controlDescr->maxForwardAcceleration;
     cfg.maxReverseAcceleration = controlDescr->maxReverseAcceleration;
-    std::string stallPrefix = prefix+"StallSensor.";
-    cfg.stallSensorConfig.torqueThreshold = orcaice::getPropertyAsDoubleWithDefault( prop, stallPrefix+"TorqueThreshold", 3.0 );
-    cfg.stallSensorConfig.speedThreshold = orcaice::getPropertyAsDoubleWithDefault( prop, stallPrefix+"speedThreshold", 0.5 );
-    cfg.stallSensorConfig.timeThreshold = orcaice::getPropertyAsDoubleWithDefault( prop, stallPrefix+"TimeThreshold", 0.5 );
+    std::string stallPrefix = "StallSensor.";
+    cfg.stallSensorConfig.torqueThreshold = prop.getPropertyAsDoubleWithDefault( stallPrefix+"TorqueThreshold", 3.0 );
+    cfg.stallSensorConfig.speedThreshold = prop.getPropertyAsDoubleWithDefault( stallPrefix+"speedThreshold", 0.5 );
+    cfg.stallSensorConfig.timeThreshold = prop.getPropertyAsDoubleWithDefault( stallPrefix+"TimeThreshold", 0.5 );
     
-    segwayRmpDriverThread_ = new segwayrmpdriverthread::DriverThread( cfg,
-                                                                      *hydroDriver_,
-                                                                      context_.tracer(),
-                                                                      context_.status(),
-                                                                      *this );
-    segwayRmpDriverThreadPtr_ = segwayRmpDriverThread_;
+    for ( size_t i=0; i < powerbaseManagers_.size(); i++ )
+    {
+        try {
+            powerbaseManagers_[i]->init( cfg );
+        }
+        catch ( std::exception &e )
+        {
+            stringstream ss;
+            ss << "Failed to init powerbase '"<<powerbaseManagers_[i]->name()<<": " << e.what();
+            throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+        }
+    }
 
     //
     // EXTERNAL PROVIDED INTERFACES
@@ -171,18 +181,13 @@ MainThread::initialise()
     powerI_ = new orcaifaceimpl::PowerImpl( "Power", context_ );
     powerI_->initInterface( this, subsysName() );
 
-    velocityControl2dI_ = new orcaifaceimpl::VelocityControl2dImpl( descr, "VelocityControl2d", context_ );
+    velocityControl2dI_ = new orcaifaceimpl::VelocityControl2dImpl( *this, descr, "VelocityControl2d", context_ );
     velocityControl2dI_->initInterface( this, subsysName() );
-    // register ourselves as data handlers (it will call the handleData() callback).
-    velocityControl2dI_->setNotifyHandler( this );
 
     // Set up the publisher
-    publisherThread_ = new PublisherThread( orcaice::getPropertyAsDoubleWithDefault( 
-                                                context_.properties(), prefix+"Odometry2dPublishInterval", 0.1 ),
-                                            orcaice::getPropertyAsDoubleWithDefault( 
-                                                context_.properties(), prefix+"Odometry3dPublishInterval", 0.1 ),
-                                            orcaice::getPropertyAsDoubleWithDefault( 
-                                                context_.properties(), prefix+"PowerPublishInterval", 20.0 ),
+    publisherThread_ = new PublisherThread( prop.getPropertyAsDoubleWithDefault( "Odometry2dPublishInterval", 0.1 ),
+                                            prop.getPropertyAsDoubleWithDefault( "Odometry3dPublishInterval", 0.1 ),
+                                            prop.getPropertyAsDoubleWithDefault( "PowerPublishInterval", 20.0 ),
                                             odometry2dI_,
                                             odometry3dI_,
                                             powerI_,
@@ -195,7 +200,7 @@ MainThread::initialise()
     //
     // (optionally) required e-stop interface
     //
-    const bool isEStopEnabled = (bool)orcaice::getPropertyAsIntWithDefault( prop, prefix+"EnableEStopInterface", 0 );
+    const bool isEStopEnabled = (bool)prop.getPropertyAsIntWithDefault( "EnableEStopInterface", 0 );
     if ( isEStopEnabled )
     {
         while ( !isStopping() )
@@ -204,7 +209,7 @@ MainThread::initialise()
                 orca::EStopPrx eStopPrx;
                 orcaice::connectToInterfaceWithTag( context_, eStopPrx, "EStop" );
                 orca::EStopDescription descr = eStopPrx->getDescription();
-                eStopMonitor_.reset( new orcarobotdriverutil::EStopMonitor(descr) );
+                eStopMonitor_.reset( new orcaestoputil::EStopMonitor(descr) );
 
                 eStopConsumerI_ = new orcaifaceimpl::NotifyingEStopConsumerImpl(context_);
                 eStopConsumerI_->setNotifyHandler( this );
@@ -219,78 +224,81 @@ MainThread::initialise()
     }
 
     //
-    // Finally, start the driver thread rolling
+    // Finally, start the powerbase threads rolling
     //
-    segwayRmpDriverThread_->start();
+    for ( size_t i=0; i < powerbaseManagers_.size(); i++ )
+    {
+        powerbaseManagers_[i]->startThread();
+    }
 }
 
 void
-MainThread::instantiateHydroDriver( const std::string &driverLibName )
+MainThread::setCommand( const orca::VelocityControl2dData &incomingCommand )
 {
-    context_.tracer().debug( "HwThread: Loading hydro driver library "+driverLibName, 4 );
-    // The factory which creates the driver
-    std::auto_ptr<hydrointerfaces::SegwayRmpFactory> driverFactory;
-    try {
-        hydroDriverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
-        driverFactory.reset( 
-            hydrodll::dynamicallyLoadClass<hydrointerfaces::SegwayRmpFactory,DriverFactoryMakerFunc>
-            ( *hydroDriverLib_, "createDriverFactory" ) );
-    }
-    catch (hydrodll::DynamicLoadException &e)
-    {
-        context_.tracer().error( e.what() );
-        throw;
-    }    
-
-    // create the driver
-    try {
-        context_.tracer().info( "HwThread: Creating hydro driver..." );
-        hydroDriver_.reset( driverFactory->createDriver( context_.toHydroContext() ) );
-    }
-    catch ( ... )
+    if ( context_.tracer().verbosity( gbxutilacfr::DebugTrace ) >= 5 )
     {
         stringstream ss;
-        ss << "MainThread: Caught exception while creating hydro driver.";
-        context_.tracer().error( ss.str() );
-        throw;
+        ss << __func__ << "(" << ifaceutil::toString(incomingCommand) << ")";
+        context_.tracer().debug( "MainThread", ss.str(), 5 );
     }
-}
 
-void
-MainThread::handleData( const orca::VelocityControl2dData &incomingCommand )
-{
     hydrointerfaces::SegwayRmp::Command internalCommand;
     convert( incomingCommand, internalCommand );
 
-    if ( !commandPossible( internalCommand,
-                           capabilities_ ) )
+    if ( !hydrointerfaces::commandPossible( internalCommand,
+                                            powerbaseManagers_.back()->capabilities() ) )
     {
         hydrointerfaces::SegwayRmp::Command originalCommand = internalCommand;
-        limit( internalCommand,
-               capabilities_ );
+        hydrointerfaces::limit( internalCommand,
+                                powerbaseManagers_.back()->capabilities() );
 
         stringstream ss;
         ss << "Requested command ("<<originalCommand.toString()<<") can not be achieved.  " << endl
-           << "Capabilities: " << capabilities_.toString() << endl
+           << "Capabilities: " << powerbaseManagers_.back()->capabilities().toString() << endl
            << "    --> limiting command to: " << internalCommand.toString();
-        health().warning( ss.str() );
-    }
-    else
-    {
-        health().ok();
+        cout << ss.str() << endl;
+        // health().warning( ss.str() );
     }
 
-    if ( internalCommand.vx != 0.0 || internalCommand.w != 0.0 )
+    const double EPS = 1e-9;
+    if ( fabs(internalCommand.vx) > EPS || fabs(internalCommand.w) > EPS )
     {
         std::string reason;
         if ( eStopMonitor_.get() && eStopMonitor_->isEStopTriggered(reason) )
         {
-            segwayRmpDriverThread_->setDesiredSpeed( hydrointerfaces::SegwayRmp::Command(0,0) );
+            for ( size_t i=0; i < powerbaseManagers_.size(); i++ )
+                powerbaseManagers_[i]->setDesiredSpeed( hydrointerfaces::SegwayRmp::Command(0,0) );
             throw orca::EStopTriggeredException( reason );
         }
     }
 
-    segwayRmpDriverThread_->setDesiredSpeed( internalCommand );
+    bool leftSideStalled = false;
+    bool rightSideStalled = false;
+    for ( size_t i=0; i < powerbaseManagers_.size(); i++ )
+    {
+        powerbaseManagers_[i]->setDesiredSpeed( internalCommand );
+
+        orcarmputil::StallType stallType = powerbaseManagers_[i]->stallType();
+        if ( stallType == orcarmputil::LeftMotorStall ||
+             stallType == orcarmputil::BothMotorsStall )
+            leftSideStalled = true;
+        if ( stallType == orcarmputil::RightMotorStall ||
+             stallType == orcarmputil::BothMotorsStall )
+            rightSideStalled = true;
+    }
+    if ( leftSideStalled || rightSideStalled )
+    {
+        stringstream ss;
+        ss << "Stall side(s): [";
+        if ( leftSideStalled )
+            ss << "left";
+        if ( leftSideStalled && rightSideStalled ) 
+            ss << ",";
+        if ( rightSideStalled )
+            ss << "right";
+        ss << "]";
+        throw orca::MotorStalledException( ss.str() );
+    }
 }
 
 void
@@ -303,22 +311,26 @@ MainThread::handleData( const orca::EStopData &incomingEStopData )
     // Check right now in case is was just triggered
     if ( incomingEStopData.isEStopActivated )
     {
-        segwayRmpDriverThread_->setDesiredSpeed( hydrointerfaces::SegwayRmp::Command(0,0) );
+        for ( size_t i=0; i < powerbaseManagers_.size(); i++ )
+            powerbaseManagers_[i]->setDesiredSpeed( hydrointerfaces::SegwayRmp::Command(0,0) );
         context_.tracer().debug( "received e-stop data with e-stop triggered, disallowing motion: "+incomingEStopData.info );
     }
 }
 
 void
-MainThread::hardwareInitialised()
+MainThread::hardwareInitialised( int powerbaseID )
 {
-    publisherThread_->hardwareInitialised();
+    if ( powerbaseID == 0 )
+        publisherThread_->hardwareInitialised();
 }
 
 void
-MainThread::receiveData( const hydrointerfaces::SegwayRmp::Data &data )
+MainThread::receiveData( int                                     powerbaseID,
+                         const hydrointerfaces::SegwayRmp::Data &data )
 {
     //cout<<"TRACE(mainthread.cpp): data: " << data.toString() << endl;
-    publisherThread_->publish( data );
+    if ( powerbaseID == 0 )
+        publisherThread_->publish( data );
 }
 
 void

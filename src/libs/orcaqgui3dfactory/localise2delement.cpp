@@ -18,7 +18,7 @@ using namespace std;
 namespace orcaqgui3d {
 
 void
-Localise2dElement::actionOnConnection()
+Localise2dElement::iceStormConnectedEvent()
 {
     if (!isConnected_) return;
 
@@ -32,7 +32,7 @@ Localise2dElement::tryToGetGeometry()
     
     if ( listener_.proxy()==0 )
     {
-        humanManager_->showStatusError( "Localise2dElement::tryToGetGeometry(): listener_.proxy()==0" );
+        _stuff.humanManager->showStatusError( "Localise2dElement::tryToGetGeometry(): listener_.proxy()==0" );
     }
     try 
     {
@@ -45,7 +45,7 @@ Localise2dElement::tryToGetGeometry()
     }
     catch ( std::exception &e)
     {
-        humanManager_->showStatusError( "Localise2dElement::tryToGetGeometry(): Exception when trying to get geometry: " + QString(e.what()) );
+        _stuff.humanManager->showStatusError( "Localise2dElement::tryToGetGeometry(): Exception when trying to get geometry: " + QString(e.what()) );
     }
     
     if (haveGeometry_ && geom->type==orca::VehicleGeometryCuboid)
@@ -65,7 +65,7 @@ Localise2dElement::tryToGetGeometry()
     }
     else
     {
-        humanManager_->showStatusWarning("Localise2dElement: unknown geometry!");
+        _stuff.humanManager->showStatusWarning("Localise2dElement: unknown geometry!");
         const double length = 1e-3;
         const double width = 1e-3;
         const double height = 1e-3;

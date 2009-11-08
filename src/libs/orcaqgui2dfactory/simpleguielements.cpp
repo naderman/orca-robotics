@@ -172,7 +172,7 @@ Localise3dElement::update()
 }
 
 void
-Localise3dElement::actionOnConnection()
+Localise3dElement::iceStormConnectedEvent()
 {   
     
     if (!isConnected_) return;

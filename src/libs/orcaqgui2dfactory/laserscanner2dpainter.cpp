@@ -147,6 +147,10 @@ LaserScanner2dPainter::paint( QPainter *painter, int z )
     if ( isFilledPolygon_ ) {
         painter->setBrush( fillColor_ );
     }
+    else
+    {
+        painter->setBrush( QBrush() );
+    }
 
     //
     // draw the scan itself

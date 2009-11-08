@@ -16,27 +16,19 @@
 
 namespace orcaqguielementutil {
 
-
 template<class DataType, class ProxyType, class ConsumerType, class ConsumerPrxType>
 class IceStormGuiElement : public hydroqguielementutil::GuiElement,
                            public IceStormElement<DataType,ProxyType,ConsumerType,ConsumerPrxType>                                 
-{
-  
-    public:
-    
-        IceStormGuiElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
-                            const orcaice::Context                     &context,
-                            const std::string                          &proxyString,
-                            const double                                timeoutMs,
-                            const double                                tryConnectIntervalSec = 2.5 )
-        : GuiElement(guiElementInfo),
-          IceStormElement<DataType,ProxyType,ConsumerType,ConsumerPrxType>(context, proxyString, timeoutMs, tryConnectIntervalSec)
-          
-        {}
-    
-        virtual ~IceStormGuiElement() {};
-        
-        virtual bool isInGlobalCS() { return false; };
+{  
+public:
+    IceStormGuiElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
+                        const orcaice::Context                     &context,
+                        const double                                timeoutMs,
+                        const double                                tryConnectIntervalSec = 2.5 ) :
+        GuiElement(guiElementInfo),
+        IceStormElement<DataType,ProxyType,ConsumerType,ConsumerPrxType>
+                  (context, guiElementInfo.uniqueId.toStdString(), timeoutMs, tryConnectIntervalSec)
+    {}
 };
 
 } // namespace

@@ -34,6 +34,8 @@ convert( const hydrointerfaces::Robot2d::Data& internal, orca::Odometry2dData& n
     network.motion.v.x = internal.vlong;
     network.motion.v.y = internal.vtransverse;
     network.motion.w = internal.dyaw;
+
+    network.odometryWasReset = false;
 }
 
 void 
@@ -78,9 +80,8 @@ NetThread::initialise()
     odometry2dI_ = new orcaifaceimpl::Odometry2dImpl( descr_, "Odometry2d", context_ );
     odometry2dI_->initInterface( this );
 
-    velocityControl2dI_ = new orcaifaceimpl::VelocityControl2dImpl( descr_, "VelocityControl2d", context_ );
+    velocityControl2dI_ = new orcaifaceimpl::VelocityControl2dImpl( *this, descr_, "VelocityControl2d", context_ );
     velocityControl2dI_->initInterface( this );
-    velocityControl2dI_->setNotifyHandler( this );
 }
 
 void
@@ -158,8 +159,8 @@ NetThread::limit( hydrointerfaces::Robot2d::Command &cmd )
 // This is a direct callback from the VelocityControl2dImpl object.
 // It's executed in Ice thread.
 // Here we convert to our internal format pass it to HwThread
-void 
-NetThread::handleData(const orca::VelocityControl2dData& command)
+void
+NetThread::setCommand(const orca::VelocityControl2dData& command)
 {
     stringstream ss;
     ss << "NetThread::handleData: " << orcaobj::toString(command);

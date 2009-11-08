@@ -197,7 +197,7 @@ paintCovarianceEllipse( QPainter *p, float pxx, float pxy, float pyy )
     cov.ellipse( a, b, psi );
 
     QPointF covPoint(a,b);
-    float psiDeg = (int)ceil( psi *180/M_PI );            // rot. angle into princ. axes
+    float psiDeg = ceil( psi *180/M_PI );            // rot. angle into princ. axes
 
     // Paint uncertainty ellipse
     p->save();

@@ -21,6 +21,7 @@ if( build )
         pathdesigntablewidget.h
         pathfollowerbuttons.h
         pathplannerbuttons.h
+        simplepathdesigntablewidget.h
     )
 
     QT4_WRAP_CPP( moc_srcs ${moc_hdrs} )

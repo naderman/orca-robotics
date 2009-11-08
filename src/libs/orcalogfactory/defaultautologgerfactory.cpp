@@ -21,6 +21,7 @@ DefaultAutoLoggerFactory::DefaultAutoLoggerFactory()
     addSupportedType("DriveBicycle");
     addSupportedType("Imu");
     addSupportedType("LaserScanner2d");
+    addSupportedType("RangeScanner2d");
     addSupportedType("Localise2d");
     addSupportedType("Localise3d");
     addSupportedType("Odometry2d");
@@ -31,7 +32,7 @@ DefaultAutoLoggerFactory::DefaultAutoLoggerFactory()
     addSupportedType("Gps");
     addSupportedType("Camera");
     addSupportedType("Image");
-    addSupportedType("MultiCamera");
+    addSupportedType("PathFollower2d");
 }
 
 orcalog::AutoLogger* 
@@ -53,6 +54,10 @@ DefaultAutoLoggerFactory::create( const std::string &interfaceType, const orcaic
     else if (interfaceType == "LaserScanner2d")
     {
         logger.reset( new LaserScanner2dAutoLogger( context ) );
+    }
+    else if (interfaceType == "RangeScanner2d")
+    {
+        logger.reset( new RangeScanner2dAutoLogger( context ) );
     }
     else if (interfaceType == "Localise2d")
     {
@@ -93,6 +98,10 @@ DefaultAutoLoggerFactory::create( const std::string &interfaceType, const orcaic
     else if (interfaceType == "Image")
     {
         logger.reset( new ImageAutoLogger( context ) );
+    }
+    else if (interfaceType == "PathFollower2d")
+    {
+        logger.reset( new PathFollower2dAutoLogger( context ) );
     }
     else if (interfaceType == "MultiCamera")
     {

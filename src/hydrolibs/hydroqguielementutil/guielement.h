@@ -17,12 +17,22 @@
 #include <QColor>
 #include <QMouseEvent>
 #include <hydroutil/uncopyable.h>
+#include <hydroqguielementutil/ihumanmanager.h>
+#include <hydroqguielementutil/mouseeventmanager.h>
+#include <hydroqguielementutil/shortcutkeymanager.h>
+
+class QSplitter;
+
+namespace hydroqgui {
+    class GuiElementSet;
+};
 
 namespace hydroqguielementutil
 {
 
-//! Essential information required by all gui elements
-struct GuiElementInfo {
+//! Essential information required by all GUI elements
+struct GuiElementInfo 
+{
     GuiElementInfo( const char *pPlatform,
                     const char *pUniqueId,
                     const char *pType )
@@ -34,6 +44,26 @@ struct GuiElementInfo {
     QString uniqueId;
     QString type;
 };
+
+
+//! Information common to all GUI elements.
+struct GuiElementStuff 
+{
+    GuiElementStuff() :
+        humanManager(0),
+        mouseEventManager(0),
+        shortcutKeyManager(0),
+        guiElementSet(0),
+        spaceBottomRight(0)
+    {};
+
+    IHumanManager*      humanManager;
+    MouseEventManager*  mouseEventManager;
+    ShortcutKeyManager* shortcutKeyManager;
+    hydroqgui::GuiElementSet* guiElementSet;
+    QSplitter* spaceBottomRight;
+};
+
 
 /*!
  *
@@ -57,10 +87,14 @@ public:
     virtual ~GuiElement() {};
 
     //! Determines whether the element should be painted in the global coordinate system.
-    //! If returns FALSE, we will search for a localization element on the same platform.
-    virtual bool isInGlobalCS()=0;
+    //! If returns FALSE (default), we will search for a localization element on the same platform.
+    virtual bool isInGlobalCS() { return false; };
 
-    //! Update is called periodically. All processing different from paint can be done here
+    //! If FALSE (default), the user can remove this GUI element from the set. 
+    virtual bool isPermanentElement() const { return false; }
+
+    //! Update is called periodically. All processing different from paint can be done here.
+    //! Default implementation does nothing.
     virtual void update () {};
 
     //! Optional function to populate the menu list on right-click. 
@@ -76,22 +110,22 @@ public:
     //! element. In fact, the guiElement is free to ignore this colour.
     virtual void setColor( QColor color ) {};
 
+    //! Tell the GuiElement whether to paint itself using transparent colors
+    virtual void setUseTransparency( bool useTransparency ) {};
+
     //! Optional function to set focus of element. Default implementation does nothing.
     //! Focus determines how the element is painted (color or gray) 
     //! and whether users can interact with it (buttons or no buttons)
     virtual void setFocus( bool inFocus ) {};
     
     //! Called when the GuiElement ceases to be the owner of the global user-input mode 
-    //! NOTE: This is _not_ called if the GuiElement voluntarily relinquishes the mode.
-    virtual void noLongerMouseEventReceiver() {assert(false&&"unimplemented noLongerMouseEventReceiver");}
+    //! NOTE: This is @b not called if the GuiElement voluntarily relinquishes the mode.
+    virtual void noLongerMouseEventReceiver() {assert(!"unimplemented noLongerMouseEventReceiver");}
 
-    virtual void mousePressEvent(QMouseEvent *e) {assert(false&&"unimplemented mouse function");}
-    virtual void mouseMoveEvent(QMouseEvent *e) {assert(false&&"unimplemented mouse function");}
-    virtual void mouseReleaseEvent(QMouseEvent *e) {assert(false&&"unimplemented mouse function");}
-    virtual void mouseDoubleClickEvent(QMouseEvent *e) {assert(false&&"unimplemented mouse function");} 
-    
-    //! Tell the GuiElement whether to paint itself using transparent colors
-    virtual void setUseTransparency( bool useTransparency ) {};
+    virtual void mousePressEvent(QMouseEvent *e) {assert(!"unimplemented mouse function");}
+    virtual void mouseMoveEvent(QMouseEvent *e) {assert(!"unimplemented mouse function");}
+    virtual void mouseReleaseEvent(QMouseEvent *e) {assert(!"unimplemented mouse function");}
+    virtual void mouseDoubleClickEvent(QMouseEvent *e) {assert(!"unimplemented mouse function");} 
     
     //! Access function for platform name
     QString platform() { return platform_; };
@@ -100,16 +134,18 @@ public:
     QString uniqueId() { return uniqueId_; };
     
     //! Access function for type string displayed in table, e.g. OgMap
-    QString type() { return type_; };
+    QString type() { return type_; };  
+
+    static void setGuiElementStuff( const GuiElementStuff& stuff ) { _stuff=stuff; };
     
-    //! If true, the user shouldn't be able to remove this GUI element. 
-    virtual bool isPermanentElement() const { return false; }
-    
+protected :
+
+    static GuiElementStuff _stuff;
+
 private:
     QString platform_;
     QString uniqueId_;
     QString type_;
-    
 };
 
 } // namespace

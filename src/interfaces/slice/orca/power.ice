@@ -44,13 +44,13 @@ struct BatteryData
     //! Battery voltage [V]
     float voltage;
     //! Percent of full charge [%]
-    float percent;
+    short percent;
     //! Battery charging state (see above)
     ChargingState isBatteryCharging;
     //! Battery life remaining when battery is decharging [s],
     //! i.e. ChargingState is ChargingNo.
     //! Undefined when ChargingState is different from ChargingNo.
-    float secRemaining;
+    int secRemaining;
 };
 
 /*!

@@ -503,6 +503,6 @@ void gbx2Hydro( enum hif::InsGps::StatusMessageType &hydroStatusType,
 } //namespace
 
 extern "C" {
-    hif::InsGpsFactory *createDriverFactory()
+    hif::InsGpsFactory *createInsGpsDriverFactory()
     { return new insgpsnovatelgbx::Factory; }
 }

@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
@@ -52,7 +52,7 @@ orca::FQComponentName toComponentName( const Ice::ObjectPrx& homePrx );
 /*!
 Contacts the default Locator interface of the Registry and looks up component admin proxy.
 
-Before creating the interface, the fully-qualified component name is checked and platform 'local' is replaced 
+Before creating the interface, the fully-qualified component name is checked and platform 'local' is replaced
 with current hostname.
 */
 Ice::ObjectPrx getComponentAdmin( const orcaice::Context& context, const orca::FQComponentName& fqName );
@@ -81,11 +81,11 @@ Throws bxutilacfr::Exception when called with unsupported object type.
 std::string toAdminFacet( const orca::FQComponentName& fqName, const std::string& interfaceType );
 
 /*!
-Tries to ice_ping() the remote Admin interface specified with a fully-qualified component name and 
+Tries to ice_ping() the remote Admin interface specified with a fully-qualified component name and
 the interface facet name. Returns TRUE if the ping was successful and FALSE if not.
 Writes diagnostic information into @c diagnostic string.
- 
-Before making any connections, the fully-qualified component name is checked and platform 'local' is replaced 
+
+Before making any connections, the fully-qualified component name is checked and platform 'local' is replaced
 with current hostname.
 
 The interface type must be specified fully, including the module name, e.g. "::orca::Home".
@@ -101,7 +101,7 @@ Adds the @p object as a facet to the component's Admin interface.
 
 Not all objects can be added to the admin interface, see toAdminFacet() for the list of supported interfaces.
 
-Before creating the interface, the fully-qualified component name is checked and platform 'local' is replaced 
+Before creating the interface, the fully-qualified component name is checked and platform 'local' is replaced
 with current hostname.
 
 This funciton may throw Ice::AlreadyRegisteredException. We don't catch it internally
@@ -121,7 +121,7 @@ Special connect function to be used with interfaces hosted as facets of componen
 
 Not all objects can be added to the admin interface, see toAdminFacet() for the list of supported interfaces.
 
-Before making any connections, the fully-qualified component name is checked and platform 'local' is replaced 
+Before making any connections, the fully-qualified component name is checked and platform 'local' is replaced
 with current hostname.
 
 In the event of a failed connection, adds an interpretive message and re-throws a NetworkException.
@@ -144,17 +144,17 @@ orcaice::connectToAdminInterface<Ice::Process,Ice::ProcessPrx>( context_, proces
 @endverbatim
 */
 // template<class InterfaceProxyType>
-// void connectToAdminInterfaceWithFacet( const Context& context, InterfaceProxyType interfacePrx, const std::string& facet, 
+// void connectToAdminInterfaceWithFacet( const Context& context, InterfaceProxyType interfacePrx, const std::string& facet,
 template<class InterfaceType, class InterfaceProxyType>
 void connectToAdminInterface( const Context& context, InterfaceProxyType& interfacePrx, const orca::FQComponentName& fqname )
-{   
+{
     orca::FQComponentName resolvedFqname = orcaice::resolveLocalPlatform( context, fqname );
-    
+
 // std::cout<<"DEBUG: "<<__func__<<"(): will look for Admin interface of ="<<orcaice::toString(resolvedFqname)<<std::endl;
 
     const std::string interfaceType = InterfaceType::ice_staticId();
     const std::string facetName = orcaice::toAdminFacet( resolvedFqname, interfaceType );
-        
+
 // std::cout<<"DEBUG: "<<__func__<<"(): will connect to facet="<<facetName<<std::endl;
 
     //
@@ -163,7 +163,7 @@ void connectToAdminInterface( const Context& context, InterfaceProxyType& interf
     Ice::ObjectPrx objectPrx = orcaice::getComponentAdmin( context, resolvedFqname );
 
     if ( !objectPrx )
-        throw gbxutilacfr::Exception( ERROR_INFO, 
+        throw gbxutilacfr::Exception( ERROR_INFO,
             "Registry returned null admin proxy for component "+resolvedFqname.platform+"/"+resolvedFqname.component );
 
 // std::cout<<"DEBUG: "<<__func__<<"(): got admin proxy ="<<objectPrx->ice_toString()<<std::endl;
@@ -183,7 +183,7 @@ void connectToAdminInterface( const Context& context, InterfaceProxyType& interf
             std::string errString = "Admin interface with facet '" + facetName + "' is of wrong type."+
                 "  Tried to connect proxy of type "+InterfaceType::ice_staticId()+
                 " to remote interface of type "+objectPrx->ice_id();
-            orcaice::initTracerWarning( context, errString, 2 );
+            orcaice::initTracerWarning( context, errString );
             throw orcaice::TypeMismatchException( ERROR_INFO, errString );
         }
     }
@@ -191,28 +191,28 @@ void connectToAdminInterface( const Context& context, InterfaceProxyType& interf
     {
         std::stringstream ss;
         ss << "(while connecting to Admin interface with facet '" << facetName << "') cannot reach the adaptor: "<<e.what();
-        orcaice::initTracerWarning( context, ss.str(), 2 );
+        orcaice::initTracerWarning( context, ss.str() );
         throw orcaice::NetworkException( ERROR_INFO, ss.str() );
     }
     catch ( const Ice::ObjectNotExistException& e )
     {
         std::stringstream ss;
         ss << "(while connecting to Admin interface with facet '" << facetName << "') reached the adaptor but not the interface: "<<e.what();
-        orcaice::initTracerWarning( context, ss.str(), 2 );
+        orcaice::initTracerWarning( context, ss.str() );
         throw orcaice::NetworkException( ERROR_INFO, ss.str() );
     }
     catch ( const Ice::FacetNotExistException& e )
     {
         std::stringstream ss;
         ss << "(while connecting to Admin interface with facet '" << facetName << "') reached the adaptor and the interface but not the facet: "<<e.what();
-        orcaice::initTracerWarning( context, ss.str(), 2 );
+        orcaice::initTracerWarning( context, ss.str() );
         throw orcaice::NetworkException( ERROR_INFO, ss.str() );
     }
     catch ( const std::exception& e )
     {
         std::stringstream ss;
         ss << "(while connecting to Admin interface with facet '" << facetName << "') something unexpected: "<<e.what();
-        orcaice::initTracerWarning( context, ss.str(), 2 );
+        orcaice::initTracerWarning( context, ss.str() );
         throw orcaice::NetworkException( ERROR_INFO, ss.str() );
     }
 }

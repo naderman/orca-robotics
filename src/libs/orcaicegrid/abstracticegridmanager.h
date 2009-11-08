@@ -70,6 +70,10 @@ public:
     //! Tells IceGrid to stop server
     virtual void stopServer( const std::string &serverId, int timeoutMs=-1 )=0;
 
+    virtual void removeObject( const Ice::Identity& id )=0;
+    virtual Ice::StringSeq getAllAdapterIds()=0;
+    virtual void removeAdapter( const std::string& adapterId )=0;
+
     //! Returns current state of the manager
     virtual IceGridManagerState state()=0;
 

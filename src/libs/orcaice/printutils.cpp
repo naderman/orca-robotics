@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
@@ -35,21 +35,21 @@ void initTracerError( const std::string & message )
 }
 
 
-void initTracerInfo( const orcaice::Context & context, const std::string & message, const int level, bool localOnly )
+void initTracerInfo( const orcaice::Context & context, const std::string & message, bool localOnly )
 {
     if ( &context.tracer() )  {
-        context.tracer().info( message, level, localOnly );
+        context.tracer().info( message, 1, localOnly );
     }
     else {
         // the tracer is not initialized yet
         cout<<"orca: "<<message<<endl;
-    }  
+    }
 }
 
-void initTracerWarning( const orcaice::Context & context, const std::string & message, const int level, bool localOnly )
+void initTracerWarning( const orcaice::Context & context, const std::string & message, bool localOnly )
 {
     if ( &context.tracer() )  {
-        context.tracer().warning( message, level, localOnly );
+        context.tracer().warning( message, 1, localOnly );
     }
     else {
         // the tracer is not initialized yet
@@ -57,10 +57,10 @@ void initTracerWarning( const orcaice::Context & context, const std::string & me
     }
 }
 
-void initTracerError( const orcaice::Context & context, const std::string & message, const int level, bool localOnly )
+void initTracerError( const orcaice::Context & context, const std::string & message, bool localOnly )
 {
     if ( &context.tracer() )  {
-        context.tracer().error( message, level, localOnly );
+        context.tracer().error( message, 1, localOnly );
     }
     else {
         // the tracer is not initialized yet

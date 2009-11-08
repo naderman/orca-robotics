@@ -38,6 +38,7 @@ public:
     void startWithoutReset();
     
     double elapsedSeconds() const;
+    double elapsedMs() const { return elapsedSeconds()*1000.0; }
     void reset();
 
 protected:

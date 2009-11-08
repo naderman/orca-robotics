@@ -62,10 +62,12 @@ void seqFromLogStream( std::vector<E>& x, std::istream& is )
     size_t size;
     is >> size;
     // now read the sequence itself
+    x.resize(size);
     for ( size_t i=0; i<size; ++i ) {
+        // can't directly "fromLogStream(x[i],is)" here because it breaks for the stupid std::vector<bool>.
         E element;
         fromLogStream( element, is );
-        x.push_back( element );
+        x[i] = element;
     }
 }
 
@@ -76,6 +78,7 @@ void dictFromLogStream( std::map<K,V>& x, std::istream& is )
     size_t size;
     is >> size;
     // now read all key/value pairs
+    x.clear();
     for ( size_t i=0; i<size; ++i ) {
         K key;
         V value;

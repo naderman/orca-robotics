@@ -79,8 +79,8 @@ public:
 // Function for dynamically instantiating drivers.
 // A driver must have a function like so:
 // extern "C" {
-//     hydrointerfaces::ImageFactory *createDriverFactory();
+//     hydrointerfaces::ImageFactory *createImageDriverFactory();
 // }
-typedef hydrointerfaces::ImageFactory *DriverFactoryMakerFunc();
+typedef hydrointerfaces::ImageFactory *ImageDriverFactoryMakerFunc();
 
 #endif

@@ -29,7 +29,7 @@ public:
     virtual orca::VehicleDescription getDescription( const Ice::Current& )
         { return impl_.internalGetDescription(); }
     virtual void setCommand(const ::orca::VelocityControl2dData& command, const ::Ice::Current& current )
-        {  impl_.internalSetCommand( command ); }
+        { impl_.internalSetCommand( command ); }
 private:
     VelocityControl2dImpl &impl_;
 };
@@ -37,10 +37,12 @@ private:
 //////////////////////////////////////////////////////////////////////
 
 VelocityControl2dImpl::VelocityControl2dImpl( 
-            const orca::VehicleDescription& descr,
-            const std::string &interfaceTag,
-            const orcaice::Context &context )
-    : description_(descr),
+    AbstractVelocityControl2dCallback &callback,
+    const orca::VehicleDescription& descr,
+    const std::string &interfaceTag,
+    const orcaice::Context &context )
+    : callback_(callback),
+      description_(descr),
       interfaceName_(orcaice::getProvidedInterface(context,interfaceTag).iface),
       context_(context)
 {
@@ -48,10 +50,12 @@ VelocityControl2dImpl::VelocityControl2dImpl(
 }
 
 VelocityControl2dImpl::VelocityControl2dImpl( 
-            const orca::VehicleDescription& descr,
-            const orcaice::Context &context,
-            const std::string &interfaceName )
-    : description_(descr),
+    AbstractVelocityControl2dCallback &callback,
+    const orca::VehicleDescription& descr,
+    const orcaice::Context &context,
+    const std::string &interfaceName )
+    : callback_(callback),
+      description_(descr),
       interfaceName_(interfaceName),
       context_(context)
 {
@@ -84,9 +88,7 @@ VelocityControl2dImpl::initInterface( gbxutilacfr::Stoppable* activity, const st
 void
 VelocityControl2dImpl::internalSetCommand(const ::orca::VelocityControl2dData& command )
 {
-    if ( this->hasNotifyHandler() ) {
-        this->set( command );
-    }
+    callback_.setCommand(command);
 }
 
 } // namespace

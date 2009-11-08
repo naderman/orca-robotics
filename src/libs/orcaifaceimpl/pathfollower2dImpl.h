@@ -51,6 +51,9 @@ public:
     //! until sucessful. At every iteration, checks if the activity (e.g. thread) was stopped.
     void initInterface( gbxutilacfr::Stoppable* activity, const std::string& subsysName="", int retryInterval=2 );
 
+    //! A local call which sends the data through IceStorm
+    void localSend( const orca::PathFollower2dData &data );
+
     //! A local call which sets the data reported by the interface, 
     //! and sends it through IceStorm
     void localSetAndSend( const orca::PathFollower2dData &data );

@@ -336,6 +336,7 @@ void readConfig( vector<WirelessConfig> &wifiConfigs )
         wifiConfigs.push_back( cfg );
     }
     
+    delete iwRequest;
     close(socketFd);
 }
 
@@ -432,7 +433,11 @@ void readUsingIoctl( vector<IoctlData> &wifiDataIoctl )
     
         wifiDataIoctl.push_back( data );
     }
-    
+
+    delete iwRequest;
+    delete iwRange;
+    delete iwStats;
+
     close(socketFd);
 }
 

@@ -12,7 +12,7 @@
 #include <iostream>
 #include <cmath>
 #include <assert.h>
-#include <hydrointerfaces/segwayrmp.h> // for Exception
+#include <gbxutilacfr/exceptions.h>
 #include <sstream>
 
 using namespace std;
@@ -27,7 +27,7 @@ UnitConverter::UnitConverter( RmpModel model )
     {
         stringstream ss;
         ss << "UnitConverter: unknown RmpModel: " << model_;
-        throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 }
 
@@ -137,7 +137,7 @@ UnitConverter::countsPerM() const
     case RmpModel_400:
         return RMP_COUNT_PER_M_RMP400;
     default:
-        throw hydrointerfaces::SegwayRmp::Exception( "UnitConverter::countsPerM(): unknown RmpModel" );
+        throw gbxutilacfr::Exception( ERROR_INFO, "UnitConverter::countsPerM(): unknown RmpModel" );
     }
 }
 double 
@@ -154,7 +154,7 @@ UnitConverter::countsPerMperS() const
     case RmpModel_400:
         return RMP_COUNT_PER_M_PER_S_RMP400;
     default:
-        throw hydrointerfaces::SegwayRmp::Exception( "UnitConverter::countsPerMperS(): unknown RmpModel" );
+        throw gbxutilacfr::Exception( ERROR_INFO, "UnitConverter::countsPerMperS(): unknown RmpModel" );
     }
 }
 
@@ -172,7 +172,7 @@ UnitConverter::countsPerRevolution() const
     case RmpModel_400:
         return RMP_COUNT_PER_REV_RMP400;
     default:
-        throw hydrointerfaces::SegwayRmp::Exception( "UnitConverter::countsPerRevolution(): unknown RmpModel" );
+        throw gbxutilacfr::Exception( ERROR_INFO, "UnitConverter::countsPerRevolution(): unknown RmpModel" );
     }    
 }
 double
@@ -189,7 +189,7 @@ UnitConverter::countsPerNM() const
     case RmpModel_400:
         return RMP_COUNT_PER_NM_RMP400;
     default:
-        throw hydrointerfaces::SegwayRmp::Exception( "UnitConverter::countsPerNM(): unknown RmpModel" );
+        throw gbxutilacfr::Exception( ERROR_INFO, "UnitConverter::countsPerNM(): unknown RmpModel" );
     }    
 }
 

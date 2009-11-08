@@ -6,16 +6,20 @@
 namespace hydroscanutil {
 
 struct ScannerConfig {
+    ScannerConfig() {}
     ScannerConfig( double scannerMaxRange,
                    double scannerStartAngle,
-                   double scannerAngleIncrement )
+                   double scannerAngleIncrement,
+                   int    scannerNumReturns )
         : maxRange(scannerMaxRange),
           startAngle(scannerStartAngle),
-          angleIncrement(scannerAngleIncrement)
+          angleIncrement(scannerAngleIncrement),
+          numReturns(scannerNumReturns)
         {}
     double maxRange;
     double startAngle;
     double angleIncrement;
+    int    numReturns;
 
     bool isSane() const;
 };

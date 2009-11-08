@@ -253,6 +253,6 @@ Driver::setWidthAndHeight(int width, int height)
 } // namespace
 
 extern "C" {
-    hydrointerfaces::ImageFactory *createDriverFactory()
+    hydrointerfaces::ImageFactory *createImageDriverFactory()
     { return new imagecvcamera::Factory; }
 }

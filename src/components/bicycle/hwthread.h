@@ -17,7 +17,7 @@
 #include <hydrointerfaces/bicycle.h>
 #include <hydrodll/dynamicload.h>
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
-#include <orcarobotdriverutil/statemachine.h>
+#include <hydrorobotdriverutil/statemachine.h>
 
 namespace bicycle {
 
@@ -55,7 +55,7 @@ private:
     void enableDriver();
 
     // Faults can be detected in either read or write threads: have to be careful.
-    orcarobotdriverutil::StateMachine stateMachine_;
+    hydrorobotdriverutil::StateMachine stateMachine_;
 
     // Stores the data most recently received from the hardware
     gbxiceutilacfr::Store<hydrointerfaces::Bicycle::Data>    dataStore_;

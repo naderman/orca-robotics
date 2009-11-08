@@ -144,8 +144,8 @@ public:
 // Function for dynamically instantiating drivers.
 // A driver must have a function like so:
 // extern "C" {
-//     hydrointerfaces::BicycleFactory *createDriverFactory();
+//     hydrointerfaces::BicycleFactory *createBicycleDriverFactory();
 // }
-typedef hydrointerfaces::BicycleFactory *DriverFactoryMakerFunc();
+typedef hydrointerfaces::BicycleFactory *BicycleDriverFactoryMakerFunc();
 
 #endif

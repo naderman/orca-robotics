@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
@@ -27,9 +27,9 @@ namespace orcaice
     void initTracerError( const std::string & message );
 
     // Will try to use the Tracer, will print to screen if fails
-    void initTracerInfo( const orcaice::Context & context, const std::string & message, const int level=1, bool localOnly=false );
-    void initTracerWarning( const orcaice::Context & context, const std::string & message, const int level=1, bool localOnly=false );
-    void initTracerError( const orcaice::Context & context, const std::string & message, const int level=1, bool localOnly=false );
+    void initTracerInfo( const orcaice::Context & context, const std::string & message, bool localOnly=false );
+    void initTracerWarning( const orcaice::Context & context, const std::string & message, bool localOnly=false );
+    void initTracerError( const orcaice::Context & context, const std::string & message, bool localOnly=false );
 
 } // namespace
 

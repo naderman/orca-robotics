@@ -21,14 +21,17 @@ namespace orcaifaceimpl
 //! Implements a consumer interface whose set method is 'SetData'.
 //! Does nothing more than sticking incoming data into an gbxiceutilacfr::Store.
 //!
-template<class ProviderType, class ConsumerType, class ObjectType>
+template<class ProviderType, 
+         class ConsumerType, 
+         class ObjectType,
+         class ConsumerTypeIType=ConsumerTypeI<ConsumerType,ObjectType> >
 class StoringConsumerImpl : 
-        public ConsumerImpl<ProviderType,ConsumerType,ObjectType>
+        public ConsumerImpl<ProviderType,ConsumerType,ObjectType,ConsumerTypeIType>
 {
 public:
     //! Constructor.
     StoringConsumerImpl( const orcaice::Context &context )
-        : ConsumerImpl<ProviderType,ConsumerType,ObjectType>(context) {}
+        : ConsumerImpl<ProviderType,ConsumerType,ObjectType,ConsumerTypeIType>(context) {}
 
     //! Returns reference to local store.
     gbxiceutilacfr::Store<ObjectType> &store() { return store_; }

@@ -16,7 +16,6 @@
 #include <orcaqgui3d/iknowsplatformposition.h>
 #include <orcaqgui3d/icestormelement3d.h>
 #include <orcaqgui3dfactory/localisepainter.h>
-#include <hydroqguielementutil/ihumanmanager.h>
 
 namespace orcaqgui3d
 {
@@ -32,16 +31,13 @@ class Localise2dElement
 public:
     Localise2dElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
                        const orcaice::Context                     &context,
-                       const std::string                          &proxyString,
-                       hydroqguielementutil::IHumanManager        *humanManager,
                        bool                                        beginDisplayHistory = false,
                        int                                         timeoutMs = 30000 )
         : orcaqgui3d::IceStormElement3d<LocalisePainter,
                             orca::Localise2dData,
                             orca::Localise2dPrx,
                             orca::Localise2dConsumer,
-                            orca::Localise2dConsumerPrx>( guiElementInfo, context, proxyString, painter_, timeoutMs ),
-          humanManager_(humanManager),
+                            orca::Localise2dConsumerPrx>( guiElementInfo, context, painter_, timeoutMs ),
           painter_( beginDisplayHistory ),
           x_(0),
           y_(0),
@@ -50,7 +46,7 @@ public:
         {}
 
     virtual bool isInGlobalCS() { return true; }
-    virtual void actionOnConnection();
+    virtual void iceStormConnectedEvent();
     virtual QStringList contextMenu();
     virtual void execute( int action );
     
@@ -78,7 +74,6 @@ public:
 
 private:
 
-    hydroqguielementutil::IHumanManager *humanManager_;
     LocalisePainter painter_;
 
     // We're visualising a 2D thing -- don't know z/roll/pitch

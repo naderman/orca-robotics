@@ -233,9 +233,9 @@ public:
 // Function for dynamically instantiating drivers.
 // A driver must have a function like so:
 // extern "C" {
-//     hydrointerfaces::SegwayRmpFactory *createDriverFactory();
+//     hydrointerfaces::SegwayRmpFactory *createMitsubishiPA10DriverFactory();
 // }
-typedef hydrointerfaces::MitsubishiPA10Factory *DriverFactoryMakerFunc();
+typedef hydrointerfaces::MitsubishiPA10Factory *MitsubishiPA10DriverFactoryMakerFunc();
 
 
 #endif /*MITSUBISHIPA10_*/

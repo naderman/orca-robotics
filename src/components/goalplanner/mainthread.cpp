@@ -435,6 +435,7 @@ MainThread::stopRobot()
     {
         context_.tracer().debug("Stopping robot");
         orca::PathFollower2dData dummyPath;
+        dummyPath.timeStamp = orcaice::getNow();
         bool activateNow = true;
         localNavPrx_->setData( dummyPath, activateNow );
     }

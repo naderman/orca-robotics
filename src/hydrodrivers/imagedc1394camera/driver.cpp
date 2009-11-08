@@ -504,6 +504,6 @@ Driver::cleanup( dc1394camera_t* camera )
 
 
 extern "C" {
-    hydrointerfaces::ImageFactory *createDriverFactory()
+    hydrointerfaces::ImageFactory *createImageDriverFactory()
     { return new imagedc1394::Factory; }
 }

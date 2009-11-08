@@ -29,6 +29,7 @@ DefaultSnapshotLoggerFactory::DefaultSnapshotLoggerFactory()
     addSupportedType("Power");
     addSupportedType("Wifi");
     addSupportedType("Gps");
+    addSupportedType("PathFollower2d");
 }
 
 orcalog::SnapshotLogger* 
@@ -82,6 +83,10 @@ DefaultSnapshotLoggerFactory::create( const std::string &interfaceType, const or
     else if (interfaceType == "Gps")
     {
         logger.reset( new GpsSnapshotLogger( context ) );
+    }
+    else if (interfaceType == "PathFollower2d")
+    {
+        logger.reset( new PathFollower2dSnapshotLogger( context ) );
     }
     else
     {

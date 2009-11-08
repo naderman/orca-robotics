@@ -54,6 +54,35 @@ private:
     QWidget       *mainWidget_;
 };
 
+//!
+//! @brief a RAII tool for managing reservations on shortcut-keys: unsubscribes when it falls out of scope.
+//!
+class ShortcutKeyReservation {
+public:
+    ShortcutKeyReservation( QAction            *elementAction,
+                            QKeySequence        key,
+                            bool                ownExclusively,
+                            QObject            *trigeree,
+                            ShortcutKeyManager &shortcutKeyManager )
+        : key_(key),
+          trigeree_(trigeree),
+          shortcutKeyManager_(shortcutKeyManager)
+        {
+            shortcutKeyManager_.subscribeToShortcutKey(elementAction,
+                                                       key,
+                                                       ownExclusively,
+                                                       trigeree);
+        }
+    ~ShortcutKeyReservation()
+        {
+            shortcutKeyManager_.unsubscribeFromShortcutKey( key_, trigeree_ );
+        }
+private:
+    QKeySequence        key_;
+    QObject            *trigeree_;
+    ShortcutKeyManager &shortcutKeyManager_;
+};
+
 }
 
 #endif

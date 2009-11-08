@@ -78,6 +78,6 @@ Driver::read( hydrointerfaces::RangerArray::Data &data )
 } // namespace
 
 extern "C" {
-    hydrointerfaces::RangerArrayFactory *createDriverFactory()
+    hydrointerfaces::RangerArrayFactory *createRangerArrayDriverFactory()
     { return new rangerarrayfake::Factory; }
 }

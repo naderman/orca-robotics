@@ -38,20 +38,23 @@ Goal::set( double x,
            double distanceTolerance,
            double headingTolerance,
            double timeRemaining,
+           double intendedSpeed,
            double maxSpeed,
            double maxTurnrate )
 {
-    this->x = x;
-    this->y = y;
-    this->theta = theta;
+    this->x                 = x;
+    this->y                 = y;
+    this->theta             = theta;
     this->distanceTolerance = distanceTolerance;
     this->headingTolerance  = headingTolerance;
-    this->timeRemaining = timeRemaining;
-    this->maxSpeed = maxSpeed;
-    this->maxTurnrate = maxTurnrate;
+    this->timeRemaining     = timeRemaining;
+    this->intendedSpeed     = intendedSpeed;
+    this->maxSpeed          = maxSpeed;
+    this->maxTurnrate       = maxTurnrate;
 
     if ( !( ( distanceTolerance >= 0.0 ) &&
             ( headingTolerance >= 0.0  ) &&
+            ( intendedSpeed >= 0.0     ) &&
             ( maxSpeed >= 0.0          ) &&
             ( maxTurnrate >= 0.0       ) &&
             ( theta >= -M_PI && theta <= M_PI ) ) )
@@ -71,13 +74,14 @@ Goal::setNoGoal()
     distanceTolerance = NO_GOAL_DISTANCE_TOLERANCE;
     headingTolerance = NO_GOAL_HEADING_TOLERANCE;      
     timeRemaining = 1e9;
+    intendedSpeed = 0.0;
     maxSpeed = 0.01;
     maxTurnrate = 0.01;
 }
 
 std::ostream &operator<<( std::ostream &s, const Goal &g )
 {
-    s << "{["<<g.x<<", "<<g.y<<", "<<g.theta*180.0/M_PI<<"deg] tol=["<<g.distanceTolerance<<", "<<g.headingTolerance*180.0/M_PI<<"deg], timeRem="<<g.timeRemaining<<"s,maxSpeeds=["<<g.maxSpeed<<", "<<g.maxTurnrate*180.0/M_PI<<"]}";
+    s << "{["<<g.x<<", "<<g.y<<", "<<g.theta*180.0/M_PI<<"deg] tol=["<<g.distanceTolerance<<", "<<g.headingTolerance*180.0/M_PI<<"deg], timeRem="<<g.timeRemaining<<"s,intendedSpeed="<<g.intendedSpeed<<"m/s,maxSpeeds=["<<g.maxSpeed<<", "<<g.maxTurnrate*180.0/M_PI<<"]}";
     return s;
 }
 

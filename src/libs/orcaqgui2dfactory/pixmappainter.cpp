@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
@@ -31,7 +31,7 @@ PixmapPainter::PixmapPainter( PixmapData &pixmapData )
       haveMap_(false),
       previousOffset_(0.0,0.0)
 {
-}        
+}
 
 
 PixmapPainter::~PixmapPainter()
@@ -44,15 +44,15 @@ PixmapPainter::setData( PixmapData &pixmapData )
     assert( (int)pixmapData.rgbR.size() == pixmapData.mapSizePix.width()*pixmapData.mapSizePix.height() );
     assert( (int)pixmapData.rgbG.size() == pixmapData.mapSizePix.width()*pixmapData.mapSizePix.height() );
     assert( (int)pixmapData.rgbB.size() == pixmapData.mapSizePix.width()*pixmapData.mapSizePix.height() );
-    
+
     data_ = pixmapData;
-    
+
     QPainter p;
     int cR, cB, cG;
-    
+
     qMap_ = QPixmap( data_.mapSizePix.width(), data_.mapSizePix.height() );
     p.begin( &qMap_ );
-    
+
     for( int x=0; x<data_.mapSizePix.width(); ++x )
     {
         for ( int y=0; y<data_.mapSizePix.height(); ++y )
@@ -79,11 +79,11 @@ PixmapPainter::paint( QPainter *painter )
     bool dirty = false;
     dirty = dirty || updateWindowSize( QSize(painter->device()->width(), painter->device()->height()) );
     dirty = dirty || updateWorldMatrix( painter->worldMatrix() );
-    
+
     if ( dirty ) {
         rescale();
     }
-     
+
     painter->save();
     painter->setMatrix( QMatrix() );
     painter->drawPixmap( QPoint(), mapWin_ );
@@ -93,7 +93,7 @@ PixmapPainter::paint( QPainter *painter )
 bool
 PixmapPainter::updateWorldMatrix( const QMatrix & m )
 {
-    // don't waste time resizing to the same scale and if the offset 
+    // don't waste time resizing to the same scale and if the offset
     // of the pixmap hasn't changed
     if ( m2win_ == m && previousOffset_==data_.offset ) {
         return false;
@@ -101,7 +101,7 @@ PixmapPainter::updateWorldMatrix( const QMatrix & m )
     // cout << "TRACE(pixmappainter.cpp): updateWorldMatrix " << endl;
 
     m2win_ = m;
-    
+
     // record the offset to check next time if it has changed
     previousOffset_ = data_.offset;
 
@@ -116,11 +116,11 @@ PixmapPainter::updateWorldMatrix( const QMatrix & m )
     QMatrix rot( map2win_.m11()/s, map2win_.m12()/s, -map2win_.m21()/s, -map2win_.m22()/s, 0.0, 0.0);
     M = rot;
     //cout<<"rotation only: " << M.m11()<<","<<M.m12()<<","<<M.m21()<<","<<M.m22()<<", "<<M.dx()<<","<<M.dy()<<endl;
-    
+
     QPointF offset = rot.map( data_.offset );
     //cout<<"offset in meters: "<<data_.offset.x()<<","<<data_.offset.y()<<" rotated :"<<offset.x()<<","<<offset.y()<<endl;
-    
-    map2win_.translate( offset.x(), offset.y() );
+
+    map2win_.translate( offset.x(), offset.y()+data_.cellSize );
     M = map2win_;
     //cout<<"translated: " << M.m11()<<","<<M.m12()<<","<<M.m21()<<","<<M.m22()<<", "<<M.dx()<<","<<M.dy()<<endl;
 
@@ -142,7 +142,7 @@ PixmapPainter::updateWindowSize( const QSize & s )
 //     cout << "TRACE(pixmappainter.cpp): updateWindowSize " << endl;
 
     winSize_ = s;
-    
+
     mapWin_ = QPixmap( winSize_ );
     //cout<<"TRACE(pixmappainter.cpp):updateWindowSize: new size ["<<winSize_.width()<<","<<winSize_.height()<<"], so rescaled map buffer to ["<<mapWin_.width()<<"x"<<mapWin_.height()<<"]"<<endl;
 
@@ -176,7 +176,7 @@ void PixmapPainter::rescale()
 
     // scale to the window buffer [pix] (no translation)
     QPixmap scaledInsideRect = unscaledInsideRect.transformed( map2win_ );
- 
+
     // Find the win coords of the top-left point of insideRect
     QPoint topCorner = map2win_.map( insideRectPix.bottomLeft() );
 
@@ -186,10 +186,19 @@ void PixmapPainter::rescale()
 
 //     cout<<"TRACE(pixmappainter.cpp): copying from "<<scaledInsideRect.width()<<"x"<<scaledInsideRect.height()
 //         <<" to "<<mapWin_.width()<<"x"<<mapWin_.height()<<endl;
-        
+
     // copy into window buffer
-    QPainter toMapWin( &mapWin_ );
-    toMapWin.drawPixmap( topCorner, scaledInsideRect );
+    {
+        QPainter toMapWin( &mapWin_ );
+        toMapWin.drawPixmap( topCorner, scaledInsideRect );
+    }
+
+    // alexm: this is probably not very efficient.
+    // see docco: Warning: This is potentially an expensive operation. Most usecases for this function
+    // are covered by QPainter and compositionModes which will normally execute faster.
+    QPixmap alphaChannel( mapWin_.size() );
+    alphaChannel.fill( Qt::gray );
+    mapWin_.setAlphaChannel( alphaChannel );
 }
 
 void
@@ -198,11 +207,11 @@ PixmapPainter::toggleDisplayMap()
     isDisplayMap_ = !isDisplayMap_;
 }
 
-int 
+int
 PixmapPainter::saveMap( const QString &fileName,
                         const QString &fileExtension,
                         hydroqguielementutil::IHumanManager *humanManager )
-{   
+{
     // We have to mirror the map first
     QMatrix matrix(1.0, 0.0, 0.0, -1.0, 0.0, 0.0);
 
@@ -213,8 +222,26 @@ PixmapPainter::saveMap( const QString &fileName,
         return -1;
     }
     humanManager->showStatusInformation("Successfully saved pixmap to file: " + fileName);
-    
+
     return 0;
 }
 
+void
+PixmapPainter::drawCircle ( const QColor& color, const QPoint& center, qreal diameter )
+{
+    QMatrix win2map = map2win_.inverted();
+    QPointF mapCenter = win2map.map( QPointF(center.x(),center.y()) );
+    // NOTE: diameter is already in map units
+
+    QPainter p;
+    p.begin( &qMap_ );
+    p.setBrush( color );
+    p.setPen( Qt::NoPen );
+    p.drawEllipse( mapCenter, diameter, diameter );
+    p.end();
+
+    rescale();
 }
+
+}
+

@@ -1,0 +1,2 @@
+add_executable( clisegwayrmp clisegwayrmp.cpp segwayrmp )
+target_link_libraries( clisegwayrmp OrcaRmpUtil HydroSegwayRmpAcfrCan HydroSegwayRmpFake HydroHumanInput2dKbdTermio )

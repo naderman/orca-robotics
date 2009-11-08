@@ -2,6 +2,7 @@
 #include <iostream>
 #include <orcaifaceutil/rangescanner2d.h>
 #include <gbxutilacfr/exceptions.h>
+#include <hydrotime/time.h>
 
 using namespace std;
 
@@ -14,7 +15,8 @@ namespace orcascanutil {
             descr.maxRange,
             descr.startAngle,
             hydroscanutil::calcAngleIncrement( descr.fieldOfView,
-                                               descr.numberOfSamples ) );        
+                                               descr.numberOfSamples ),
+            descr.numberOfSamples );        
     }
 
     hydronavutil::Pose convertOffset( const orca::RangeScanner2dDescription &descr )
@@ -31,6 +33,34 @@ namespace orcascanutil {
         return hydronavutil::Pose( descr.offset.p.x, 
                                    descr.offset.p.y,
                                    descr.offset.o.y );
+    }
+
+    orca::RangeScanner2dDescription
+    convert( const hydroscanutil::ScannerConfig &scannerConfig,
+             const hydronavutil::Pose           &scannerOffset,
+             const hydrotime::Time              &timeStamp )
+    {
+        orca::RangeScanner2dDescription orcaDescr;
+        orcaDescr.timeStamp.seconds  = timeStamp.seconds();
+        orcaDescr.timeStamp.useconds = timeStamp.useconds();
+
+        orcaDescr.minRange        = 0.0;
+        orcaDescr.maxRange        = scannerConfig.maxRange;
+        orcaDescr.fieldOfView     = scannerConfig.angleIncrement*(scannerConfig.numReturns-1);
+        orcaDescr.startAngle      = scannerConfig.startAngle;
+        orcaDescr.numberOfSamples = scannerConfig.numReturns;
+
+        orcaDescr.offset.p.x = scannerOffset.x();
+        orcaDescr.offset.p.y = scannerOffset.y();
+        orcaDescr.offset.p.z = 0.0;
+        orcaDescr.offset.o.r = 0.0;
+        orcaDescr.offset.o.p = 0.0;
+        orcaDescr.offset.o.y = scannerOffset.theta();
+        orcaDescr.size.l     = 0.1;
+        orcaDescr.size.w     = 0.1;
+        orcaDescr.size.h     = 0.1;
+
+        return orcaDescr;
     }
 
 }

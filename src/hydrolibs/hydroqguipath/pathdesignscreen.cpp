@@ -9,6 +9,7 @@
  */
  
 #include <QPainter>
+#include <QMouseEvent>
 #include <QDialog>
 #include <hydroqguielementutil/ihumanmanager.h>
 #include <hydroqguielementutil/paintutils.h>

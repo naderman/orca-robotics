@@ -8,49 +8,152 @@
 #include <orcaifaceimpl/drivebicycle.h>
 #include <orcaifaceimpl/gps.h>
 #include <orcaifaceimpl/laserscanner2d.h>
+#include <orcaifaceimpl/rangescanner2d.h>
 #include <orcaifaceimpl/localise2d.h>
 #include <orcaifaceimpl/localise3d.h>
 #include <orcaifaceimpl/odometry2d.h>
 #include <orcaifaceimpl/odometry3d.h>
 #include <orcaifaceimpl/power.h>
 #include <orcaifaceimpl/wifi.h>
+#include <orcaifaceimpl/pathfollower2d.h>
 
 namespace orcalogfactory {
 
-// fwd declarations (ignore, they're defined below)
-template<class LogReaderType,
-         class IfaceImplType>
-class DefaultIfaceImplSetup;
-template<class LogReaderType,
-         class IfaceImplType,
-         class DescriptionType>
-class DescriptionIfaceImplSetup;
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
 
+typedef orcalog::GenericReplayer< orcaifaceimpl::CameraImpl,
+                                  CameraLogReader,
+                                  orca::ImageDataPtr,
+                                  orcalog::DescriptionIfaceImplSetup<CameraLogReader,
+                                                                     orcaifaceimpl::CameraImpl,
+                                                                     orca::CameraDescriptionPtr> >       CameraReplayer;
 
 //////////////////////////////////////////////////////////////////////
 
+typedef orcalog::GenericReplayer< orcaifaceimpl::DriveBicycleImpl,
+                                  DriveBicycleLogReader,
+                                  orca::DriveBicycleData,
+                                  orcalog::DescriptionIfaceImplSetup<DriveBicycleLogReader,
+                                                                     orcaifaceimpl::DriveBicycleImpl,
+                                                                     orca::VehicleDescription> >       DriveBicycleReplayer;
+
+//////////////////////////////////////////////////////////////////////
+
+typedef orcalog::GenericReplayer< orcaifaceimpl::GpsImpl,
+                                  GpsLogReader,
+                                  orca::GpsData,
+                                  orcalog::DescriptionIfaceImplSetup<GpsLogReader,
+                                                                     orcaifaceimpl::GpsImpl,
+                                                                     orca::GpsDescription> >       GpsReplayer;
+
+//////////////////////////////////////////////////////////////////////
+
+typedef orcalog::GenericReplayer< orcaifaceimpl::LaserScanner2dImpl,
+                                  LaserScanner2dLogReader,
+                                  orca::LaserScanner2dDataPtr,
+                                  orcalog::DescriptionIfaceImplSetup<LaserScanner2dLogReader,
+                                                                     orcaifaceimpl::LaserScanner2dImpl,
+                                                                     orca::RangeScanner2dDescription> > LaserScanner2dReplayer;
+
+//////////////////////////////////////////////////////////////////////
+
+typedef orcalog::GenericReplayer< orcaifaceimpl::RangeScanner2dImpl,
+                                  RangeScanner2dLogReader,
+                                  orca::RangeScanner2dDataPtr,
+                                  orcalog::DescriptionIfaceImplSetup<RangeScanner2dLogReader,
+                                                                     orcaifaceimpl::RangeScanner2dImpl,
+                                                                     orca::RangeScanner2dDescription> > RangeScanner2dReplayer;
+
+//////////////////////////////////////////////////////////////////////
+
+typedef orcalog::GenericReplayer< orcaifaceimpl::Localise2dImpl,
+                                  Localise2dLogReader,
+                                  orca::Localise2dData,
+                                  orcalog::DescriptionIfaceImplSetup<Localise2dLogReader,
+                                                                     orcaifaceimpl::Localise2dImpl,
+                                                                     orca::VehicleGeometryDescriptionPtr> >    Localise2dReplayer;
+
+//////////////////////////////////////////////////////////////////////
+
+typedef orcalog::GenericReplayer< orcaifaceimpl::Localise3dImpl,
+                                  Localise3dLogReader,
+                                  orca::Localise3dData,
+                                  orcalog::DescriptionIfaceImplSetup<Localise3dLogReader,
+                                                                     orcaifaceimpl::Localise3dImpl,
+                                                                     orca::VehicleGeometryDescriptionPtr> >    Localise3dReplayer;
+
+//////////////////////////////////////////////////////////////////////
+
+typedef orcalog::GenericReplayer< orcaifaceimpl::Odometry2dImpl,
+                                  Odometry2dLogReader,
+                                  orca::Odometry2dData,
+                                  orcalog::DescriptionIfaceImplSetup<Odometry2dLogReader,
+                                                                     orcaifaceimpl::Odometry2dImpl,
+                                                                     orca::VehicleDescription> >    Odometry2dReplayer;
+
+//////////////////////////////////////////////////////////////////////
+
+typedef orcalog::GenericReplayer< orcaifaceimpl::Odometry3dImpl,
+                                  Odometry3dLogReader,
+                                  orca::Odometry3dData,
+                                  orcalog::DescriptionIfaceImplSetup<Odometry3dLogReader,
+                                                                     orcaifaceimpl::Odometry3dImpl,
+                                                                     orca::VehicleDescription> >    Odometry3dReplayer;
+
+//////////////////////////////////////////////////////////////////////
+
+typedef orcalog::GenericReplayer<orcaifaceimpl::PowerImpl,
+                                 PowerLogReader,
+                                 orca::PowerData> PowerReplayer;
+
+//////////////////////////////////////////////////////////////////////
+
+typedef orcalog::GenericReplayer<orcaifaceimpl::WifiImpl,
+                                 WifiLogReader,
+                                 orca::WifiData> WifiReplayer;
+
+//////////////////////////////////////////////////////////////////////
 
 //
-// Generic Replayer.  The last template argument is a class whose constructor
-// will set up the IfaceImpl (including reading a description if necessary).
+// This one is non-standard because the interface is non-standard.
 //
-template< class IfaceImplType,
-          class LogReaderType,
-          class DataType,
-          class IfaceImplSetup=DefaultIfaceImplSetup<LogReaderType,IfaceImplType> >
-class GenericReplayer : public orcalog::Replayer
+class NullPathFollower2dCallback : public orcaifaceimpl::AbstractPathFollowerCallback
 {
 public:
+    void setData( const orca::PathFollower2dData &path, bool activateImmediately )
+        {
+            std::cout<<"TRACE(replayers.h): Ignoring call: " << __func__ << std::endl;
+        }
+    void activateNow()
+        {
+            std::cout<<"TRACE(replayers.h): Ignoring call: " << __func__ << std::endl;
+        }
+    void setEnabled( bool enabled )
+        {
+            std::cout<<"TRACE(replayers.h): Ignoring call: " << __func__ << std::endl;
+        }
+    orca::PathFollower2dState getState()
+        {
+            std::cout<<"TRACE(replayers.h): Ignoring call: " << __func__ << std::endl;
+            orca::PathFollower2dState state; return state;
+        }
+};
 
-    GenericReplayer( const orcalog::LogReaderInfo &logReaderInfo )
+class PathFollower2dReplayer : public orcalog::Replayer
+{
+public:
+    PathFollower2dReplayer( const orcalog::LogReaderInfo &logReaderInfo )
         : logReader_( logReaderInfo )
         {}
-    virtual ~GenericReplayer() {}
 
     void init()
         {
             logReader_.init();
-            IfaceImplSetup( logReader_, iface_ );
+            // IfaceImplSetup( logReader_, iface_ );
+            iface_ = new orcaifaceimpl::PathFollower2dImpl( callback_,
+                                                            logReader_.logReaderInfo().context,
+                                                            logReader_.logReaderInfo().interfaceName );
             iface_->initInterface();
         }
 
@@ -58,247 +161,22 @@ public:
         {
             logReader_.setLogIndex( index );
             logReader_.read( data_ );
-            iface_->localSetAndSend( data_ );
+            iface_->localSend( data_ );
         }
 
     std::string toString() const { return logReader_.toString(); }
 
 protected:
 
-    IceUtil::Handle<IfaceImplType> iface_;
-    LogReaderType                  logReader_;
-    DataType                       data_;
-
-};
-
-//
-// Useful defaults for setting up the IfaceImpl:
-//
-
-//
-// This default will set up the IfaceImpl with no description required.
-//
-template<class LogReaderType,
-         class IfaceImplType>
-class DefaultIfaceImplSetup {
-public:
-    DefaultIfaceImplSetup( LogReaderType                  &logReader,
-                           IceUtil::Handle<IfaceImplType> &iface )
-        {
-            iface = new IfaceImplType( logReader.logReaderInfo().context,
-                                       logReader.logReaderInfo().interfaceName );
-        }
-};
-//
-// This version works when all that needs to happen is that a description
-// needs to be read in.
-//
-template<class LogReaderType,
-         class IfaceImplType,
-         class DescriptionType>
-class DescriptionIfaceImplSetup {
-public:
-    DescriptionIfaceImplSetup( LogReaderType                  &logReader,
-                               IceUtil::Handle<IfaceImplType> &iface )
-        {
-            DescriptionType descr;
-            logReader.read( descr );
-            iface = new IfaceImplType( descr,
-                                       logReader.logReaderInfo().context,
-                                       logReader.logReaderInfo().interfaceName );
-        }
+    NullPathFollower2dCallback callback_;
+    // IceUtil::Handle<IfaceImplType> iface_;
+    orcaifaceimpl::PathFollower2dImplPtr    iface_;
+    PathFollower2dLogReader        logReader_;
+    orca::PathFollower2dData       data_;
 };
 
 //////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////
-
-typedef GenericReplayer< orcaifaceimpl::CameraImpl,
-                         CameraLogReader,
-                         orca::ImageDataPtr,
-                         DescriptionIfaceImplSetup<CameraLogReader,
-                                                   orcaifaceimpl::CameraImpl,
-                                                   orca::CameraDescriptionPtr> >       CameraReplayer;
-
-//////////////////////////////////////////////////////////////////////
-
-typedef GenericReplayer< orcaifaceimpl::DriveBicycleImpl,
-                         DriveBicycleLogReader,
-                         orca::DriveBicycleData,
-                         DescriptionIfaceImplSetup<DriveBicycleLogReader,
-                                                   orcaifaceimpl::DriveBicycleImpl,
-                                                   orca::VehicleDescription> >       DriveBicycleReplayer;
-
-//////////////////////////////////////////////////////////////////////
-
-typedef GenericReplayer< orcaifaceimpl::GpsImpl,
-                         GpsLogReader,
-                         orca::GpsData,
-                         DescriptionIfaceImplSetup<GpsLogReader,
-                                                   orcaifaceimpl::GpsImpl,
-                                                   orca::GpsDescription> >       GpsReplayer;
-
-//////////////////////////////////////////////////////////////////////
-
-typedef GenericReplayer< orcaifaceimpl::LaserScanner2dImpl,
-                         LaserScanner2dLogReader,
-                         orca::LaserScanner2dDataPtr,
-                         DescriptionIfaceImplSetup<LaserScanner2dLogReader,
-                                                  orcaifaceimpl::LaserScanner2dImpl,
-                                                  orca::RangeScanner2dDescription> > LaserScanner2dReplayer;
-
-//////////////////////////////////////////////////////////////////////
-
-typedef GenericReplayer< orcaifaceimpl::Localise2dImpl,
-                         Localise2dLogReader,
-                         orca::Localise2dData,
-                         DescriptionIfaceImplSetup<Localise2dLogReader,
-                                                  orcaifaceimpl::Localise2dImpl,
-                                                  orca::VehicleGeometryDescriptionPtr> >    Localise2dReplayer;
-
-//////////////////////////////////////////////////////////////////////
-
-typedef GenericReplayer< orcaifaceimpl::Localise3dImpl,
-                         Localise3dLogReader,
-                         orca::Localise3dData,
-                         DescriptionIfaceImplSetup<Localise3dLogReader,
-                                                  orcaifaceimpl::Localise3dImpl,
-                                                  orca::VehicleGeometryDescriptionPtr> >    Localise3dReplayer;
-
-//////////////////////////////////////////////////////////////////////
-
-typedef GenericReplayer< orcaifaceimpl::Odometry2dImpl,
-                         Odometry2dLogReader,
-                         orca::Odometry2dData,
-                         DescriptionIfaceImplSetup<Odometry2dLogReader,
-                                                  orcaifaceimpl::Odometry2dImpl,
-                                                  orca::VehicleDescription> >    Odometry2dReplayer;
-
-//////////////////////////////////////////////////////////////////////
-
-typedef GenericReplayer< orcaifaceimpl::Odometry3dImpl,
-                         Odometry3dLogReader,
-                         orca::Odometry3dData,
-                         DescriptionIfaceImplSetup<Odometry3dLogReader,
-                                                  orcaifaceimpl::Odometry3dImpl,
-                                                  orca::VehicleDescription> >    Odometry3dReplayer;
-
-//////////////////////////////////////////////////////////////////////
-
-typedef GenericReplayer<orcaifaceimpl::PowerImpl,
-                        PowerLogReader,
-                        orca::PowerData> PowerReplayer;
-
-//////////////////////////////////////////////////////////////////////
-
-typedef GenericReplayer<orcaifaceimpl::WifiImpl,
-                        WifiLogReader,
-                        orca::WifiData> WifiReplayer;
 
 }
 
 #endif
-
-
-
-
-// XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-// XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-//
-// AlexB: A slightly different approach that I tried and left lying around
-//        just in case.
-//
-
-// template<class IfaceImplType,
-//          class LogReaderType,
-//          class DataType>
-// class GenericReplayer : public orcalog::Replayer
-// {
-// public:
-
-//     GenericReplayer( const orcalog::LogReaderInfo &logReaderInfo )
-//         : logReader_( logReaderInfo )
-//         {}
-//     virtual ~GenericReplayer() {}
-
-//     void init()
-//         {
-//             logReader_.init();
-//             setupIface();
-//             iface_->initInterface();
-//         }
-
-//     void replayData( int index )
-//         {
-//             logReader_.setLogIndex( index );
-//             logReader_.read( data_ );
-//             iface_->localSetAndSend( data_ );
-//         }
-
-//     std::string toString() const { return logReader_.toString(); }
-
-// protected:
-
-//     // Derived classes should overload.
-//     virtual void setupIface()=0;
-
-//     IceUtil::Handle<IfaceImplType> iface_;
-//     LogReaderType                  logReader_;
-//     DataType                       data_;
-
-// };
-
-// //////////////////////////////////////////////////////////////////////
-// //////////////////////////////////////////////////////////////////////
-// //////////////////////////////////////////////////////////////////////
-
-// class LaserScanner2dReplayer : public GenericReplayer<orcaifaceimpl::LaserScanner2dImpl,
-//                                                       LaserScanner2dLogReader,
-//                                                       orca::LaserScanner2dDataPtr>
-// {
-// public:
-
-//     LaserScanner2dReplayer( const orcalog::LogReaderInfo &logReaderInfo )
-//         : GenericReplayer<orcaifaceimpl::LaserScanner2dImpl,
-//                           LaserScanner2dLogReader,
-//                           orca::LaserScanner2dDataPtr>( logReaderInfo )
-//         {}
-
-// private:
-
-//     virtual void setupIface()
-//         {
-//             orca::RangeScanner2dDescription descr;
-//             logReader_.read( descr );
-//             iface_ = new orcaifaceimpl::LaserScanner2dImpl( descr,
-//                                                             logReader_.logReaderInfo().context,
-//                                                             logReader_.logReaderInfo().interfaceName );
-//         }
-// };
-
-// //////////////////////////////////////////////////////////////////////
-
-// class PowerReplayer : public GenericReplayer<orcaifaceimpl::PowerImpl,
-//                                              PowerLogReader,
-//                                              orca::PowerData>
-// {
-// public:
-
-//     PowerReplayer( const orcalog::LogReaderInfo &logReaderInfo )
-//         : GenericReplayer<orcaifaceimpl::PowerImpl,
-//                           PowerLogReader,
-//                           orca::PowerData>( logReaderInfo )
-//         {}
-
-// private:
-
-//     virtual void setupIface()
-//         {
-//             iface_ = new orcaifaceimpl::PowerImpl( logReader_.logReaderInfo().context,
-//                                                    logReader_.logReaderInfo().interfaceName );
-//         }
-// };
-
-// // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-// // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-// // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-

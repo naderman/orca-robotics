@@ -271,6 +271,6 @@ Driver::read( Command& command )
 } // namespace
 
 extern "C" {
-    hydrointerfaces::HumanInput2dFactory *createDriverFactory()
+    hydrointerfaces::HumanInput2dFactory *createHumanInput2dDriverFactory()
     { return new humaninput2dkbdtermio::Factory; }
 }

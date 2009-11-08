@@ -23,8 +23,9 @@ if( build )
     GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${LIB_VERSION} ${srcs} )
     target_link_libraries( ${LIB_NAME} ${dep_libs} )
 
-    if( ORCA_BUILD_TESTS )
-        HYDRO_ADD_LINK_TEST( SegwayRmp segwayrmpplayerclient driver.h ${LIB_NAME} ${dep_libs} )
-    endif( ORCA_BUILD_TESTS )
+# AlexB: disabled after 'powerbaseName' added to driver arg list.
+#    if( ORCA_BUILD_TESTS )
+#        HYDRO_ADD_LINK_TEST( SegwayRmp segwayrmpplayerclient driver.h ${LIB_NAME} ${dep_libs} )
+#    endif( ORCA_BUILD_TESTS )
 
 endif( build )

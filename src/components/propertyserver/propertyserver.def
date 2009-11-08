@@ -7,4 +7,5 @@ Provides.Properties.DefaultName=properties
 # Required Interfaces
 
 # Config Parameters
-Config.PlayerClient.Driver.Default=sicklms200
+Config.PersistanceFile.Default=propertyserverdb.txt
+Config.InitProperty.PlayerClient.Driver.Default=sicklms200

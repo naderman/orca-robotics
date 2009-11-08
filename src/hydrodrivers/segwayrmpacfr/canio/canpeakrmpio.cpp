@@ -23,19 +23,12 @@
 
 #include <gbxsickacfr/gbxiceutilacfr/timer.h>
 #include <hydrointerfaces/segwayrmp.h> // for Exception
+#include <gbxutilacfr/exceptions.h>
 #include "canpeakrmpio.h"
 
 using namespace std;
 using namespace segwayrmpacfr;
 
-
-//****************************************************************
-// A crappy simple method of preventing multiple class instances
-// Do Not access this counter directly!!!
-//**??** This needs to be handled more robustly!!
-namespace {
-    static int canInstanceCount = 0;
-}
 
 //**************************************************************
 // Take the name of the port and attempt to open it, throws an
@@ -44,24 +37,24 @@ CanPeakRmpIo::CanPeakRmpIo(const string & portName):
     isEnabled_(false), 
     debugLevel_(0) 
 {    
-
-    // Make sure that that we are the only copy of class that is built
-    assert( ::canInstanceCount == 0 );
-    ::canInstanceCount++;
-
-
     // open the CAN port and use as a chardev type end point
     portHandle_ = LINUX_CAN_Open(portName.c_str(), O_RDWR); 
 
-    if( ! portHandle_ ){
+    if( ! portHandle_ )
+    {
         stringstream ss;
         ss << "CanPeakRmpIo::constructor(): Error: "<<
             "Unable to open the can port-> " << portName << endl;
-        throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
-   }else{
-        std::cout << "Can port opened properly\n";
-   }
-
+// AlexB: I don't understand why, but a
+// hydrointerfaces::SegwayRmp::Exception appears to result in a
+// seg-fault
+//        throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+    }
+    else
+    {
+        std::cout << "CAN port opened properly\n";
+    }
 }
 
 
@@ -69,34 +62,44 @@ CanPeakRmpIo::CanPeakRmpIo(const string & portName):
 //*************************************************************
 CanPeakRmpIo::~CanPeakRmpIo()
 {
-    DWORD retVal = 0;
-    stringstream ss;
+    cout<<"TRACE(canpeakrmpio.cpp): " << __func__ << endl;
 
-    if(portHandle_){
-      retVal = CAN_Close(portHandle_);  // close access to the PCMCIA port
-      if(retVal != 0 ){
-          ss << "CanPeakRmpIo::destructor(): Error: "<<
-              "Unable to close can port. " << peakStatusToString(retVal) << endl;
-          throw( hydrointerfaces::SegwayRmp::Exception(ss.str()) );
-      }
-      portHandle_ = NULL;      // clear the port handle
-      isEnabled_ = false;
+    try {
+        DWORD retVal = 0;
+        stringstream ss;
+
+        if ( portHandle_ )
+        {
+            retVal = CAN_Close(portHandle_);  // close access to the CAN port
+            if(retVal != 0 ){
+                ss << "CanPeakRmpIo::destructor(): Error: "<<
+                    "Unable to close can port. " << peakStatusToString(retVal) << endl;
+//                throw hydrointerfaces::SegwayRmp::Exception(ss.str());
+                throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+            }
+            portHandle_ = NULL;      // clear the port handle
+            isEnabled_ = false;
+        }
     }
-    ::canInstanceCount--; 
+    catch ( std::exception &e )
+    {
+        // Don't throw exceptions from destructor
+        cout << e.what();
+    }
 }
 
 
 //*************************************************************
 // Function to read a CAN packet from the card. Will
 // return NO_DATA in the event of a timeout or a failed
-// read. Will wait for 10msec (=> 100Hz) for data before 
+// read. Will wait for just over 10msec (=> 100Hz) for data before 
 // timing out
 
 RmpIo::RmpIoStatus 
 CanPeakRmpIo::readPacket(CanPacket &pkt){
 
     // Set the default timeout to 100Hz
-    const int timeOutMicroSeconds=10000;
+    const int timeOutMicroSeconds=10000*1.2;
 
     assert ( isEnabled_ );
 
@@ -157,7 +160,7 @@ void CanPeakRmpIo::writePacket(const CanPacket &pktToSend){
         stringstream ss;
         ss << endl << " --> Attempted write data to CAN card failed: Call Returned "<< 
             peakStatusToString(retVal) << endl;
-        throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 
 }
@@ -194,7 +197,7 @@ CanPeakRmpIo::enable(int debugLevel){
         stringstream ss;
         ss << endl << " --> Attempted initialisation of the CAN card failed: Error Returned " << 
             peakStatusToString(retVal )<< endl;
-        throw hydrointerfaces::SegwayRmp::Exception( ss.str() );      
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );      
     }
 
  

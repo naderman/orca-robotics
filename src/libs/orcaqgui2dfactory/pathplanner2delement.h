@@ -50,11 +50,7 @@ class PathPlanner2dElement : public orcaqguielementutil::IceStormGuiElement2d<Pa
 public: 
 
     PathPlanner2dElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
-                          const orcaice::Context                     &context,
-                          const std::string                          &proxyString,
-                          hydroqguielementutil::IHumanManager        &humanManager,
-                          hydroqguielementutil::MouseEventManager    &mouseEventManager,
-                          hydroqguielementutil::ShortcutKeyManager   &shortcutKeyManager );
+                          const orcaice::Context                     &context );
     ~PathPlanner2dElement();
 
     void update();
@@ -62,7 +58,7 @@ public:
     // overriding paint since we have to paint human input
     void paint( QPainter *p, int z );
     
-    virtual void actionOnConnection();
+    virtual void iceStormConnectedEvent();
     virtual bool isInGlobalCS() { return true; }
     virtual QStringList contextMenu();
     virtual void execute( int action );
@@ -90,7 +86,6 @@ private:
     
     orcaice::Context context_;
     std::string proxyString_;
-    hydroqguielementutil::IHumanManager &humanManager_;
         
     // Handles user interaction
     PathPlannerUserInteraction pathHI_;

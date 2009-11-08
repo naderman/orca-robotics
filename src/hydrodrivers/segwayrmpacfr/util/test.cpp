@@ -4,15 +4,34 @@
 #include <hydroiceutil/localtracer.h>
 #include <gbxutilacfr/trivialtracer.h>
 #include <hydroiceutil/localstatus.h>
+#include <stdlib.h>
 
 using namespace std;
 
 int main( int argc, char **argv )
 {
+    std::string portName = "/dev/pcan40";
+
+    const std::string USAGE_ARGS = "[-p <portName>]";
+    for ( int i=1; i < argc; i++ )
+    {
+        if ( !strcmp(argv[i],"-p") &&
+             i+1 < argc )
+        {
+            portName = argv[i+1];
+            i++;
+        }
+        else
+        {
+            cout << "USAGE: " << USAGE_ARGS;
+            exit(1);
+        }
+    }
+
     hydroutil::Properties props;
 
     // CAN settings
-    props.setProperty( "Acfr.CanDevice", "/dev/pcan40" );
+    props.setProperty( "Acfr.CanDevice", portName );
 
     int debug=9, info=3, warn=3, error=3;
     gbxutilacfr::TrivialTracer tracer( debug, info, warn, error );
@@ -20,7 +39,7 @@ int main( int argc, char **argv )
 
     hydroutil::Context context( props, tracer, status );
 
-    segwayrmpacfr::Driver driver( context );
+    segwayrmpacfr::Driver driver( "TestPowerbase", context );
 
     while ( true )
     {

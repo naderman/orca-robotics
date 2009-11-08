@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
@@ -14,6 +14,7 @@
 #include <QMouseEvent>
 #include <QMenu>
 #include <QColorDialog>
+#include <QHeaderView>
 
 #include "guielementview.h"
 #include "guielementmodel.h"   // need to access custom API
@@ -22,18 +23,20 @@
 using namespace std;
 
 namespace orcaqgemv {
-    
+
 GuiElementView::GuiElementView( QWidget *parent )
-    : QTableView(parent) 
+    : QTableView(parent)
 {
     setSelectionBehavior(QAbstractItemView::SelectRows);
+
+    horizontalHeader()->setStretchLastSection( true );
 }
 
 void
 GuiElementView::contextMenuEvent( QContextMenuEvent* e )
 {
     QMenu menu(this);
-        
+
     QStringList actions = currentIndex().data( GuiElementModel::ContextMenuRole ).toStringList();
 
     for ( int i=0; i<actions.size(); ++i ) {
@@ -79,34 +82,34 @@ GuiElementView::contextMenuEvent( QContextMenuEvent* e )
     menu.addAction( "Set As Coordinate Frame", this, SLOT( setCooFrameToCurrentGuiElement() ) );
     menu.addAction( "Set As Origin", this, SLOT( setOriginToCurrentGuiElement() ) );
     menu.addAction( "Set Colour", this, SLOT( setColourOfCurrentGuiElement() ) );
-    
+
     // check whether element is removable
     GuiElementModel* guiElementModel = dynamic_cast<GuiElementModel*>( model() );
     if ( guiElementModel->isElementRemovable( currentIndex().row() ) ) {
         menu.addAction( "Remove", this, SLOT( removeCurrentGuiElement() ) );
     }
-    
+
     menu.exec( e->globalPos() );
 }
 
 void
 GuiElementView::selectedAdaptersInView(int numElements, vector<int>& indeces)
-{    
+{
     // make a shortlist of the adapters currently displayed
     vector<int> shortList;
     for (int i=0; i<numElements; i++)
     {
         if ( !isRowHidden(i) ) shortList.push_back(i);
     }
-    
+
     // get all selected adapters
     QModelIndexList list = selectedIndexes();
     QVector<int> selectedRows;
     for (int i=0; i<list.size(); i++)
     {
-        selectedRows.push_back( list[i].row() );    
+        selectedRows.push_back( list[i].row() );
     }
-    
+
     // check if any of the selected adapters match any of shortlisted ones
     for( unsigned int i=0; i<shortList.size(); i++ )
     {
@@ -115,7 +118,7 @@ GuiElementView::selectedAdaptersInView(int numElements, vector<int>& indeces)
             indeces.push_back(shortList[i]);
         }
     }
-    
+
     // if indeces is empty, send signal to *all* displayed items
     if (indeces.size()==0) {
         indeces = shortList;
@@ -134,7 +137,7 @@ void
 GuiElementView::hideElements(int numElements, const vector<int>& indeces)
 {
     showAllElements(numElements);
-    
+
     for (unsigned int i=0; i<indeces.size(); i++) {
         hideRow( indeces[i] );
     }

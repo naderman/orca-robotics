@@ -32,13 +32,26 @@ see @ref orca_doc_configfiles.
 
 @image html propertyserver.png
 
+@par Initial properties
+
+Properties in the .cfg file of the form:
+ - Config.InitProperty.<Key>=<Value>
+will be loaded into the propertyserver's database on initialisation.
+
+@par Persistance
+
+If 'Config.PersistanceFile' is set, propertyserver is persistant.
+That is, it loads properties from this file on startup and saves those properties on shutdown.
+
+Properties that are set explicitly in the config file over-write persitant properties.
+
 @par Empty Properties
 
 Properties are a set of key-value pairs.  Ice Properties cannot differentiate between:
   - a key not being set, and
   - a value set to an empty string.
 
-To handle this, the special value "NULL" is used to denote
+To handle this, the special value "property-not-set" is used to denote
 value-not-set.  It will be internally translated to an empty string.
 
 

@@ -19,11 +19,6 @@ Component::start()
 {
     mainThread_ = new MainThread( context() );
     mainThread_->start();
-
-    // give MainThread a chance to write something to the history
-    bool forceHistory = false;
-    context().history().autoStart( forceHistory );
-    context().history().flush();
 }
 
 void
@@ -38,9 +33,4 @@ Component::stop()
     // (it's important to do it now if the thread has instances of ConsumerImpl,
     // they will unsubscribe from IceStorm in destructor)
     mainThread_ = 0;
-
-    // give MainThread a chance to write something to the history
-    bool forceHistory = false;
-    context().history().autoFinish( forceHistory );
-    context().history().flush();
 }

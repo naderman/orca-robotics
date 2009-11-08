@@ -25,6 +25,7 @@ class MainThread : public orcaice::SubsystemThread
 public: 
 
     MainThread( const orcaice::Context & context );
+    ~MainThread();
 
 private:
     // from SubsystemThread

@@ -2,6 +2,9 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcaobj/localise2d.h>
+#include <orcabros1/orcabros1.h>
+#include <orcaifaceutil/vehicledescription.h>
+#include <orcabros1/convertutils.h>
 
 using namespace std;
 
@@ -191,6 +194,39 @@ namespace orcanavutil {
         cov.tt = rotationalCov;
 
         return cov;
+    }
+
+    orca::VehicleGeometryDescriptionPtr convert( const hydronavutil::CylindricalGeometryDescription &geomDescr )
+    {
+        orca::VehicleGeometryCylindricalDescription *orcaGeom = new orca::VehicleGeometryCylindricalDescription;
+        orcaGeom->type = orca::VehicleGeometryCylindrical;
+        orcabros1::convert( geomDescr.platformToGeometryTransform,
+                            orcaGeom->platformToGeometryTransform );
+
+        orcaGeom->radius = geomDescr.radius;
+        orcaGeom->height = geomDescr.height;
+        return orca::VehicleGeometryDescriptionPtr( orcaGeom );
+    }
+    orca::VehicleDescription convert( const hydronavutil::DiffDriveControlDescription    &controlDescr,
+                                      const hydronavutil::CylindricalGeometryDescription &geomDescr )
+    {
+        orca::VehicleControlVelocityDifferentialDescription *orcaControl = 
+            new orca::VehicleControlVelocityDifferentialDescription;
+
+        orcaControl->type = orca::VehicleControlVelocityDifferential;
+        orcaControl->maxForwardSpeed           = controlDescr.maxForwardSpeed;
+        orcaControl->maxReverseSpeed           = controlDescr.maxReverseSpeed;
+        orcaControl->maxTurnrate               = controlDescr.maxTurnrate;
+        orcaControl->maxLateralAcceleration    = controlDescr.maxLateralAcceleration;
+        orcaControl->maxForwardAcceleration    = controlDescr.maxForwardAcceleration;
+        orcaControl->maxReverseAcceleration    = controlDescr.maxReverseAcceleration;
+        orcaControl->maxRotationalAcceleration = controlDescr.maxRotationalAcceleration;
+
+        orca::VehicleDescription orcaDescr;
+        orcaDescr.control = orcaControl;
+        orcaDescr.geometry = convert(geomDescr);
+
+        return orcaDescr;
     }
 }
 

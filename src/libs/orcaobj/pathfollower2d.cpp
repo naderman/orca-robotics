@@ -68,7 +68,8 @@ bool isSane( const orca::PathFollower2dData& data, std::string& reason )
     if ( !orcaobj::isSane( data.timeStamp, partialReason ) ) 
     {
         // AlexB: not calling this !sane, but it is bad.
-        cout<<"TRACE(pathfollower2d.cpp): WARNING: Bad timestamp: " << partialReason << endl;
+        cout<<"TRACE(pathfollower2d.cpp): on path: " << toString(data)
+            << endl << "WARNING: Bad timestamp: " << partialReason << endl;
 
 //         sane = false;
 //         if ( !reason.empty() )

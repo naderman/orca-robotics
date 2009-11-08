@@ -21,7 +21,10 @@ add_subdirectory( hydroimageocvutil )
 add_subdirectory( hydroogmap )
 add_subdirectory( hydromapload ) # requires hydroogmap
 add_subdirectory( hydronavutil )
+add_subdirectory( hydrorobotdriverutil )
 add_subdirectory( hydropathplan )
+add_subdirectory( hydropublish )
+add_subdirectory( hydrotime )
 add_subdirectory( hydroscanutil ) # requires hydronavutil
 add_subdirectory( hydrosim2d ) # requires hydronavutil
 add_subdirectory( hydrolaserfeatureextract ) # tests require hydromapload and hydrosim2d

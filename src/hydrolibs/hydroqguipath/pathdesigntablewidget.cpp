@@ -20,19 +20,6 @@ using namespace std;
 
 namespace hydroqguipath {
     
-enum ColumnDataType {
-    AbsoluteTime = 0,
-    Velocity,
-    WaypointX,
-    WaypointY,
-    Heading,
-    DistanceTolerance,
-    HeadingTolerance,
-    MaxApproachSpeed,
-    MaxApproachTurnRate,
-    NumColumns
-};
-    
 PathDesignTableWidget::PathDesignTableWidget( IPathInput *pathInput, 
                                               GuiPath    &guiPath )
     : pathInput_(pathInput)
@@ -134,6 +121,19 @@ PathDesignTableWidget::cancelPath()
 }
 
 // ==================================================================
+
+enum ColumnDataType {
+    AbsoluteTime = 0,
+    Velocity,
+    WaypointX,
+    WaypointY,
+    Heading,
+    DistanceTolerance,
+    HeadingTolerance,
+    MaxApproachSpeed,
+    MaxApproachTurnRate,
+    NumColumns
+};
     
 PathDesignTable::PathDesignTable( QWidget    *parent,
                                   IPathInput *pathInput,

@@ -11,6 +11,7 @@
 #include <iostream>
 #include <hydroqgui/exceptions.h>
 #include "mouseeventmanager.h"
+#include "guielement.h"
 
 using namespace std;
 

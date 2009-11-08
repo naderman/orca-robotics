@@ -55,12 +55,7 @@ DefaultFactory::lookupElementType( const QStringList &ids, QString &elementType 
 }
 
 hydroqguielementutil::GuiElement*
-DefaultFactory::create( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
-                        hydroqguielementutil::IHumanManager        &humanManager,
-                        hydroqguielementutil::MouseEventManager    &mouseEventManager,
-                        hydroqguielementutil::ShortcutKeyManager   &shortcutKeyManager,
-                        const hydroqgui::GuiElementSet             &guiElementSet,
-                        QSplitter                                  *spaceBottomRight ) const
+DefaultFactory::create( const hydroqguielementutil::GuiElementInfo &guiElementInfo ) const
 {
     assert( isContextSet_ );
     hydroqguielementutil::GuiElement *elem = NULL;
@@ -73,25 +68,25 @@ DefaultFactory::create( const hydroqguielementutil::GuiElementInfo &guiElementIn
             elem = new orcaqgui3d::GridElement( guiElementInfo );
         }
         else if ( guiElementInfo.type == "LaserScanner2d" ) {
-            elem = new orcaqgui3d::LaserScanner2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString() );
+            elem = new orcaqgui3d::LaserScanner2dElement( guiElementInfo, context_ );
         }
         else if ( guiElementInfo.type == "RangeScanner2d" ) {
-            elem = new orcaqgui3d::RangeScanner2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString() );
+            elem = new orcaqgui3d::RangeScanner2dElement( guiElementInfo, context_ );
         }
         else if ( guiElementInfo.type == "Localise2d" ) {
-            elem = new orcaqgui3d::Localise2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString(), &humanManager );
+            elem = new orcaqgui3d::Localise2dElement( guiElementInfo, context_ );
         }
         else if ( guiElementInfo.type == "FeatureMap2d" ) {
-            elem = new orcaqgui3d::FeatureMap2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString(), &humanManager );
+            elem = new orcaqgui3d::FeatureMap2dElement( guiElementInfo, context_ );
         }
         else if ( guiElementInfo.type == "Localise3d" ) {
-            elem = new orcaqgui3d::Localise3dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString(), &humanManager );
+            elem = new orcaqgui3d::Localise3dElement( guiElementInfo, context_ );
         }
         else if ( guiElementInfo.type == "OgMap" ) {
-            elem = new orcaqgui3d::OgMapElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString(), &humanManager );
+            elem = new orcaqgui3d::OgMapElement( guiElementInfo, context_ );
         }
         else if ( guiElementInfo.type == "PointCloud" ) {
-            elem = new orcaqgui3d::PointCloudElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString() );
+            elem = new orcaqgui3d::PointCloudElement( guiElementInfo, context_ );
         }
         else
         {

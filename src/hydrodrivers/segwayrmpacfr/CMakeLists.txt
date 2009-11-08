@@ -46,11 +46,7 @@ if( build )
     endif( ORCA_BUILD_TESTS )
 
     GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
-
-    if( ORCA_BUILD_TESTS )
-        HYDRO_ADD_LINK_TEST( SegwayRmp segwayrmpacfr driver.h ${LIB_NAME} ${dep_libs} )
-    endif( ORCA_BUILD_TESTS )
-
+    
 endif( build )
 
 #

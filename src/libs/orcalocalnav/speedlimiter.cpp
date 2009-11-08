@@ -82,7 +82,6 @@ namespace {
 
 SpeedLimiter::SpeedLimiter( const orcaice::Context& context)
     : intendedSpeedThisLeg_(1.0),
-//      heartbeater_(context),
       context_(context)
 {
 }
@@ -189,28 +188,6 @@ SpeedLimiter::constrainMaxSpeeds( orcalocalnav::Goal &goal,
 //     // Don't constrain the maxTurnrate by timeRemaining.
 //     // Need to leave the driver with the freedom to swerve hard.
 //     // goal.maxTurnrate *= scaleFactor;
-
-//     maybeSendHeartbeat( secondsBehindSchedule );
 }
-
-// void
-// SpeedLimiter::maybeSendHeartbeat( double secondsBehindSchedule )
-// {
-//     if ( !heartbeater_.isHeartbeatTime() )
-//         return;
-
-//     stringstream ss;
-//     ss << "Seeking goal.  Timing: ";
-//     if ( secondsBehindSchedule > 0.0 )
-//     {
-//         ss << "on schedule.";
-//     }
-//     else
-//     {
-//         ss << "running " << secondsBehindSchedule << "s behind schedule.";
-//     }
-    
-//     heartbeater_.beat( ss.str() );
-// }
 
 }

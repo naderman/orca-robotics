@@ -1,7 +1,7 @@
 
 
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
@@ -34,8 +34,8 @@ globally unique name is supplied. This function is useful for creating
 'consumer' objects, i.e. you subscribe for information to be pushed into
 them by specifying the direct proxy to them.
 
-This is a local operation. It normally does not throw any exceptions. 
-The only case when an exception, orcaice::ComponentDeactivatingException, is thrown is 
+This is a local operation. It normally does not throw any exceptions.
+The only case when an exception, orcaice::ComponentDeactivatingException, is thrown is
 when the adapter is deactivated. This does not happen right after a component is created because
 the initial state of an adapter is Holding.
 
@@ -163,8 +163,8 @@ connectToTopicWithString( const Context     & context,
         // Give some feedback as to why this isn't working
         std::stringstream ss; ss<<"Error while connecting to IceStorm topic publisher '"<<topicName<<"': "<<e;
         // not using status because we would need to add localReportingOnly option
-        initTracerError( context, ss.str(), 2, localReportingOnly );
-        initTracerInfo( context, "hint: Is IceStorm running?", 10, localReportingOnly );
+        initTracerError( context, ss.str(), localReportingOnly );
+        initTracerInfo( context, "hint: Is IceStorm running?", localReportingOnly );
         throw orcaice::NetworkException( ERROR_INFO, ss.str() );
     }
     catch( const Ice::LocalException &e )
@@ -172,7 +172,7 @@ connectToTopicWithString( const Context     & context,
         std::stringstream ss;
         ss<<"Error while connecting to IceStorm topic publisher '"<<topicName<<"': "<<e;
         // not using status because we would need to add localReportingOnly option
-        initTracerError( context, ss.str(), 2, localReportingOnly );
+        initTracerError( context, ss.str(), localReportingOnly );
         throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
     catch ( Ice::Exception &e )
@@ -180,7 +180,7 @@ connectToTopicWithString( const Context     & context,
         // Give some feedback as to why this isn't working
         std::stringstream ss; ss<<"Error while connecting to IceStorm topic publisher '"<<topicName<<"': "<<e;
         // not using status because we would need to add localReportingOnly option
-        initTracerError( context, ss.str(), 2, localReportingOnly );
+        initTracerError( context, ss.str(), localReportingOnly );
         throw orcaice::NetworkException( ERROR_INFO, ss.str() );
     }
 
@@ -189,7 +189,7 @@ connectToTopicWithString( const Context     & context,
 
 /*!
 Convenience function, behaves like @ref connectToTopicWithString but the proxy information
-comes from the configuration file and the @p interfaceTag. 
+comes from the configuration file and the @p interfaceTag.
 The appropriate topic name is generated based on the fully-qualified interface name. Default
 subtopic is "*".
 
@@ -218,7 +218,7 @@ connectToTopicWithTag( const Context           & context,
 namespace detail {
 
     // Catches all exceptions.
-    // Returns: 
+    // Returns:
     // 0  : if re-connected
     // 1  : if failed to re-connect
     // -1 : if got CommunicatorDestroyedException
@@ -267,11 +267,11 @@ namespace detail {
 
 /*!
 Tries to push to IceStorm. If fails tries to reconnect to IceStorm once. If reconnects
-successfully, pushes the data, if not, ignores the problem until the next time. 
-Catches all exceptions. 
+successfully, pushes the data, if not, ignores the problem until the next time.
+Catches all exceptions.
 
 Works only for ConsumerPrxType which has a function setData( DataType ). For non-standard
-consumers, copy and modify this implementation. (In this case you probably do not need 
+consumers, copy and modify this implementation. (In this case you probably do not need
 this function to be templated).
 */
 template<class ConsumerPrxType, class DataType>
@@ -288,7 +288,7 @@ void tryPushToIceStormWithReconnect( orcaice::Context   &context,
 
     // check that we are connected to the publisher
     if ( !publisherPrx ) {
-        int reconnected = detail::tryReconnectToIceStorm( 
+        int reconnected = detail::tryReconnectToIceStorm(
                                 context, publisherPrx, topicPrx, topicName );
         bool localOnly = true;
         if ( reconnected==0 ) {
@@ -315,7 +315,7 @@ void tryPushToIceStormWithReconnect( orcaice::Context   &context,
     catch ( Ice::Exception &e )
     {
         // This could happen if IceStorm dies.
-        // If we're running in an IceBox and the IceBox is shutting down, 
+        // If we're running in an IceBox and the IceBox is shutting down,
         // this is expected (our co-located IceStorm is obviously going down).
         std::stringstream ss;
         ss << "(while pushing data to topic "<<topicName<<") 1st attempt failed: " << e.what();
@@ -323,7 +323,7 @@ void tryPushToIceStormWithReconnect( orcaice::Context   &context,
         context.tracer().warning( ss.str(), 1, localOnly  );
 
         // If IceStorm just re-started for some reason though, we want to try to re-connect
-        int reconnected = detail::tryReconnectToIceStorm( 
+        int reconnected = detail::tryReconnectToIceStorm(
                                 context, publisherPrx, topicPrx, topicName );
         if ( reconnected==0 )
         {

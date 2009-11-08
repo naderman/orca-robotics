@@ -66,6 +66,8 @@ MainWindow::MainWindow(
 
     // the status bar is created the first time we call it. for consistent look we should call here.
     statusBar()->showMessage("Ready", 2000);
+
+    readSettings();
 }
 
 void
@@ -76,6 +78,17 @@ MainWindow::quit()
                                       QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Ok )
     {
         close();
+    }
+}
+
+void 
+MainWindow::closeEvent( QCloseEvent *event )
+{
+    if ( true ) {
+        writeSettings();
+        event->accept();
+    } else {
+        event->ignore();
     }
 }
 
@@ -136,6 +149,28 @@ MainWindow::showStatusMsg( MessageType type, const QString &msg )
     
     statusBar()->showMessage( str+msg, 2000 );
     cout<<"TRACE(mainwin.cpp): " << (str+msg).toStdString() << endl;
+}
+
+void 
+MainWindow::writeSettings()
+{
+    QSettings settings;
+
+    settings.beginGroup("MainWindow");
+    settings.setValue("size", size());
+    settings.setValue("pos", pos());
+    settings.endGroup();
+}
+
+void 
+MainWindow::readSettings()
+{
+    QSettings settings;
+
+    settings.beginGroup("MainWindow");
+    resize(settings.value("size", QSize(400, 400)).toSize());
+    move(settings.value("pos", QPoint(200, 200)).toPoint());
+    settings.endGroup();
 }
 
 void

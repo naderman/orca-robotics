@@ -5,6 +5,8 @@
 #include <orca/localise2d.h>
 #include <orca/odometry2d.h>
 #include <orca/velocitycontrol2d.h>
+#include <hydronavutil/vehicledescription.h>
+#include <orca/vehicledescription.h>
 
 namespace orcanavutil {
 
@@ -47,6 +49,10 @@ namespace orcanavutil {
     orca::VelocityControl2dData convert( const hydronavutil::Velocity &cmd );
     //! Returns a covariance matrix of the form: diag([linearCov, linearCov, rotationalCov])
     orca::Covariance2d diagonalCovariance( double linearCov, double rotationalCov );
+
+    orca::VehicleGeometryDescriptionPtr convert( const hydronavutil::CylindricalGeometryDescription &geomDescr );
+    orca::VehicleDescription convert( const hydronavutil::DiffDriveControlDescription    &controlDescr,
+                                      const hydronavutil::CylindricalGeometryDescription &geomDescr );
 }
 
 #endif

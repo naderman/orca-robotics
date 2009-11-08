@@ -54,6 +54,12 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     e.g. $ teleop (without teleop.cfg). This should be allowed for utilities like
     probe but components with required interfaces should say something
     intelligent (alexm).
+  - feature: Make standard Ice::Admin interface appear through Home interface (and therefore make them
+    available through Probe)
+  - fix inconsistancy in template definitions in connectutils.h (some template types are expected
+    to be InterfaceType some InterfaceTypePrx). Test these functions, apparently 
+    connectToInterfaceWithString<InterfaceType> does not compile but when called with template parameter
+    it does.
 
 - RegistryView
     - bug: fix stale display of components (alexm)
@@ -70,15 +76,24 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - feature: special toString() for exceptions? only for those which derive from OrcaException?
 
 - Probe
-  - bug: probes the wrong interface. DataHub has 3 standard and 2 nonstandard interfaces. selecting 3 (the first unsupported interface)
+  - bug: probes the wrong interface. DataHub has 3 standard and 2 nonstandard interfaces. selecting 3 (the first unsupported interface) 
     for some reason still talks to Home (the last supported iface) (alexm)
   - use JobQueue to parallelize the pinging (alexm)
 
 - IcePing
   - feature: add a mechanism to ping admin interfaces (alexm)
-  - do general cleanup
+  - do general cleanup 
 
-@section orca_doc_history_9110 Changes in Release 9.11.0
+@section orca_doc_history_special To be merged after Orca release.
+
+- libOrcaCompModel: Registry information is now sorted alphabetically.
+- RegistryClean: fixed bug with expiring session. registryclean now uses libOrcaIceGrid.
+- OrcaView2d: main window position and size are now stored and restored.
+
+@section orca_doc_history_special Changes in MRSRC but not in SF
+- History rewrite. Now works with components which are not shutdown properly.
+
+@section orca_doc_history_head Changes in SVN since Last Release
 
 @par Project wide
 
@@ -186,27 +201,28 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
 
 @par New libraries
 
-- libOrcaSystemStatusUtil
+- libOrcaSystemStatusUtil 
   - wraps up tricky functionality of maintaining remote status of a component. Used in SystemStatus. (alexm)
 
+@par Updated driver interfaces
 @par Updated drivers
 
 - SegwayRmpAcfr
   - removed unnecessary dependency between CAN and USB drivers. (alexm)
 
+@par Updated non-framework utilities
 @par Updated non-framework libraries
 
 - libHydroIceUtil
   - Job class: implements gbxutilacfr::Stoppable interface. No change required in existing code.
-
+  - JobQueue: added to toString() function to get current contents of the queue.
+  - LocalStatus class: added component-wide tolerance to subsystem heartbeat delays. This change
+    is promted by long-operations of non-RT OS's, e.g. Linux.
+  
 - libHydroQGuiPath
   - Improved abstract ipathinput and ipathuserinteraction interfaces (tobi)
   - Fixed rare segfaults related to shortcut keys and mouse events (tobi)
   - Changed the way paths are saved from user input (tobi)
-
-- libHydroIceUtil
-  - LocalStatus class: added component-wide tolerance to subsystem heartbeat delays. This change
-    is promted by long-operations of non-RT OS's, e.g. Linux.
 
 @par Updated component interfaces
 

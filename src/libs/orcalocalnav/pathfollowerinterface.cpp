@@ -8,6 +8,18 @@ using namespace std;
 
 namespace orcalocalnav {
 
+namespace {
+
+    orca::Time convert( const hydrotime::Time &time )
+    {
+        orca::Time orcaTime;
+        orcaTime.seconds  = time.seconds();
+        orcaTime.useconds = time.useconds();
+        return orcaTime;
+    }
+
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 PathFollowerInterface::PathFollowerInterface( const orcalocalnav::Clock &clock,
@@ -39,10 +51,13 @@ PathFollowerInterface::initInterface( gbxutilacfr::Stoppable* activity,
 void
 PathFollowerInterface::setData( const orca::PathFollower2dData &pathData, bool activateImmediately )
 {
-    stringstream ss;
-    ss<<"pathfollower2dI: Received new path: " << orcaobj::toVerboseString(pathData) << endl
-      <<"activateImmediately: " << activateImmediately << endl;
-    context_.tracer().debug( ss.str(), 2 );
+    stringstream ssDebug;
+    ssDebug<<"pathfollower2dI: Received new path: " << orcaobj::toVerboseString(pathData) << endl
+           <<"activateImmediately: " << activateImmediately << endl;
+    context_.tracer().debug( ssDebug.str(), 2 );
+    stringstream ssInfo;
+    ssInfo<<"pathfollower2dI: Received new path of size "<<pathData.path.size()<<", activateImmediately: " << activateImmediately << endl;
+    context_.tracer().info( ssInfo.str() );
 
     // Sanity check
     std::string reason;
@@ -51,6 +66,12 @@ PathFollowerInterface::setData( const orca::PathFollower2dData &pathData, bool a
         stringstream ss;
         ss << "PathFollower2dI: Received screwy path: " << orcaobj::toString(pathData) << endl << reason;
         context_.tracer().warning( ss.str() );
+        
+        // Something's obviously wrong, so we should stop immediately
+        orca::PathFollower2dData stopPathData;
+        stopPathData.timeStamp = orcaice::getNow();
+        newlyArrivedRequestStore_.addPathRequest( pathData, true );
+
         throw orca::MalformedParametersException( reason );
     }
 
@@ -76,7 +97,7 @@ PathFollowerInterface::getState()
     IceUtil::Mutex::Lock lock( mutex_ );
     if ( pathFollower2dState_.pathActivation == orca::FollowingPath )
     {
-        pathFollower2dState_.secondsSinceActivation = orcaice::timeDiffAsDouble( clock_.time(),
+        pathFollower2dState_.secondsSinceActivation = orcaice::timeDiffAsDouble( convert(clock_.time()),
                                                                                  activationTime_ );
     }
     return pathFollower2dState_;
@@ -112,7 +133,7 @@ PathFollowerInterface::updateActivationStateAndWaypointIndex( orca::PathActivati
         IceUtil::Mutex::Lock lock( mutex_ );
         pathFollower2dState_.waypointIndex      = waypointIndex;
         pathFollower2dState_.pathActivation     = activationState;
-        pathFollower2dState_.secondsSinceActivation = orcaice::timeDiffAsDouble( clock_.time(),
+        pathFollower2dState_.secondsSinceActivation = orcaice::timeDiffAsDouble( convert(clock_.time()),
                                                                                  activationTime_ );
         tempState = pathFollower2dState_;
     }
@@ -138,7 +159,7 @@ PathFollowerInterface::serviceRequests( bool                     &gotNewPath,
         orca::PathFollower2dState tempState;
         {
             IceUtil::Mutex::Lock lock( mutex_ );
-            activationTime_ = clock_.time();
+            activationTime_ = convert(clock_.time());
             pathFollower2dState_.pathActivation         = orca::FollowingPath;
             pathFollower2dState_.waypointIndex          = 0;
             pathFollower2dState_.secondsSinceActivation = 0.0;
@@ -168,6 +189,7 @@ PathFollowerInterface::NewlyArrivedRequestStore::addActivationRequest()
     IceUtil::Mutex::Lock lock( mutex_ );
     if ( !pendingPathRequest_.get() )
     {
+        cout<<"TRACE(pathfollowerinterface.cpp): !pendingPathRequest_.get(): throwing exception!!!"<< endl;
         throw orca::PathNotLoadedException( "No path is loaded, activation is meaningless." );
     }
     havePendingActivationRequest_ = true;

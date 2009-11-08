@@ -56,6 +56,11 @@ public:
     virtual void stop() {};
 };
 
+class VelocityControl2dCallback : public orcaifaceimpl::AbstractVelocityControl2dCallback {
+public:
+    virtual void setCommand( const orca::VelocityControl2dData &cmd ) {}
+};
+
 class PathFollowerCallback : public orcaifaceimpl::AbstractPathFollowerCallback {
 public:
     virtual void setData( const orca::PathFollower2dData &path, bool activateImmediately ) {}
@@ -201,7 +206,8 @@ TestComponent::start()
 //                (Tracer interface does not fit into any of the templates)
 //     }
     {
-        orcaifaceimpl::VelocityControl2dImplPtr ptr = new orcaifaceimpl::VelocityControl2dImpl( orca::VehicleDescription(), context(), "crap" );
+        VelocityControl2dCallback cb;
+        orcaifaceimpl::VelocityControl2dImplPtr ptr = new orcaifaceimpl::VelocityControl2dImpl( cb, orca::VehicleDescription(), context(), "crap" );
     }
     {
         orcaifaceimpl::WifiImplPtr ptr = new orcaifaceimpl::WifiImpl( context(), "crap" );

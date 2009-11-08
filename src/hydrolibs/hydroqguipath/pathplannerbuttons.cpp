@@ -10,7 +10,6 @@ PathplannerButtons::PathplannerButtons( QObject                                 
                                         hydroqguielementutil::IHumanManager      &humanManager, 
                                         hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
                                         const std::string                        &proxyString)
-    : shortcutKeyManager_(shortcutKeyManager)
 {
     QPixmap savePathIcon(filesave_path_xpm);
     QPixmap saveAsPathIcon(filesaveas_path_xpm);
@@ -43,9 +42,18 @@ PathplannerButtons::PathplannerButtons( QObject                                 
 //     humanManager.toolBar()->addAction(fileSavePathAs);
 //     humanManager.toolBar()->addAction(fileSavePath);
 
-    shortcutKeyManager.subscribeToShortcutKey( hiWaypoints_, QKeySequence(Qt::Key_F10), true, this );
+    drawWaypointsShortcutKey_.reset( new hydroqguielementutil::ShortcutKeyReservation( hiWaypoints_,
+                                                                                       QKeySequence(Qt::Key_F10),
+                                                                                       true,
+                                                                                       this,
+                                                                                       shortcutKeyManager ) );
     humanManager.toolBar()->addAction( hiWaypoints_ );
-    shortcutKeyManager.subscribeToShortcutKey( hiSend, QKeySequence(Qt::Key_F11), true, this );
+
+    sendPathShortcutKey_.reset( new hydroqguielementutil::ShortcutKeyReservation( hiSend,
+                                                                                  QKeySequence(Qt::Key_F11),
+                                                                                  true,
+                                                                                  this,
+                                                                                  shortcutKeyManager ) );
     humanManager.toolBar()->addAction( hiSend );
     humanManager.toolBar()->addAction( hiCancel );
     
@@ -53,13 +61,6 @@ PathplannerButtons::PathplannerButtons( QObject                                 
     
     QAction *sep = humanManager.toolBar()->addSeparator();
     sep->setParent( this );
-}
-
-PathplannerButtons::~PathplannerButtons() 
-{
-    std::cout << "PathplannerButtons: destructor: Unsubscribing shortcutkeymanagers. " << std::endl;
-    shortcutKeyManager_.unsubscribeFromShortcutKey( QKeySequence(Qt::Key_F10), this ); 
-    shortcutKeyManager_.unsubscribeFromShortcutKey( QKeySequence(Qt::Key_F11), this ); 
 }
 
 void 

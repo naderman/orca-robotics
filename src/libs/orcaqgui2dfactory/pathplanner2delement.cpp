@@ -11,7 +11,6 @@
 #include <orcaice/orcaice.h>
 #include <orcaobj/pathplanner2d.h>
 #include <hydroqguipath/wptolerancesdialog.h>
-#include <hydroqguielementutil/ihumanmanager.h>
 #include "pathplanner2delement.h"
 
 using namespace std;
@@ -43,24 +42,19 @@ PathPlannerTaskAnswerConsumer::setData(const ::orca::PathPlanner2dData& data, co
 }
 
 PathPlanner2dElement::PathPlanner2dElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
-                                            const orcaice::Context                     &context,
-                                            const std::string                          &proxyString,
-                                            hydroqguielementutil::IHumanManager        &humanManager,
-                                            hydroqguielementutil::MouseEventManager    &mouseEventManager,
-                                            hydroqguielementutil::ShortcutKeyManager   &shortcutKeyManager )
+                                            const orcaice::Context                     &context )
     : orcaqguielementutil::IceStormGuiElement2d<PathPlannerPainter,
                         orca::PathPlanner2dData,
                         orca::PathPlanner2dPrx,
                         orca::PathPlanner2dConsumer,
-                        orca::PathPlanner2dConsumerPrx>( guiElementInfo, context, proxyString, painter_, -1 ),
+                        orca::PathPlanner2dConsumerPrx>( guiElementInfo, context, painter_, -1 ),
       context_(context),
-      proxyString_(proxyString),
-      humanManager_(humanManager),
+      proxyString_(guiElementInfo.uniqueId.toStdString()),
       pathHI_( this,
-               proxyString,
-               humanManager,
-               shortcutKeyManager,
-               mouseEventManager,
+               proxyString_,
+               *_stuff.humanManager,
+               *_stuff.shortcutKeyManager,
+               *_stuff.mouseEventManager,
                painter_,
                context_ )
 {
@@ -89,7 +83,7 @@ PathPlanner2dElement::update()
     {
         QString msg;
         pathTaskAnswerConsumer_->msgStore_.get( msg );
-        humanManager_.showDialogError( msg );    
+        _stuff.humanManager->showDialogError( msg );    
     }
 }
 
@@ -102,9 +96,9 @@ PathPlanner2dElement::setUseTransparency( bool useTransparency )
 }
 
 void
-PathPlanner2dElement::actionOnConnection()
+PathPlanner2dElement::iceStormConnectedEvent()
 {
-    humanManager_.showStatusInformation( "PathplannerElement is trying to connect" );
+    _stuff.humanManager->showStatusInformation( "PathplannerElement is trying to connect" );
      
     try 
     {
@@ -112,11 +106,11 @@ PathPlanner2dElement::actionOnConnection()
     }
     catch ( ... )
     {
-        humanManager_.showStatusWarning( "Problem connecting to pathplanner interface. Will try again later.");
+        _stuff.humanManager->showStatusWarning( "Problem connecting to pathplanner interface. Will try again later.");
         //cout << "WARNING(pathplanner2delement.cpp): Problem connecting to interface. Will try again later." << endl;
         return;
     }
-    humanManager_.showStatusInformation( "Connected to pathplanner interface successfully." );
+    _stuff.humanManager->showStatusInformation( "Connected to pathplanner interface successfully." );
     
     pathPlanner2dConsumerObj_ = pathTaskAnswerConsumer_;
     taskCallbackPrx_ = orcaice::createConsumerInterface<orca::PathPlanner2dConsumerPrx>( context_,
@@ -173,7 +167,7 @@ PathPlanner2dElement::sendPath( const PathPlannerInput &pathInput )
     {
         stringstream ss;
         ss << "While trying to set a pathfollowing data: " << endl << e;
-        humanManager_.showStatusError( ss.str().c_str() );
+        _stuff.humanManager->showStatusError( ss.str().c_str() );
     }
 }
 

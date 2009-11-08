@@ -251,6 +251,6 @@ public:
 // extern "C" {
 //     hydrointerfaces::InsGpsFactory *InsGpsFactory();
 // }
-typedef hydrointerfaces::InsGpsFactory *DriverFactoryMakerFunc();
+typedef hydrointerfaces::InsGpsFactory *InsGpsDriverFactoryMakerFunc();
 
 #endif

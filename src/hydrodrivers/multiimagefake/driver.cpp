@@ -85,6 +85,6 @@ Driver::read( hydrointerfaces::MultiImage::Data &data )
 } // namespace
 
 extern "C" {
-    hydrointerfaces::MultiImageFactory *createDriverFactory()
+    hydrointerfaces::MultiImageFactory *createMultiImageDriverFactory()
     { return new multiimagefake::Factory; }
 }

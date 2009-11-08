@@ -11,7 +11,8 @@ int main()
 
     hydrointerfaces::LaserFeatureExtractorFactory* factory = new Factory;
     double laserMaxRange=0, laserStartAngle=0, laserAngleIncrement=0;
-    factory->createDriver( laserMaxRange, laserStartAngle, laserAngleIncrement, *context );
+    int laserNumReturns=0;
+    factory->createDriver( laserMaxRange, laserStartAngle, laserAngleIncrement, laserNumReturns, *context );
 
     return 0;
 }

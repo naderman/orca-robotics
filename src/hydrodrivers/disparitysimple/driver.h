@@ -55,7 +55,7 @@ public:
 
 // Used for dynamically loading driver
 extern "C" {
-    hydrointerfaces::DisparityFactory *createDriverFactory();
+    hydrointerfaces::DisparityFactory *createDisparityDriverFactory();
 }
 
 #endif

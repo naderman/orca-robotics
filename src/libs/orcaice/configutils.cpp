@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
@@ -28,7 +28,7 @@ namespace orcaice
 
 namespace {
 
-// removes entries from the vector of strings if they don't start from the 
+// removes entries from the vector of strings if they don't start from the
 // pattern specified.
 void filter_start( std::vector<std::string>& s, const std::string& pattern )
 {
@@ -57,7 +57,7 @@ getProvidedName( const Context& context, const std::string &ifaceTag )
         std::string errorString = context.tag()+": "
             + warnMissingProperty("provided interface name for tag '" + ifaceTag + "'",
                                    context.tag()+".Provides."+ifaceTag+".Name");
-        initTracerError( context, errorString, 2 );
+        initTracerError( context, errorString );
         throw orcaice::ConfigFileException(ERROR_INFO,errorString);
     }
 
@@ -70,17 +70,17 @@ std::vector<std::string>
 getFieldsForPrefix( const Context& context, const std::string& prefix )
 {
     int prefixLength = prefix.size();
-    
+
     Ice::PropertyDict props =
         context.properties()->getPropertiesForPrefix( prefix );
-        
+
     std::vector<std::string> fields;
     std::string field;
-    
+
     for ( Ice::PropertyDict::iterator i=props.begin(); i!=props.end(); ++i ) {
         int posDot = i->first.find( '.', prefixLength+1 );
         field = i->first.substr( prefixLength, posDot-prefixLength );
-        
+
         fields.push_back( field );
 //         cout<<i->first<<"\t"<<field<<endl;
     }
@@ -131,7 +131,7 @@ getRequiredInterfaceAsString( const Context& context, const std::string &ifaceTa
         std::string errorString = context.tag()+": "
             + warnMissingProperty("required interface proxy for tag '" + ifaceTag + "'",
                                    context.tag()+".Requires."+ifaceTag+".Proxy");
-        initTracerError( context, errorString, 2 );
+        initTracerError( context, errorString );
         throw orcaice::ConfigFileException(ERROR_INFO,errorString);
     }
 
@@ -165,9 +165,9 @@ getRequiredTags( const Context& context, const std::string& pattern )
 orca::FQComponentName
 resolveLocalPlatform( const orca::FQComponentName& fqname )
 {
-    if ( !fqname.platform.empty() && !fqname.component.empty() ) 
+    if ( !fqname.platform.empty() && !fqname.component.empty() )
     {
-        if ( fqname.platform=="local" ) 
+        if ( fqname.platform=="local" )
         {
             orca::FQComponentName resolvedFqname;
             resolvedFqname.platform = hydroutil::getHostname();
@@ -182,14 +182,14 @@ resolveLocalPlatform( const orca::FQComponentName& fqname )
 orca::FQComponentName
 resolveLocalPlatform( const Context& context, const orca::FQComponentName& fqname )
 {
-    if ( !fqname.platform.empty() && !fqname.component.empty() ) 
+    if ( !fqname.platform.empty() && !fqname.component.empty() )
     {
-        if ( fqname.platform=="local" ) 
+        if ( fqname.platform=="local" )
         {
             orca::FQComponentName resolvedFqname;
             resolvedFqname.platform = hydroutil::getHostname();
             resolvedFqname.component = fqname.component;
-            initTracerInfo( context, "resolved platform 'local' to hostname in component name '"+orcaice::toString( resolvedFqname )+"'", 2 );
+            initTracerInfo( context, "resolved platform 'local' to hostname in component name '"+orcaice::toString( resolvedFqname )+"'" );
             return resolvedFqname;
         }
     }
@@ -197,18 +197,18 @@ resolveLocalPlatform( const Context& context, const orca::FQComponentName& fqnam
     return fqname;
 }
 
-std::string 
+std::string
 resolveLocalPlatform( const Context& context, const std::string& proxy )
 {
     // for indirect proxies only: if platform is set to 'local', replace it by hostname
     orca::FQInterfaceName fqname = orcaice::toInterfaceName( proxy );
-    if ( !fqname.iface.empty() && !fqname.platform.empty() && !fqname.component.empty() ) 
+    if ( !fqname.iface.empty() && !fqname.platform.empty() && !fqname.component.empty() )
     {
-        if ( fqname.platform=="local" ) 
+        if ( fqname.platform=="local" )
         {
             fqname.platform = hydroutil::getHostname();
             string resolvedProxy = orcaice::toString( fqname );
-            initTracerInfo( context, "resolved platform 'local' to hostname in proxy '"+resolvedProxy+"'", 2 );
+            initTracerInfo( context, "resolved platform 'local' to hostname in proxy '"+resolvedProxy+"'" );
             return resolvedProxy;
         }
     }
@@ -232,18 +232,18 @@ getComponentData( const Context& context )
     }
 
     // special cases: add standard interfaces (depending on startup flags)
-    // first, add the Home interface itself 
+    // first, add the Home interface itself
 //     std::string homeIdentity = "orca." + context.name().platform + "." + context.name().component + "/Home";
 //     provided.name = homeIdentity;
 //     provided.id = "::orca::Home";
 //     compData.provides.push_back( provided );
-// 
+//
 //     if ( interfaceFlag_& TracerInterface ) {
 //         provided.name = "tracer";
 //         provided.id = "::orca::Tracer";
 //         compData.provides.push_back( provided );
 //     }
-// 
+//
 //     if ( interfaceFlag_& StatusInterface ) {
 //         provided.name = "status";
 //         provided.id = "::orca::Status";

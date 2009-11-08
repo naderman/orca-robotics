@@ -107,7 +107,10 @@ PathFollowerPainter::PathFollowerPainter()
 
 void PathFollowerPainter::setData( const orca::PathFollower2dData& path )
 {
+    // this fct is called when the follower just received a new path
     orcaPathToGuiPath( path.path, guiPath_ );
+    activationState_ = orca::PathLoadedButNotActivated;
+    wpIndex_ = -1;
 }
 
 void PathFollowerPainter::setRelativeStartTime( double relativeStartTime )
@@ -237,7 +240,7 @@ void PathFollowerPainter::paint( QPainter *painter, int z )
     }
 
     // === draw the current target waypoint again, to be able to see the edge if we have loops ===
-    if ( activationState_==orca::FollowingPath )
+    if ( (activationState_==orca::FollowingPath) && (guiPath_.size()>0) )
         hydroqguipath::drawWaypoint( painter, guiPath_, wpIndex_, wpColors.currentWpColor(), Qt::black );
 
     // === draw connections between waypoints ===

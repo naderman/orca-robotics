@@ -137,7 +137,9 @@ public:
         
         //! Horizontal position error: one standard deviation (metres)
         double horizontalPositionError;
-        //! Vertical position error: one standard deviation (metres)
+        //! Tells us whether the vertical position error can be estimated
+        bool isVerticalPositionErrorValid;
+        //! Vertical position error: one standard deviation (metres) (see verticalPositionError)
         double verticalPositionError;
         
         //! Heading/track/course with respect to true north (rad)
@@ -184,6 +186,6 @@ public:
 // extern "C" {
 //     hydrointerfaces::GpsFactory *GpsFactory();
 // }
-typedef hydrointerfaces::GpsFactory *DriverFactoryMakerFunc();
+typedef hydrointerfaces::GpsFactory *GpsDriverFactoryMakerFunc();
 
 #endif

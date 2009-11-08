@@ -139,8 +139,6 @@ private:
     GuiElementView* view_;
     
     QString lookupTypeFromFactories( QStringList &ids );
-    
-    QSplitter *spaceBottomRight_;
 };
 
 

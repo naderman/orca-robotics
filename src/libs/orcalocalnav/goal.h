@@ -31,6 +31,7 @@ public:
               double distanceTolerance,
               double headingTolerance,
               double secRemaining,
+              double intendedSpeed,
               double maxSpeed,
               double maxTurnrate );
 
@@ -43,6 +44,8 @@ public:
 
     // Time remaining before we're supposed to be at this goal
     double timeRemaining;
+
+    double intendedSpeed;
 
     // Constraints
     double maxSpeed;

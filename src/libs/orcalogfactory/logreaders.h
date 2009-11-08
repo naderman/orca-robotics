@@ -11,6 +11,7 @@
 #include <orca/odometry2d.h>
 #include <orca/odometry3d.h>
 #include <orca/wifi.h>
+#include <orca/pathfollower2d.h>
 #include <orca/gps.h>
 
 #include "camerareader.h"
@@ -67,6 +68,17 @@ public:
     void read( orca::LaserScanner2dDataPtr &obj );
     void read( orca::RangeScanner2dDescription &obj );
     void read() { orca::LaserScanner2dDataPtr obj=new orca::LaserScanner2dData; read(obj); }
+};
+
+//////////////////////////////////////////////////////////////////////
+
+class RangeScanner2dLogReader : public orcalog::LogReader
+{
+public:
+    RangeScanner2dLogReader( const orcalog::LogReaderInfo &logReaderInfo );
+    void read( orca::RangeScanner2dDataPtr &obj );
+    void read( orca::RangeScanner2dDescription &obj );
+    void read() { orca::RangeScanner2dDataPtr obj=new orca::RangeScanner2dData; read(obj); }
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -132,6 +144,17 @@ public:
     WifiLogReader( const orcalog::LogReaderInfo &logReaderInfo );
     void read( orca::WifiData &obj );
     void read() { orca::WifiData obj; read(obj); }
+    void initialised() { orcalog::LogReader::zeroLogIndex(); }
+};
+
+//////////////////////////////////////////////////////////////////////
+
+class PathFollower2dLogReader : public orcalog::LogReader
+{
+public:
+    PathFollower2dLogReader( const orcalog::LogReaderInfo &logReaderInfo );
+    void read( orca::PathFollower2dData &obj );
+    void read() { orca::PathFollower2dData obj; read(obj); }
     void initialised() { orcalog::LogReader::zeroLogIndex(); }
 };
 

@@ -12,3 +12,4 @@ Config.End.Default=1000
 Config.Stride.Default=20
 Config.FilenamePrefix.Default=histogram
 Config.MaxCount.Default=-1
+Config.SendWarningMs.Default=1000

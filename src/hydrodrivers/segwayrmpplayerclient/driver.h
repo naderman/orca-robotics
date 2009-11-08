@@ -29,7 +29,7 @@ class Driver : public hydrointerfaces::SegwayRmp
 {
 public:
 
-    Driver( const hydroutil::Context& context );
+    Driver( const std::string &powerbaseName, const hydroutil::Context& context );
     virtual ~Driver();
 
     // from SegwayRmp
@@ -67,7 +67,8 @@ private:
     PlayerCc::PowerProxy      *powerProxy_;
 
     // configuration
-    Config config_;
+    const std::string  powerbaseName_;
+    Config             config_;
     hydroutil::Context context_;
 };
 
@@ -75,9 +76,10 @@ private:
 class Factory : public hydrointerfaces::SegwayRmpFactory
 {
 public:
-    hydrointerfaces::SegwayRmp *createDriver( const hydroutil::Context &context ) const
+    hydrointerfaces::SegwayRmp *createDriver( const std::string        &powerbaseName,
+                                              const hydroutil::Context &context ) const
     {
-        return new Driver( context );
+        return new Driver( powerbaseName, context );
     }
 };
 
@@ -85,7 +87,7 @@ public:
 
 // Used for dynamically loading driver
 extern "C" {
-    hydrointerfaces::SegwayRmpFactory *createDriverFactory();
+    hydrointerfaces::SegwayRmpFactory *createSegwayRmpDriverFactory();
 }
 
 #endif

@@ -18,10 +18,10 @@ int main()
 
     // Force the thing to link, so it's easier to find undefined symbols.
     hydroutil::Context *context = NULL;
-    new Driver( *context );
+    new Driver( "TestPowerbase", *context );
 
     hydrointerfaces::SegwayRmpFactory* factory = new Factory;
-    factory->createDriver( *context );
+    factory->createDriver( "TestPowerbase", *context );
 
     return 0;
 }

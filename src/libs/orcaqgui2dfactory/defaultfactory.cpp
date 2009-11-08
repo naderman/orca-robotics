@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp, Ben Upcroft
  *
@@ -7,7 +7,7 @@
  * the LICENSE file included in this distribution.
  *
  */
- 
+
 #include <iostream>
 #include <hydroqgui/exceptions.h>
 #include <orcaqgui2dfactory/buttonelement.h>
@@ -55,7 +55,7 @@ DefaultFactory::DefaultFactory()
 }
 
 
-bool 
+bool
 DefaultFactory::lookupElementType( const QStringList &ids, QString &elementType ) const
 {
     // One-to-one mappings (one interface per element):
@@ -74,90 +74,85 @@ DefaultFactory::lookupElementType( const QStringList &ids, QString &elementType 
     }
     else
     {
-        return false;    
+        return false;
     }
-    
+
     return true;
 }
-        
-hydroqguielementutil::GuiElement* 
-DefaultFactory::create( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
-                        hydroqguielementutil::IHumanManager        &humanManager,
-                        hydroqguielementutil::MouseEventManager    &mouseEventManager,
-                        hydroqguielementutil::ShortcutKeyManager   &shortcutKeyManager,
-                        const hydroqgui::GuiElementSet             &guiElementSet,
-                        QSplitter                                  *spaceBottomRight ) const
+
+hydroqguielementutil::GuiElement*
+DefaultFactory::create( const hydroqguielementutil::GuiElementInfo &guiElementInfo ) const
 {
     assert( isContextSet_ );
     hydroqguielementutil::GuiElement *elem = NULL;
-    
+
     try
     {
 //         cout << "DefaultFactory::create(): creating "<< guiElementInfo.type.toStdString() << " element with id:" << guiElementInfo.uniqueId.toStdString() << endl;
-        
+
         if ( guiElementInfo.type == "Button" ) {
-            elem = new orcaqgui2d::ButtonElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString(), humanManager );
+            elem = new orcaqgui2d::ButtonElement( guiElementInfo, context_ );
         }
         else if ( guiElementInfo.type == "Grid" ) {
             elem = new orcaqgui2d::GridElement( guiElementInfo);
         }
         else if ( guiElementInfo.type == "LaserScanner2d" ) {
-            elem = new orcaqgui2d::LaserScanner2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString() );
-        }        
+            elem = new orcaqgui2d::LaserScanner2dElement( guiElementInfo, context_ );
+        }
         else if ( guiElementInfo.type == "RangeScanner2d" ) {
-            elem = new orcaqgui2d::RangeScanner2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString() );
+            elem = new orcaqgui2d::RangeScanner2dElement( guiElementInfo, context_ );
         }
         else if ( guiElementInfo.type == "MultiOgMaps" ) {
-            elem = new orcaqgui2d::OgMapsCombinedElement( guiElementInfo, context_, guiElementInfo.uniqueId );
+            elem = new orcaqgui2d::OgMapsCombinedElement( guiElementInfo, context_ );
         }
         else if ( guiElementInfo.type == "RangerArray" ) {
-            elem = new orcaqgui2d::RangerArrayElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString() );
+            elem = new orcaqgui2d::RangerArrayElement( guiElementInfo, context_ );
         }
         else if ( guiElementInfo.type == "Localise2d" ) {
-            elem = new orcaqgui2d::Localise2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString(), &humanManager );
+            elem = new orcaqgui2d::Localise2dElement( guiElementInfo, context_ );
         }
         else if ( guiElementInfo.type == "Localise3d" ) {
-            elem = new orcaqgui2d::Localise3dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString() );
+            elem = new orcaqgui2d::Localise3dElement( guiElementInfo, context_ );
         }
         else if ( guiElementInfo.type == "Odometry2d" ) {
-            elem = new orcaqgui2d::Odometry2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString() );
+            elem = new orcaqgui2d::Odometry2dElement( guiElementInfo, context_ );
         }
         else if ( guiElementInfo.type == "OgMap" ) {
-            elem = new orcaqgui2d::OgMapElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString(), &humanManager );
+            elem = new orcaqgui2d::OgMapElement( guiElementInfo, context_ );
         }
         else if ( guiElementInfo.type == "PolarFeature2d" ) {
-            elem = new orcaqgui2d::PolarFeature2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString() );
+            elem = new orcaqgui2d::PolarFeature2dElement( guiElementInfo, context_ );
         }
         else if ( guiElementInfo.type == "PathFollower2d" ) {
-            elem = new orcaqgui2d::PathFollower2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString(), humanManager, mouseEventManager, shortcutKeyManager, guiElementSet );
+            elem = new orcaqgui2d::PathFollower2dElement( guiElementInfo, context_ );
         }
         else if ( guiElementInfo.type == "PathPlanner2d" ) {
-            elem = new orcaqgui2d::PathPlanner2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString(), humanManager, mouseEventManager, shortcutKeyManager );
+            elem = new orcaqgui2d::PathPlanner2dElement( guiElementInfo, context_ );
         }
         else if ( guiElementInfo.type == "PixMap" ) {
-            elem = new orcaqgui2d::PixMapElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString(), &humanManager );
+            elem = new orcaqgui2d::PixMapElement( guiElementInfo, context_ );
         }
         else if ( guiElementInfo.type == "FeatureMap2d" ) {
-            elem = new orcaqgui2d::FeatureMap2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString(), &humanManager );
+            elem = new orcaqgui2d::FeatureMap2dElement( guiElementInfo, context_ );
         }
         else if ( guiElementInfo.type == "Particle2d" ) {
-            elem = new orcaqgui2d::Particle2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString() );
+            elem = new orcaqgui2d::Particle2dElement( guiElementInfo, context_ );
         }
         else if ( guiElementInfo.type == "QGraphics2d" ) {
-            elem = new orcaqgui2d::QGraphics2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString() );
+            elem = new orcaqgui2d::QGraphics2dElement( guiElementInfo, context_ );
         }
         else if ( guiElementInfo.type == "Wifi" ) {
-            elem = new orcaqgui2d::WifiElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString(), spaceBottomRight );
+            elem = new orcaqgui2d::WifiElement( guiElementInfo, context_ );
         }
         else if ( guiElementInfo.type == "VelocityControl2d" ) {
-            elem = new orcaqgui2d::VelocityControl2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString(), humanManager, shortcutKeyManager, spaceBottomRight );
+            elem = new orcaqgui2d::VelocityControl2dElement( guiElementInfo, context_ );
         }
         else
         {
             cout << "DefaultFactory::create(): Don't know how to handle guiElementInfo.type '" << guiElementInfo.type.toStdString() << "'" << endl;
         }
-    
-    } 
+
+    }
     catch (hydroqgui::Exception &e)
     {
         cout << "DefaultFactory::create(): Element creation failed: " << e.what() << endl;

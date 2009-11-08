@@ -118,6 +118,8 @@ public:
     //! If @c fatal is TRUE, the message adds that "operation cannot continue".
     static std::string missingPropertyWarning( const std::string& key, bool fatal=false );
 
+    const Config &config() const { return config_; }
+
 private:
     
     std::map<std::string,std::string> props_;

@@ -44,17 +44,16 @@ class PolarFeature2dElement
 public:
     PolarFeature2dElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
                            const orcaice::Context  &context,
-                           const std::string       &proxyString,
                            int                      timeoutMs=30000 )
         : orcaqguielementutil::IceStormGuiElement2d<PolarFeature2dPainter,
                           orca::PolarFeature2dData,
                           orca::PolarFeature2dPrx,
                           orca::PolarFeature2dConsumer,
-                          orca::PolarFeature2dConsumerPrx>( guiElementInfo, context, proxyString, painter_, timeoutMs )
+                          orca::PolarFeature2dConsumerPrx>( guiElementInfo, context, painter_, timeoutMs )
           {};
 
     virtual bool isInGlobalCS() { return false; }
-    virtual void actionOnConnection() 
+    virtual void iceStormConnectedEvent() 
     { 
         getDescription();
     }
@@ -79,7 +78,6 @@ class LaserScanner2dElement
 public:
     LaserScanner2dElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
                            const orcaice::Context  &context,
-                           const std::string       &proxyString,
                            int                      timeoutMs=30000,
                            QColor                   outlineColor=QColor( 102,102,153, 255 ),
                            float                    outlineThickness=-1,
@@ -88,12 +86,12 @@ public:
                           orca::RangeScanner2dDataPtr,
                           orca::LaserScanner2dPrx,
                           orca::RangeScanner2dConsumer,
-                          orca::RangeScanner2dConsumerPrx>(guiElementInfo, context, proxyString, painter_, timeoutMs ),
+                          orca::RangeScanner2dConsumerPrx>(guiElementInfo, context, painter_, timeoutMs ),
           painter_( outlineColor, outlineThickness, brightReturnWidth )
         {};
 
     virtual bool isInGlobalCS() { return false; }
-    virtual void actionOnConnection() { getLaserInfo(); }
+    virtual void iceStormConnectedEvent() { getLaserInfo(); }
     virtual QStringList contextMenu();
     virtual void execute( int action ) { painter_.execute( action ); };
     virtual void setColor( QColor color ) { painter_.setColor(color); }
@@ -116,7 +114,6 @@ class RangeScanner2dElement
 public:
     RangeScanner2dElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
                            const orcaice::Context  &context,
-                           const std::string       &proxyString,
                            int                      timeoutMs=30000,
                            QColor                   outlineColor=QColor( 102,102,153, 255 ),
                            float                    outlineThickness=-1,
@@ -125,12 +122,12 @@ public:
                              orca::RangeScanner2dDataPtr,
                              orca::RangeScanner2dPrx,
                              orca::RangeScanner2dConsumer,
-                             orca::RangeScanner2dConsumerPrx>(guiElementInfo, context, proxyString, painter_, timeoutMs ),
+                             orca::RangeScanner2dConsumerPrx>(guiElementInfo, context, painter_, timeoutMs ),
           painter_( outlineColor, outlineThickness, brightReturnWidth )
         {};
 
     virtual bool isInGlobalCS() { return false; }
-    virtual void actionOnConnection() { getScannerInfo(); }
+    virtual void iceStormConnectedEvent() { getScannerInfo(); }
     virtual QStringList contextMenu();
     virtual void execute( int action ) { painter_.execute( action ); };
     virtual void setColor( QColor color ) { painter_.setColor(color); }
@@ -154,7 +151,6 @@ class RangerArrayElement
 public:
     RangerArrayElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
                         const orcaice::Context  &context,
-                        const std::string       &proxyString,
                         int                      timeoutMs=30000,
                         QColor                   outlineColor=QColor( 102,153,102, 255 ),
                         float                    outlineThickness=-1,
@@ -163,12 +159,12 @@ public:
                           orca::RangerArrayDataPtr,
                           orca::RangerArrayPrx,
                           orca::RangerArrayConsumer,
-                          orca::RangerArrayConsumerPrx>(guiElementInfo, context, proxyString, painter_, timeoutMs ),
+                          orca::RangerArrayConsumerPrx>(guiElementInfo, context, painter_, timeoutMs ),
           painter_( outlineColor, outlineThickness, brightReturnWidth )
         {};
 
     virtual bool isInGlobalCS() { return false; }
-    virtual void actionOnConnection() { getRangerArrayInfo(); }
+    virtual void iceStormConnectedEvent() { getRangerArrayInfo(); }
     virtual QStringList contextMenu();
     virtual void execute( int action ) { painter_.execute( action ); };
     virtual void setFocus( bool inFocus ) { painter_.setFocus( inFocus ); };
@@ -191,14 +187,13 @@ class Localise3dElement
 public:
     Localise3dElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
                        const orcaice::Context  &context,
-                       const std::string       &proxyString,
                        bool                     beginDisplayHistory=false,
                        int                      timeoutMs=30000 )
         : orcaqguielementutil::IceStormGuiElement2d<Localise3dPainter,
                             orca::Localise3dData,
                             orca::Localise3dPrx,
                             orca::Localise3dConsumer,
-                            orca::Localise3dConsumerPrx>(guiElementInfo, context, proxyString, painter_, timeoutMs ),
+                            orca::Localise3dConsumerPrx>(guiElementInfo, context, painter_, timeoutMs ),
           painter_( beginDisplayHistory ),
           x_(0),
           y_(0),
@@ -213,7 +208,7 @@ public:
 
 }
     virtual bool isInGlobalCS() { return true; }
-    virtual void actionOnConnection();
+    virtual void iceStormConnectedEvent();
     virtual QStringList contextMenu();
     virtual void execute( int action );
     
@@ -259,13 +254,12 @@ class Particle2dElement
 public:
     Particle2dElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
                        const orcaice::Context  &context,
-                       const std::string       &proxyString,
                        int                      timeoutMs=60000 )
         : orcaqguielementutil::IceStormGuiElement2d<Particle2dPainter,
                             orca::Particle2dData,
                             orca::Particle2dPrx,
                             orca::Particle2dConsumer,
-                            orca::Particle2dConsumerPrx>(guiElementInfo, context, proxyString, painter_, timeoutMs )
+                            orca::Particle2dConsumerPrx>(guiElementInfo, context, painter_, timeoutMs )
         {};
 
     virtual bool isInGlobalCS() { return true; }
@@ -289,13 +283,12 @@ class QGraphics2dElement
 public:
     QGraphics2dElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
                         const orcaice::Context  &context,
-                        const std::string       &proxyString,
                         int                      timeoutMs=-1 )
     : orcaqguielementutil::IceStormGuiElement2d<QGraphics2dPainter,
                           orca::QGraphics2dData,
                           orca::QGraphics2dPrx,
                           orca::QGraphics2dConsumer,
-                          orca::QGraphics2dConsumerPrx>(guiElementInfo, context, proxyString, painter_, timeoutMs )
+                          orca::QGraphics2dConsumerPrx>(guiElementInfo, context, painter_, timeoutMs )
     {
     };
 
@@ -316,13 +309,12 @@ class Odometry2dElement
 public:
     Odometry2dElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
                        const orcaice::Context  &context,
-                       const std::string       &proxyString,
                        int                      timeoutMs=60000 )
         : orcaqguielementutil::IceStormGuiElement2d<Odometry2dPainter,
                             orca::Odometry2dData,
                             orca::Odometry2dPrx,
                             orca::Odometry2dConsumer,
-                            orca::Odometry2dConsumerPrx>(guiElementInfo, context, proxyString, painter_, timeoutMs )
+                            orca::Odometry2dConsumerPrx>(guiElementInfo, context, painter_, timeoutMs )
         {};
 
     virtual bool isInGlobalCS() { return false; }
@@ -344,17 +336,16 @@ class DriveBicycleElement
 public:
     DriveBicycleElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
                          const orcaice::Context                     &context,
-                         const std::string                          &proxyString,
                          int                                         timeoutMs = 60000 )
         : orcaqguielementutil::IceStormGuiElement2d<DriveBicyclePainter,
                             orca::DriveBicycleData,
                             orca::DriveBicyclePrx,
                             orca::DriveBicycleConsumer,
-                            orca::DriveBicycleConsumerPrx>(guiElementInfo, context, proxyString, painter_, timeoutMs )
+                            orca::DriveBicycleConsumerPrx>(guiElementInfo, context, painter_, timeoutMs )
         {};
 
     virtual bool isInGlobalCS() { return false; }
-    virtual void actionOnConnection() { getDriveBicycleInfo(); }
+    virtual void iceStormConnectedEvent() { getDriveBicycleInfo(); }
     virtual QStringList contextMenu();
     virtual void execute( int action ) { painter_.execute( action ); };
     virtual void setFocus( bool inFocus ) { painter_.setFocus( inFocus ); };

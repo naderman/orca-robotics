@@ -104,14 +104,13 @@ Sorca = [ ...
 % BASE: c_count src/interfaces/slice/orca/*.ice
 % COMP: sloccount src/components
 % UTIL: sloccount src/utils src/libs
-% A&D: sloccount src/hydrointerfaces/ src/hydrodrivers/ src/hydrolibs/
-% COMMON: Gearbox: sloccount src
-2009    11  10  1   Sice331 1830    11161   55611  41006  20284 % 9.11 (G 9.11)
+% A&D: Hydro: sloccount src/hydro*
+2009     8  20  1   Sice331 1830    11158   55205  41276  20160 % 9.07 (G 9.02)
 ];
 Vorca ={'0.8.6', '0.11.0', '0.12.0', '0.12.1', '0.13.0', '0.13.1', '0.13.2', '0.13.3', '0.14.0', '0.15.0', '1.0.0', ...
     '2.0.0-rc1', '2.0.0-rc2', '2.0.0-rc3', '2.0.0-rc4', '2.0.0-rc5', '2.0.0', '2.0.1', '2.0.2', '2.1.0', '2.1.1', ...
     '2.2.0', '2.3.0', '2.4.0', '2.5.0', '2.6.0', '2.7.0', '2.8.0', '2.9.0', '2.10.0', '2.11.0', '2.12.0', '2.13.0', ...
-    '9.11' }';
+    '9.08' }';
 
 % add a dummy release just for display
 Sorca(end+1,:) = Sorca(end,:);

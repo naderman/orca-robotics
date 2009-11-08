@@ -9,6 +9,7 @@
  */
 
 #include <iostream>
+#include <algorithm>
 #include <Ice/Ice.h>
 #include <IceGrid/Admin.h>
 #include <IceGrid/Query.h>
@@ -61,7 +62,7 @@ getRegistryHomeData( const orcaice::Context& context, const std::string& locator
     
     IceGrid::QueryPrx queryPrx = orcaice::getDefaultQuery( context );
     
-    Ice::ObjectProxySeq list;
+    Ice::ObjectProxySeq homeObjects;
     try {
         queryPrx->ice_ping();
         data.address = orcacm::connectionToRemoteAddress( queryPrx->ice_getConnection()->toString() );
@@ -73,10 +74,10 @@ getRegistryHomeData( const orcaice::Context& context, const std::string& locator
         //
         // get list of homes
         //
-        list = query->findAllObjectsByType( "::orca::Home" );
+        homeObjects = query->findAllObjectsByType( "::orca::Home" );
 
         std::ostringstream os;
-        os<<"(while retrieving home data) found "<<list.size()<<" homes";
+        os<<"(while retrieving home data) found "<<homeObjects.size()<<" homes";
         context.tracer().debug( os.str() );
     } 
     catch ( const Ice::Exception& ) {
@@ -86,14 +87,16 @@ getRegistryHomeData( const orcaice::Context& context, const std::string& locator
 
     // add more information
     HomeHeader home;
-    for ( unsigned int i=0; i<list.size(); ++i ) 
+    for ( unsigned int i=0; i<homeObjects.size(); ++i ) 
     {
-        home.proxy = list[i];
+        home.proxy = homeObjects[i];
         // assume it's reachable
         home.isReachable = true;
         
         data.homes.push_back( home );
     }
+
+    sort( data.homes.begin(), data.homes.end() );
 
     return data;
 }

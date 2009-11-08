@@ -138,7 +138,7 @@ interface PathFollower2d
     //! over-writes the old path.  The activation status of the follower is
     //! set to the value of @c activateImmediately.
     //!
-    //! The follower can therefore be stopped by calling setData(emptyPath,false).
+    //! The follower can therefore be stopped by calling setData(emptyPath,true).
     //!
     idempotent void setData( PathFollower2dData path, bool activateImmediately )
         throws MalformedParametersException, OrcaException;

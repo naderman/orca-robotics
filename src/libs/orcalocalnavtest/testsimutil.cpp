@@ -49,6 +49,33 @@ namespace {
         d.path.push_back( wp );        
     }
 
+    void addRegularWaypointGrid( orca::Waypoint2d         &wp,
+                                 orca::PathFollower2dData &d,
+                                 int                      &t,
+                                 bool                      stressTiming )
+    {
+        for ( double x = 0; x <= 7.6; x += 3.3 ) // /2.0 )
+        {
+            if ( stressTiming )
+                t+=3;
+            wp.target.p.x   = x;
+            wp.target.p.y   = hydroutil::randNum(-1,1);
+            wp.target.o     = 0;
+            wp.timeTarget   = t;
+            d.path.push_back( wp );
+        }
+        for ( double x = 6.6; x >= -7.6; x -= 3.3 ) // /2.0 )
+        {
+            if ( stressTiming )
+                t+=3;
+            wp.target.p.x   = x;
+            wp.target.p.y   = hydroutil::randNum(-4.3,-2.3);
+            wp.target.o     = 0;
+            wp.timeTarget   = t;
+            d.path.push_back( wp );
+        }
+    }
+
     void addGoThruDoor( orca::Waypoint2d         &wp,
                         orca::PathFollower2dData &d,
                         int                      &t,
@@ -57,6 +84,15 @@ namespace {
         const double dt = 10;
 
         // move off
+        if ( stressTiming )
+            t+=dt;
+        wp.target.p.x   = 8;
+        wp.target.p.y   = 8;
+        wp.target.o     = M_PI;
+        wp.timeTarget   = t;
+        d.path.push_back( wp );
+
+        // force a change in speed
         if ( stressTiming )
             t+=dt;
         wp.target.p.x   = 10;
@@ -139,6 +175,7 @@ orca::PathFollower2dData
 getTestPath( const hydroogmap::OgMap &ogMap,
              int numWaypoints,
              bool stressTiming,
+             bool regularWaypointGrid,
              bool turnOnSpot, 
              bool goThruDoor )
 {
@@ -164,6 +201,11 @@ getTestPath( const hydroogmap::OgMap &ogMap,
     if ( goThruDoor )
     {
         addGoThruDoor( wp, d, t, stressTiming );
+    }
+
+    if ( regularWaypointGrid )
+    {
+        addRegularWaypointGrid( wp, d, t, stressTiming );
     }
 
     // Now add a random marathon
@@ -198,8 +240,12 @@ getTestPath( const hydroogmap::OgMap &ogMap,
         d.path.push_back( wp );
     }
 
-    assert( (int)d.path.size() == numWaypoints );
-
+    if ( (int)d.path.size() != numWaypoints )
+    {
+        stringstream ss;
+        ss << "Asked for numWaypoints="<<numWaypoints<<", but d.path.size() = " << d.path.size();
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+    }
     return d;
 }
 
@@ -306,6 +352,13 @@ void checkProgress( const orca::PathFollower2dData     &path,
                     bool                               &pathCompleted,
                     bool                               &pathFailed )
 {
+    if ( wpI == (int)(path.path.size()) )
+    {
+        pathCompleted = true;
+        pathFailed    = false;
+        return;
+    }
+
     assert( path.path.size() > 0 );
     assert( wpI < (int)(path.path.size()) );
 

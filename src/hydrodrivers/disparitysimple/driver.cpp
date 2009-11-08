@@ -94,6 +94,6 @@ Driver::process( const Data &leftImageData, const Data &rightImageData, Data &ou
 } // namespace
 
 extern "C" {
-    hydrointerfaces::DisparityFactory *createDriverFactory()
+    hydrointerfaces::DisparityFactory *createDisparityDriverFactory()
     { return new disparitysimple::Factory; }
 }

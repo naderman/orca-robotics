@@ -11,9 +11,11 @@
 #ifndef HISTOGRAM_CONSUMER_IMPL_H
 #define HISTOGRAM_CONSUMER_IMPL_H
 
+#include <orcaice/timeutils.h>
 #include <orcaifaceimpl/consumerImpl.h>
 #include <orcaifaceutil/laserscanner2d.h>
 #include "histogram.h"
+#include "histogram2d.h"
 #include <iostream>
 
 namespace delaymon
@@ -28,41 +30,65 @@ using orcaifaceimpl::ConsumerImpl<ProviderType,ConsumerType,ObjectType>::context
 public:
     // start, end, stride in [ms]
     HistogramConsumerImpl( const orcaice::Context &context, int start, int end, int stride, 
-                           const std::string& fileprefix, int maxCount=-1 ) :
+                        const std::string& fileprefix, int maxCount=-1, int sendWarningMs = 1000 ) :
         orcaifaceimpl::ConsumerImpl<ProviderType,ConsumerType,ObjectType>(context),
-        historgram_(start,end,stride,fileprefix),
+        receiveHistogram_(start,end,stride,fileprefix+"_rec"),
+        sendHistogram_(start,end,stride,fileprefix+"_send"),
+        sendRecHistogram_(start,end,stride,fileprefix),
         dataCounter_(0),
-        maxCount_(maxCount)
+        maxCount_(maxCount),
+        sendWarningMs_(sendWarningMs)
     {
     }
 
     virtual void dataEvent( const ObjectType& data ) 
     {
-      IceUtil::Time timeStamp = IceUtil::Time::now();
-      ++dataCounter_;
+        IceUtil::Time recCurTimeStamp = IceUtil::Time::now();
+        ++dataCounter_;
+    
+        // need at least 2 data points (the 1st one is sent by IceStorm on subscription)
+        if ( dataCounter_<3 ) {
+            sendPrevTimeStamp_ = orcaice::toIceTime(data->timeStamp);
+            recPrevTimeStamp_ = recCurTimeStamp;
+            return;
+        }
+    
+        // Receive histogram
+        int recDiffMs = (recCurTimeStamp-recPrevTimeStamp_).toMilliSeconds();
+        receiveHistogram_.addValue( recDiffMs );
+        recPrevTimeStamp_ = recCurTimeStamp;
+    
+        // Send histogram
+        IceUtil::Time sendCurTimestamp = orcaice::toIceTime(data->timeStamp);
+        int sendDiffMs = (sendCurTimestamp-sendPrevTimeStamp_).toMilliSeconds();
+        if (sendDiffMs > sendWarningMs_) {
+            std::cout << "Time difference of send msg: " << sendDiffMs << "ms. Warning threshhold is " << sendWarningMs_ << "ms." << std::endl;
+            std::cout << "Timestamp of send msg: " << sendCurTimestamp.toDateTime() << std::endl;
+        }
+        sendHistogram_.addValue( sendDiffMs );
+        sendPrevTimeStamp_ = orcaice::toIceTime(data->timeStamp);
 
-      // need at least 2 data points (the 1st one is sent by IceStorm on subscription)
-      if ( dataCounter_<3 ) {
-          prevTimeStamp_ = timeStamp;
-          return;
-      }
+        // 2d histogram
+        sendRecHistogram_.addValue( sendDiffMs, recDiffMs );
         
-      historgram_.addValue( (timeStamp-prevTimeStamp_).toMilliSeconds() );
-      prevTimeStamp_ = timeStamp;
-
-      if ( maxCount_>0 && dataCounter_>maxCount_ )
-          context_.shutdown();
-
-      if ( (dataCounter_ % 100) == 0 )
-          std::cout<<"processed "<<dataCounter_<<" messages"<<std::endl;
+        if ( maxCount_>0 && dataCounter_>maxCount_ )
+            context_.shutdown();
+    
+        if ( (dataCounter_ % 100) == 0 )
+            std::cout<<"processed "<<dataCounter_<<" messages"<<std::endl;
     }
+
 private:
-
-    Histogram historgram_;
-
-    IceUtil::Time prevTimeStamp_;
+    
+    Histogram receiveHistogram_;
+    Histogram sendHistogram_;
+    Histogram2d sendRecHistogram_;
+    
+    IceUtil::Time recPrevTimeStamp_;
+    IceUtil::Time sendPrevTimeStamp_;
     int dataCounter_;
     int maxCount_;
+    int sendWarningMs_;
 };
 
 } // namespace

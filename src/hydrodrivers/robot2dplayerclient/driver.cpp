@@ -196,7 +196,7 @@ Driver::applyHardwareLimits( double &maxForwardSpeed, double &maxReverseSpeed,
 } // namespace
 
 extern "C" {
-    hydrointerfaces::Robot2dFactory *createDriverFactory()
+    hydrointerfaces::Robot2dFactory *createRobot2dDriverFactory()
     { return new robot2dplayerclient::Factory; }
 }
 

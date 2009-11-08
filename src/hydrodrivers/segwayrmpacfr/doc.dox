@@ -83,22 +83,22 @@ You should see the following line in CMake output:
 - @c Acfr.MaxVelocityScale (double)
     - Scaling factor applied to forward velocity.
     - Valid values: [0.0 .. 1.0]
-    - Default: 0.75
+    - Default: 1.0
 
 - @c Acfr.MaxTurnrateScale (double)
     - Scaling factor applied to yaw rate.
     - Valid values: [0.0 .. 1.0]
-    - Default: 0.75
+    - Default: 1.0
 
 - @c Acfr.MaxAccelerationScale (double)
     - Scaling factor applied to forward velocity.
     - Valid values: [0.0 .. 1.0]
-    - Default: 0.75
+    - Default: 1.0
 
 - @c Acfr.MaxCurrentLimitScale (double)
     - Scaling factor applied to forward velocity.
     - Valid values: [0.0 .. 1.0]
-    - Default: 0.75
+    - Default: 1.0
 
 - @c Acfr.ProductModel (string)
    - The model of the RMP hardware

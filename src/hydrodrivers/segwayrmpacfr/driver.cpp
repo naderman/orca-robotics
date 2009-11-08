@@ -81,68 +81,60 @@ namespace
 
 ///////////////////////////////////////////////////////////////////
 
-
-Driver::Driver( const hydroutil::Context &context )
-    : rmpIo_(0),
-      odomX_(0),
+Driver::Driver( const std::string &powerbaseName, const hydroutil::Context &context )
+    : odomX_(0),
       odomY_(0),
       odomYaw_(0),
-      converter_(0),
-      rxData_(0),
       canDataFile_(0),
+      powerbaseName_(powerbaseName),
       context_(context)
 {    
     // Read configuration
     readFromProperties( context_, config_ );
     
     // Segway data "frame" transmitted over multiple packets
-//     rxData_ = new RxData( config_.model, context_ ),
-//     RawRxData::setContext( context_ );
-    rxData_ = new RxData( config_.model ),
+    rxData_.reset( new RxData( config_.model ) );
     
     // Init unit converter
-    converter_ = new UnitConverter( config_.model );
+    converter_.reset( new UnitConverter( config_.model ) );
 
 #ifdef USB_IO_DRIVER
-    context_.tracer().debug( "Driver: using USB/FTDI IO driver",3);
-    rmpIo_ = new UsbFtdiRmpIo;
+    context_.tracer().debug( powerbaseName_, "Driver: using USB/FTDI IO driver",3);
+    rmpIo_.reset( new UsbFtdiRmpIo );
 #elif CAN_IO_DRIVER
-    context_.tracer().debug( "Driver: using CAN IO driver",3);
-    //Get the port name that we are being asked to open (no default!)
+    context_.tracer().debug( powerbaseName_, "Driver: using CAN IO driver",3);
+    // Get the port name that we are being asked to open (no default!)
     string portName;
     if( context_.properties().getProperty("Acfr.CanDevice", portName) !=0 ) {
-        throw hydrointerfaces::SegwayRmp::Exception( "Driver: config param Acfr.CanDevice not specified" );
+        throw gbxutilacfr::Exception( ERROR_INFO, "Driver: config param Acfr.CanDevice not specified" );
     }
-    rmpIo_ = new CanPeakRmpIo( portName );
+    rmpIo_.reset( new CanPeakRmpIo( portName ) );
 #else
     throw hydrointerfaces::SegwayRmp::Exception( "Driver: cannot initialize an IO driver because preprocessor directives." );
 #endif
     
-    assert( rmpIo_ && "Must have an RMP IO object" );
+    assert( rmpIo_.get() && "Must have an RMP IO object" );
 
     if ( config_.logCanDataToFile )
     {
-        canDataFile_ = new ofstream( config_.canDataLogFileName.c_str() );
+        canDataFile_.reset( new ofstream( config_.canDataLogFileName.c_str() ) );
         if ( !canDataFile_->is_open() ) {
             stringstream ssFile;
             ssFile << "Couldn't open CAN log file '"<<config_.canDataLogFileName<<"' for writing.";
-            throw hydrointerfaces::SegwayRmp::Exception( ssFile.str() );
+            throw gbxutilacfr::Exception( ERROR_INFO, ssFile.str() );
         }
     }
 
     stringstream ss;
     ss << "Driver: Using config: " << config_;
-    context_.tracer().info( ss.str() );
+    context_.tracer().info( powerbaseName_, ss.str() );
 }
 
 Driver::~Driver()
 {
-    delete rxData_;
-    delete converter_;
-    if ( canDataFile_ )
+    if ( canDataFile_.get() )
     {
         canDataFile_->close();
-        delete canDataFile_;
     }
 }
 
@@ -195,11 +187,11 @@ Driver::enable()
     {
         stringstream ss;
         ss << "Driver: failed to enable.  Looks like the Segway is not connected.  Symptom is: "<<endl<<e.what();
-        context_.tracer().error( ss.str() );
-        throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
+        context_.tracer().error( powerbaseName_, ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 
-    context_.tracer().debug("Driver::enable(): connected to RmpIo device.");
+    context_.tracer().debug( powerbaseName_, "Driver::enable(): connected to RmpIo device.");
     
     // segway is physically connected; try to configure
 
@@ -213,7 +205,7 @@ Driver::enable()
     catch ( std::exception &e )
     {
         stringstream ss; ss << "Driver::enable(): write failed: " << e.what();
-        throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 
     // try reading from it (and fill out initial values in rxData_)
@@ -221,17 +213,17 @@ Driver::enable()
         // Do this a bunch, since the RMP seems to spit out all kinds
         // of crap when starting up (although this could be a Peak
         // problem)
-        context_.tracer().debug( "Driver::enable(): Trying initial read" );
+        context_.tracer().debug( powerbaseName_, "Driver::enable(): Trying initial read" );
         for ( size_t i=0; i < 50; i++ )
         {
             *rxData_ = readData();
         }
     }
-    catch ( hydrointerfaces::SegwayRmp::Exception &e )
+    catch ( std::exception &e )
     {
         stringstream ss;
         ss << "Driver: Looks like the Segway is powered off.  Symptom is: " << endl << e.what();
-        throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 
     if ( config_.requireSpecificBuildId )
@@ -243,7 +235,7 @@ Driver::enable()
             ss << "Driver::enable(): RMP firmware version mismatch!" << endl
                << "  Required version: " << config_.requiredBuildId << endl
                << "  Found version:    " << rxData_->buildId();
-            throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
+            throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
         }
     }
          
@@ -261,22 +253,22 @@ Driver::enable()
         stringstream ss;
         ss << "Driver::enable() failed: " << e.what();
         rmpIo_->disable();
-        throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 
     // Read once more to report the state
     try {
         *rxData_ = readData();
     }
-    catch ( hydrointerfaces::SegwayRmp::Exception &e )
+    catch ( std::exception &e )
     {
         stringstream ss;
         ss << "Driver::"<<__func__<<"(): Problem with exploratory read: " << endl << e.what();
-        throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
     stringstream ssread;
     ssread << "Initial rxData: "<<endl<<rxData_->toString();
-    context_.tracer().info( ssread.str() );
+    context_.tracer().info( powerbaseName_, ssread.str() );
 }
 
 void
@@ -300,7 +292,7 @@ Driver::read( Data &data )
         {
             stringstream ss;
             ss << "Driver::"<<__func__<<"(): state changed.  State: "<<newRxData.toString();
-            context_.tracer().info( ss.str() );
+            context_.tracer().info( powerbaseName_, ss.str() );
         }
 
         // update our stored rxData
@@ -310,7 +302,7 @@ Driver::read( Data &data )
     {
         stringstream ss; 
         ss << "Driver::read(): " << e.what();
-        throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 }
 
@@ -320,16 +312,16 @@ Driver::checkOperationalMode()
     if ( rxData_->operationalMode() == OperationalModeBalance &&
          !config_.allowMoveInBalanceMode )
     {
-        throw hydrointerfaces::SegwayRmp::Exception( "Driver: attempted to move in balance mode (disallowed by configuration)" );
+        throw gbxutilacfr::Exception( ERROR_INFO, "Driver: attempted to move in balance mode (disallowed by configuration)" );
     }
     if ( rxData_->operationalMode() == OperationalModeTractor &&
          !config_.allowMoveInTractorMode )
     {
-        throw hydrointerfaces::SegwayRmp::Exception( "Driver: attempted to move in tractor mode (disallowed by configuration)" );
+        throw gbxutilacfr::Exception( ERROR_INFO, "Driver: attempted to move in tractor mode (disallowed by configuration)" );
     }
     if ( rxData_->operationalMode() == OperationalModeDisabled )
     {
-        throw hydrointerfaces::SegwayRmp::Exception( "Driver: attempted to move when OperationalMode=OperationalModeDisabled" );
+        throw gbxutilacfr::Exception( ERROR_INFO, "Driver: attempted to move when OperationalMode=OperationalModeDisabled" );
     }    
 }
 
@@ -360,27 +352,27 @@ Driver::write( const Command& command )
     {
         stringstream ss;
         ss << "Driver::write: scaledCommand.vx(="<<scaledCommand.vx<<"m/s) was greater than maxSpeed(="<<maxSpeed()<<"m/s)..";
-        context_.tracer().warning( ss.str() );
+        context_.tracer().warning( powerbaseName_, ss.str() );
     }
     if ( scaledCommand.w > maxTurnrate(scaledCommand.vx) )
     {
         stringstream ss;
         ss << "Driver::write: scaledCommand.w(="<<scaledCommand.w*180.0/M_PI<<"deg/s) was greater than maxTurnrate at "<<scaledCommand.vx<<"m/s(="<<maxTurnrate(scaledCommand.vx)*180.0/M_PI<<"deg/s)..";
-        context_.tracer().warning( ss.str() );
+        context_.tracer().warning( powerbaseName_, ss.str() );
     }
 
     // Send the command to the RMP
     try {
         sendMotionCommandPacket( scaledCommand );
     }
-    catch ( const hydrointerfaces::SegwayRmp::Exception &e )
+    catch ( const std::exception &e )
     {
         stringstream ss;
         ss << "Driver::write(): failed to write command." << endl
            << "  command =       " << command.toString() << endl
            << "  scaledCommand = " << scaledCommand.toString() << endl
            << e.what();
-        throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 }
 
@@ -426,7 +418,7 @@ Driver::readData()
         {
             stringstream ss;
             ss << "Driver::"<<__func__<<"(): Received Shutdown Message: this usually means that the UI box is turned on but the motor power is off.";
-            throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
+            throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
         }
 
         //
@@ -445,17 +437,17 @@ Driver::readData()
     {
         stringstream ss;
         ss << "Driver::readData(): processed "<<canPacketsProcessed<<" CAN packets without finding all data.";
-        throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
     else if ( timeoutCount == maxTimeoutCount )
     {
         stringstream ss;
         ss << "Driver::readData(): timed out " << timeoutCount << " times while waiting for CAN data.";
-        throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
     else
     {
-        throw hydrointerfaces::SegwayRmp::Exception( "Driver::readData() failed for reason unknown (this shouldn't happen!)" );
+        throw gbxutilacfr::Exception( ERROR_INFO, "Driver::readData() failed for reason unknown (this shouldn't happen!)" );
     }
 }
 
@@ -604,7 +596,7 @@ Driver::sendMotionCommandPacket( const Command& command )
     {
         stringstream ss;
         ss << "Driver::sendMotionCommandPacket(): " << e.what();
-        throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 }
 
@@ -622,7 +614,7 @@ Driver::sendStatusCommandPacket( ConfigurationCommand command, uint16_t param )
     {
         stringstream ss;
         ss << "Driver: sending status command " << toString(command) << " with param " << param;
-        context_.tracer().info( ss.str() );
+        context_.tracer().info( powerbaseName_, ss.str() );
     }
 
     try {
@@ -631,14 +623,14 @@ Driver::sendStatusCommandPacket( ConfigurationCommand command, uint16_t param )
     catch ( std::exception &e )
     {
         stringstream ss; ss << "Driver::sendStatusCommandPacket("<<toString(command)<<"): " << e.what();
-        throw hydrointerfaces::SegwayRmp::Exception( ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 }
 
 void
 Driver::shutdown()
 {
-    context_.tracer().info( "Driver: sending SHUTDOWN command" );
+    context_.tracer().info( powerbaseName_, "Driver: sending SHUTDOWN command" );
     CanPacket pkt = shutdownCommandPacket();
     rmpIo_->writePacket(pkt);
 }
@@ -646,6 +638,6 @@ Driver::shutdown()
 } // namespace
 
 extern "C" {
-    hydrointerfaces::SegwayRmpFactory *createDriverFactory()
+    hydrointerfaces::SegwayRmpFactory *createSegwayRmpDriverFactory()
     { return new segwayrmpacfr::Factory; }
 }

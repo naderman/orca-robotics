@@ -14,6 +14,8 @@
 #include <hydroqguielementutil/definitions2d.h>
 #include <hydroqguielementutil/guielement2d.h>
 
+class QSplitter;
+
 namespace orcaqgui2d
 {
 

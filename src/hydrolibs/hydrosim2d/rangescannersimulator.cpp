@@ -43,9 +43,9 @@ isSane( const RangeScannerSimulator::Config &config, std::string &reason )
 
 //////////////////////////////////////////////////////////////////////
 
-RangeScannerSimulator::RangeScannerSimulator( const Config            &config,
-                                              const hydroogmap::OgMap &ogMap,
-                                              IRangeScanPublisher     &rangeScanPublisher )
+RangeScannerSimulator::RangeScannerSimulator( const Config                          &config,
+                                              const hydroogmap::OgMap               &ogMap,
+                                              hydropublish::RangeScanner2dPublisher &rangeScanPublisher )
     : config_(config),
       ogMap_(ogMap),
       rayTracer_(ogMap),
@@ -63,7 +63,8 @@ RangeScannerSimulator::RangeScannerSimulator( const Config            &config,
 
 void 
 RangeScannerSimulator::getRangesFromPose( const hydronavutil::Pose &sensorPose,
-                                          std::vector<float> &ranges ) const
+                                          std::vector<float>       &ranges,
+                                          const hydrotime::Time    &time ) const
 {
     ranges.resize( config_.numReturns );
 
@@ -86,7 +87,7 @@ RangeScannerSimulator::getRangesFromPose( const hydronavutil::Pose &sensorPose,
                                endX-sensorPose.x() );
     }
 
-    rangeScanPublisher_.publish( ranges );
+    rangeScanPublisher_.localSetAndSend( ranges, time );
 }
 
 }

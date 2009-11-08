@@ -18,16 +18,18 @@ namespace {
     const double ROBOT_RADIUS = 0.375;
 }
 
-Simulator::Simulator( const orcaice::Context         &context,
-                      const hydroogmap::OgMap        &ogMap, 
-                      const orca::PathFollower2dData &testPath,
-                      const Config                   &config )
+Simulator::Simulator( hydropublish::RangeScanner2dPublisherFactory &rangeScanner2dPublisherFactory,
+                      hydropublish::Localise2dPublisherFactory     &localise2dPublisherFactory,
+                      hydropublish::Odometry2dPublisherFactory     &odometry2dPublisherFactory,
+                      hydropublish::OgMapPublisherFactory          &ogMapPublisherFactory,
+                      const hydroogmap::OgMap                      &ogMap, 
+                      const orca::PathFollower2dData               &testPath,
+                      const Config                                 &config )
     : ogMap_(ogMap),
       testPath_(testPath),
       iterationNum_(0),
       wpI_(0),
-      config_(config),
-      context_(context)
+      config_(config)
 {
     cout<<"TRACE(simulator.cpp): Config: " << toString(config) << endl;
 
@@ -41,10 +43,13 @@ Simulator::Simulator( const orcaice::Context         &context,
     vehicleSimConfig.maxRotationalAcceleration    = DEG2RAD(90.0);
     vehicleSimConfig.maxLateralAcceleration       = config_.maxLateralAcceleration;
     vehicleSimConfig.checkVelocityConstraints     = config_.checkVelocityConstraints;
-    vehicleSimConfig.minVelocity.lin()            = 0.0;
+    vehicleSimConfig.minVelocity.lin()            = -1.0;
     vehicleSimConfig.maxVelocity.lin()            = 20.0;
     vehicleSimConfig.minVelocity.rot()            = DEG2RAD(-1000.0);
     vehicleSimConfig.maxVelocity.rot()            = DEG2RAD( 1000.0);
+    vehicleSimConfig.initialPose                  = config_.initialPose;
+    vehicleSimConfig.applyNoises                  = config_.applyNoises;
+    vehicleSimConfig.noises                       = config_.noises;
 
     hydrosim2d::RangeScannerSimulator::Config rangeScanSimConfig;
     rangeScanSimConfig.maxRange       = 80.0;
@@ -53,12 +58,17 @@ Simulator::Simulator( const orcaice::Context         &context,
     rangeScanSimConfig.numReturns     = 181;
 
     // set up interfaces
-    setupInterfaces( vehicleSimConfig, rangeScanSimConfig );
+    setupInterfaces( vehicleSimConfig,
+                     rangeScanSimConfig,
+                     rangeScanner2dPublisherFactory,
+                     localise2dPublisherFactory,
+                     odometry2dPublisherFactory,
+                     ogMapPublisherFactory );
 
     // instantiate the simulation
     vehicleSimulator_.reset( new hydrosim2d::VehicleSimulator( vehicleSimConfig,
                                                                ogMap_,
-                                                               *posePublisher_,
+                                                               posePublisher_.get(),
                                                                odomPublisher_.get() ) );
     rangeScannerSimulator_.reset( new hydrosim2d::RangeScannerSimulator( rangeScanSimConfig,
                                                                          ogMap_,
@@ -66,97 +76,80 @@ Simulator::Simulator( const orcaice::Context         &context,
 }
 
 void
-Simulator::setupInterfaces( const hydrosim2d::VehicleSimulator::Config &vehicleSimConfig,
-                            const hydrosim2d::RangeScannerSimulator::Config rangeScanSimConfig )
+Simulator::setupInterfaces( const hydrosim2d::VehicleSimulator::Config      &vehicleSimConfig,
+                            const hydrosim2d::RangeScannerSimulator::Config &rangeScanSimConfig,
+                            hydropublish::RangeScanner2dPublisherFactory    &rangeScanner2dPublisherFactory,
+                            hydropublish::Localise2dPublisherFactory        &localise2dPublisherFactory,
+                            hydropublish::Odometry2dPublisherFactory        &odometry2dPublisherFactory,
+                            hydropublish::OgMapPublisherFactory             &ogMapPublisherFactory )
 {
-    scannerDescr_.minRange        = 0.0;
-    scannerDescr_.maxRange        = rangeScanSimConfig.maxRange;
-    scannerDescr_.fieldOfView     = 
-        (rangeScanSimConfig.numReturns-1)*rangeScanSimConfig.angleIncrement;
-    scannerDescr_.startAngle      = rangeScanSimConfig.startAngle;
-    scannerDescr_.numberOfSamples = rangeScanSimConfig.numReturns;
-    scannerDescr_.offset          = orcaobj::zeroFrame3d();
-    scannerDescr_.size.l          = 0.1;
-    scannerDescr_.size.w          = 0.1;
-    scannerDescr_.size.h          = 0.1;
-    scannerDescr_.offset.p.x      = 0;
-    scannerDescr_.offset.p.y      = 0;
-    scannerDescr_.offset.p.z      = 0;
-    scannerDescr_.offset.o.r      = 0;
-    scannerDescr_.offset.o.p      = 0;
-    scannerDescr_.offset.o.y      = 0;
-    scannerDescr_.timeStamp       = orcaice::getNow();
+    //
+    // Scanner
+    //
+    scannerConfig_ = hydroscanutil::ScannerConfig ( rangeScanSimConfig.maxRange,
+                                                    rangeScanSimConfig.startAngle,
+                                                    rangeScanSimConfig.angleIncrement,
+                                                    rangeScanSimConfig.numReturns );
+    rangeScanPublisher_ = rangeScanner2dPublisherFactory.createPublisher( scannerConfig_,
+                                                                          config_.scannerOffset,
+                                                                          scannerInterfaceName() );
 
-    rangeScanPublisher_.reset( new orcasim2d::RangeScanPublisher( scannerDescr_,
-                                                                  context_,
-                                                                  scannerInterfaceName() ) );
+    //
+    // Vehicle
+    //
+    geomDescr_.height = 2.0;
+    geomDescr_.radius = ROBOT_RADIUS;
 
-    orca::VehicleControlVelocityDifferentialDescription *c 
-        = new orca::VehicleControlVelocityDifferentialDescription;
-    c->type                      = orca::VehicleControlVelocityDifferential;
-    c->maxForwardSpeed           = vehicleSimConfig.maxVelocity.lin();
-    c->maxReverseSpeed           = vehicleSimConfig.minVelocity.lin();
-    c->maxTurnrate               = vehicleSimConfig.maxVelocity.rot();
-    c->maxLateralAcceleration    = config_.maxLateralAcceleration;
-    c->maxForwardAcceleration    = vehicleSimConfig.maxLinearAcceleration;
-    c->maxReverseAcceleration    = vehicleSimConfig.maxLinearAcceleration;
-    c->maxRotationalAcceleration = vehicleSimConfig.maxRotationalAcceleration;
-    orcaobjutil::checkVehicleControlVelocityDifferentialDescription( *c );
-    vehicleDescr_.control        = c;
+    controlDescr_.maxForwardSpeed           = vehicleSimConfig.maxVelocity.lin();
+    controlDescr_.maxReverseSpeed           = -vehicleSimConfig.minVelocity.lin();
+    controlDescr_.maxTurnrate               = vehicleSimConfig.maxVelocity.rot();
+    controlDescr_.maxLateralAcceleration    = vehicleSimConfig.maxLateralAcceleration;
+    controlDescr_.maxForwardAcceleration    = vehicleSimConfig.maxLinearAcceleration;
+    controlDescr_.maxReverseAcceleration    = vehicleSimConfig.maxLinearAcceleration;
+    controlDescr_.maxRotationalAcceleration = vehicleSimConfig.maxRotationalAcceleration;
 
-    orca::VehicleGeometryCylindricalDescription *g
-        = new orca::VehicleGeometryCylindricalDescription;
-    g->type = orca::VehicleGeometryCylindrical;
-    g->radius = ROBOT_RADIUS;
-    g->height = 2.0;
+    posePublisher_ = localise2dPublisherFactory.createPublisher( geomDescr_,
+                                                                 localiseInterfaceName() );
+    odomPublisher_ = odometry2dPublisherFactory.createPublisher( controlDescr_,
+                                                                 geomDescr_,
+                                                                 odomInterfaceName() );
+    ogMapPublisher_ = ogMapPublisherFactory.createPublisher( "TestOgMap" );
 
-    g->platformToGeometryTransform = orcaobj::zeroFrame3d();
-    vehicleDescr_.geometry = g;
-
-    posePublisher_.reset( new orcasim2d::PosePublisher( vehicleDescr_.geometry,
-                                                        context_,
-                                                        localiseInterfaceName() ) );
-
-    odomPublisher_.reset( new orcasim2d::OdomPublisher( vehicleDescr_,
-                                                        context_,
-                                                        odomInterfaceName() ) );
-
-    ogMapInterface_    = new orcaifaceimpl::OgMapImpl( context_, "TestOgMap" );
     try {
-        rangeScanPublisher_->initInterface();
-    } 
+        rangeScanPublisher_->init();
+    }
     catch ( std::exception &e ) {
-        cout << "Ignoring problem initialising interface: " << e.what();
+        cout << "Ignoring problem initialising rangeScanPublisher_: " << e.what();
     }
 
     try {
-        posePublisher_->initInterface();
+        posePublisher_->init();
     }
     catch ( std::exception &e ) {
-        cout << "Ignoring problem initialising interface: " << e.what();
+        cout << "Ignoring problem initialising posePublisher_: " << e.what();
     }
 
     try {
-        odomPublisher_->initInterface();
+        odomPublisher_->init();
     }
     catch ( std::exception &e ) {
-        cout << "Ignoring problem initialising interface: " << e.what();
+        cout << "Ignoring problem initialising odomPublisher_: " << e.what();
     }
 
     try {
-        orca::OgMapData orcaOgMap;
-        orcaogmap::convert( ogMap_, orcaOgMap );
-        ogMapInterface_->initInterface();
-        ogMapInterface_->localSetAndSend( orcaOgMap );
+        ogMapPublisher_->init();
+        ogMapPublisher_->localSetAndSend( ogMap_ );
     }
     catch ( std::exception &e ) {
-        cout << "Ignoring problem initialising interface: " << e.what();
+        cout << "Ignoring problem initialising ogMapPublisher_: " << e.what();
     }
 }
 
 void 
 Simulator::act( const hydronavutil::Velocity &cmd )
 {
+    iterationNum_++;
+
     if ( iterationNum_ % 50 == 0 )
     {
         cout<<"TRACE(simulator.cpp): iteration: " << iterationNum_ << endl;
@@ -176,7 +169,7 @@ Simulator::act( const hydronavutil::Velocity &cmd )
     }
 
     try {
-        vehicleSimulator_->act( cmd );
+        vehicleSimulator_->act( cmd, time() );
     }
     catch ( std::exception &e )
     {
@@ -184,8 +177,6 @@ Simulator::act( const hydronavutil::Velocity &cmd )
         cout<<"TRACE(simulator.cpp): test FAILED" << endl;
         exit(1);
     }
-
-    iterationNum_++;
 }
 
 void
@@ -200,16 +191,24 @@ Simulator::checkProgress( bool &pathCompleted, bool &pathFailed )
                                      pathFailed );
 }
 
-orca::Time 
+hydrotime::Time 
 Simulator::time() const
 {
     double sec = DELTA_T * iterationNum_;
 
-    orca::Time t;
-    t.seconds = (int)sec;
-    t.useconds = (int)((sec-(int)sec) * 1e6);
+    return hydrotime::Time( (int)sec, (int)((sec-(int)sec) * 1e6) );
+}
 
-    return t;
+void
+Simulator::getObsRanges( std::vector<float> &obsRanges )
+{
+    hydronavutil::Pose scannerPose;
+    const bool normaliseHeading = true;
+    hydronavutil::addPoseOffset( vehicleSimulator_->pose(),
+                                 config_.scannerOffset,
+                                 scannerPose,
+                                 normaliseHeading );
+    rangeScannerSimulator_->getRangesFromPose( scannerPose, obsRanges, time() );
 }
 
 std::string toString( const Simulator::Config &c )
@@ -223,6 +222,9 @@ std::string toString( const Simulator::Config &c )
     ss << "batchMode                    : " << c.batchMode << endl;
     ss << "numIterationsBatch           : " << c.numIterationsBatch << endl;
     ss << "numIterationsLimit           : " << c.numIterationsLimit << endl;
+    ss << "applyNoises                  : " << c.applyNoises << endl;
+    if ( c.applyNoises )
+        ss << "noises                       : " << c.noises << endl;
     return ss.str();
 }
 

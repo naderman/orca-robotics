@@ -21,3 +21,6 @@ GBX_ADD_TEST( HydroIceUtilLocalTracerTest localtracertest )
 
 add_executable( localstatustest localstatustest.cpp )
 GBX_ADD_TEST( HydroIceUtilLocalStatusTest localstatustest )
+
+add_executable( localhistorytest localhistorytest.cpp )
+GBX_ADD_TEST( HydroIceUtilLocalHistoryTest localhistorytest )

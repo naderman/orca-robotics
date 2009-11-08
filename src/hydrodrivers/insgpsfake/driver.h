@@ -50,7 +50,7 @@ public:
 
 // Used for dynamically loading driver
 extern "C" {
-    hydrointerfaces::InsGpsFactory *createDriverFactory();
+    hydrointerfaces::InsGpsFactory *createInsGpsDriverFactory();
 }
 
 #endif

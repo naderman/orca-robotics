@@ -12,11 +12,12 @@
 #define PATHPLANNER_BUTTONS_H
 
 #include <QObject>
+#include <memory>
+#include <hydroqguielementutil/shortcutkeymanager.h>
 
 class QAction;
 
 namespace hydroqguielementutil {
-    class ShortcutKeyManager;
     class IHumanManager;   
 }
 
@@ -36,12 +37,13 @@ public:
                         hydroqguielementutil::IHumanManager      &humanManager, 
                         hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
                         const std::string                        &proxyString);
-    ~PathplannerButtons();
     void setWpButton( bool onOff );
 
 private:
     QAction *hiWaypoints_;
-    hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager_;
+
+    std::auto_ptr<hydroqguielementutil::ShortcutKeyReservation> drawWaypointsShortcutKey_;
+    std::auto_ptr<hydroqguielementutil::ShortcutKeyReservation> sendPathShortcutKey_;
 };
 
 }

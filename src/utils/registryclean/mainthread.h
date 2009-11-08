@@ -13,7 +13,6 @@
 
 #include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
-#include <IceGrid/Admin.h>
 
 namespace registryclean
 {
@@ -25,12 +24,7 @@ public:
 
 private:
     // from SubsystemThread
-//     virtual void initialise();
     virtual void work();
-//     virtual void finalise();
-
-    void purgeObjects( const IceGrid::AdminPrx& admin );
-    void purgeAdapters( const IceGrid::AdminPrx& admin );
 
     orcaice::Context context_;
 };

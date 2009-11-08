@@ -8,15 +8,12 @@ using namespace std;
 namespace orcaqgui3d {
 
 FeatureMap2dElement::FeatureMap2dElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
-                                          const orcaice::Context                     &context,
-                                          const std::string                          &proxyString,
-                                          hydroqguielementutil::IHumanManager        *humanManager )
+                                          const orcaice::Context                     &context )
     : orcaqgui3d::IceStormElement3d<FeatureMap2dPainter,
                       orca::FeatureMap2dData,
                       orca::FeatureMap2dPrx,
                       orca::FeatureMap2dConsumer,
-                      orca::FeatureMap2dConsumerPrx>(guiElementInfo, context, proxyString, painter_, -1 ),
-      humanManager_(humanManager),
+                      orca::FeatureMap2dConsumerPrx>(guiElementInfo, context, painter_, -1 ),
       featureMapFileName_("/home"),
       featureMapFileNameSet_(false)
 {
@@ -64,7 +61,7 @@ void FeatureMap2dElement::saveFeatureMapAs()
 
     if ( featureMapFileName_ != "" )
     {
-        painter_.saveMap( featureMapFileName_, humanManager_ );
+        painter_.saveMap( featureMapFileName_, _stuff.humanManager );
         featureMapFileNameSet_ = true;
     }
 }
@@ -77,7 +74,7 @@ void FeatureMap2dElement::saveFeatureMap()
     }
     else
     {
-        painter_.saveMap( featureMapFileName_, humanManager_ );
+        painter_.saveMap( featureMapFileName_, _stuff.humanManager );
     }
 }
 

@@ -62,20 +62,75 @@ namespace hydroogmap {
             : numCellsX(pNumCellsX),
               numCellsY(pNumCellsY),
               metresPerCell(pMetresPerCell),
-              offset(pOffset) {}
+              offset(pOffset) 
+            {
+                assert(offset.o==0);
+            }
 
         //! Are the world coordinates within the map?
         bool coordsWithinMap( const WorldCoords &worldCoords ) const
-            {
-                assert( offset.o == 0.0 );
-                return ( worldCoords.x >= offset.p.x &&
-                         worldCoords.y >= offset.p.y &&
-                         worldCoords.x <  offset.p.x+numCellsX*metresPerCell &&
-                         worldCoords.y <  offset.p.y+numCellsY*metresPerCell );
-            }
+            { return cellWithinMap(gridIndices(worldCoords)); }
         //! Are the world coordinates within the map?
         bool coordsWithinMap( double worldX, double worldY ) const
             { return coordsWithinMap(WorldCoords(worldX,worldY)); }
+
+        //! Is the grid cell within the map?
+        bool cellWithinMap( int gridX, int gridY ) const
+            { return cellWithinMap(GridIndices(gridX,gridY)); }
+        //! Is the grid cell within the map?
+        bool cellWithinMap( const GridIndices &gridIndices ) const
+        { 
+            return ( gridIndices.x >= 0 &&
+                     gridIndices.y >= 0 &&
+                     gridIndices.x <  numCellsX &&
+                     gridIndices.y <  numCellsY );
+        }
+
+        //! Get the x world coord of a grid cell.
+        //! (Returns the coords of the centre of the cell)
+        //! gridX doesn't have to be within the map bounds.
+        double worldXCoord( int gridX ) const
+            { return double(offset.p.x + (gridX+0.5)*metresPerCell); }
+        //! Get the y world coord of a grid cell.
+        //! (Returns the coords of the centre of the cell)
+        //! gridY doesn't have to be within the map bounds.
+        double worldYCoord( int gridY ) const
+            { return double(offset.p.y + (gridY+0.5)*metresPerCell); }
+
+        //! translate a world coord to a map coord
+        int worldToIndexX( double worldX ) const
+        { return (int) std::floor( (worldX-offset.p.x)/metresPerCell ); }
+        int worldToIndexY( double worldY ) const
+        { return (int) std::floor( (worldY-offset.p.y)/metresPerCell ); }
+
+        //! Get the world coordinates of a grid cell.
+        //! (Returns the coords of the centre of the cell)
+        //! gridX and gridY don't have to be within the map bounds.
+        WorldCoords worldCoords( const GridIndices &gridIndices ) const
+            { 
+                return WorldCoords( worldXCoord(gridIndices.x), worldYCoord(gridIndices.y) );
+            }
+        WorldCoords worldCoords( int gridX, int gridY ) const
+            { return worldCoords( GridIndices(gridX,gridY) ); }
+
+        //! Get the grid cell indices of a point in the world
+        //! worldX and worldY don't have to be within the map bounds.
+        GridIndices gridIndices( const WorldCoords &worldCoords ) const
+            { return GridIndices( worldToIndexX(worldCoords.x), worldToIndexY(worldCoords.y) ); }
+        GridIndices gridIndices( double worldX, double worldY ) const
+            { return gridIndices( WorldCoords(worldX,worldY) ); }
+
+        //! Returns the size of the world, in metres, along the x-axis
+        double worldSizeX() const { return numCellsX*metresPerCell; }
+        //! Returns the size of the world, in metres, along the y-axis
+        double worldSizeY() const { return numCellsY*metresPerCell; }
+
+        double minWorldX() const { return offset.p.x; }
+        double minWorldY() const { return offset.p.y; }
+        double maxWorldX() const { return minWorldX()+worldSizeX(); }
+        double maxWorldY() const { return minWorldY()+worldSizeY(); }
+
+        int numCells() const { return numCellsX*numCellsY; }
 
         //! The number of cells along the x axis
         int     numCellsX;
@@ -90,6 +145,8 @@ namespace hydroogmap {
     inline std::ostream &operator<<( std::ostream &s, const MetaData &m )
     { return s << toString(m); }
     bool operator==( const MetaData &m1, const MetaData &m2 );
+    inline bool operator!=( const MetaData &m1, const MetaData &m2 )
+    { return !(m1==m2); }
 
 /*!
      A (spatial) map of values: posit a 2D grid of cells over the world, 
@@ -187,6 +244,9 @@ namespace hydroogmap {
         //! Returns the number of cells along the y-axis
         int numCellsY() const { return metaData_.numCellsY; };
 
+        //! Returns the total number of cells
+        int numCells() const { return data_.size(); }
+
         void setMetaData( const MetaData &metaData )
             {
                 metaData_ = metaData;
@@ -195,9 +255,14 @@ namespace hydroogmap {
         const MetaData &metaData() const { return metaData_; }
 
         //! Returns the size of the world, in metres, along the x-axis
-        double worldSizeX() const { return numCellsX()*metresPerCell(); };
+        double worldSizeX() const { return metaData_.worldSizeX(); }
         //! Returns the size of the world, in metres, along the y-axis
-        double worldSizeY() const { return numCellsY()*metresPerCell(); };
+        double worldSizeY() const { return metaData_.worldSizeY(); }
+
+        double minWorldX() const { return metaData_.minWorldX(); }
+        double minWorldY() const { return metaData_.minWorldY(); }
+        double maxWorldX() const { return metaData_.maxWorldX(); }
+        double maxWorldY() const { return metaData_.maxWorldY(); }
 
         //! Set the offset (global coordinates of the bottom-left corner of the bottom-left cell)
         Frame2d &offset() { return metaData_.offset; };
@@ -205,9 +270,9 @@ namespace hydroogmap {
         const Frame2d &offset() const { return metaData_.offset; };
         
         //! Set the size of each cell
-        void setMetresPerCell( double mPerCell ) { metaData_.metresPerCell = mPerCell; };
+        void setMetresPerCell( double mPerCell ) { metaData_.metresPerCell = mPerCell; }
         //! get the size of each cell
-        double metresPerCell() const { return metaData_.metresPerCell; };
+        double metresPerCell() const { return metaData_.metresPerCell; }
 
         //! Set values
         T *data() { return &data_[0]; };
@@ -222,12 +287,12 @@ namespace hydroogmap {
         //! (Returns the coords of the centre of the cell)
         //! gridX doesn't have to be within the map bounds.
         double worldXCoord( int gridX ) const
-            { return double(offset().p.x + (gridX+0.5)*metresPerCell()); }
+            { return metaData_.worldXCoord(gridX); }
         //! Get the y world coord of a grid cell.
         //! (Returns the coords of the centre of the cell)
         //! gridY doesn't have to be within the map bounds.
         double worldYCoord( int gridY ) const
-            { return double(offset().p.y + (gridY+0.5)*metresPerCell()); }
+            { return metaData_.worldYCoord(gridY); }
 
         //! Get the world coordinates of a grid cell.
         //! (Returns the coords of the centre of the cell)
@@ -241,14 +306,9 @@ namespace hydroogmap {
         //! (Returns the coords of the centre of the cell)
         //! gridX and gridY don't have to be within the map bounds.
         WorldCoords worldCoords( const GridIndices &gridIndices ) const
-            { 
-                // Todo: handle non-zero orientation.
-                assert(offset().o == 0.0 );
-
-                return WorldCoords( worldXCoord(gridIndices.x), worldYCoord(gridIndices.y) );
-            }
+            { return metaData_.worldCoords(gridIndices); }
         WorldCoords worldCoords( int gridX, int gridY ) const
-            { return worldCoords( GridIndices(gridX,gridY) ); }
+            { return metaData_.worldCoords( GridIndices(gridX,gridY) ); }
 
         //! Get the grid cell indices of a point in the world
         //! worldX and worldY don't have to be within the map bounds.
@@ -258,17 +318,17 @@ namespace hydroogmap {
                 gridY = worldToIndexY( worldY );
             }
         GridIndices gridIndices( const WorldCoords &worldCoords ) const
-            { return GridIndices( worldToIndexX(worldCoords.x), worldToIndexY(worldCoords.y) ); }
+            { return metaData_.gridIndices(worldCoords); }
         GridIndices gridIndices( double worldX, double worldY ) const
-            { return gridIndices( WorldCoords(worldX,worldY) ); }
+            { return metaData_.gridIndices( WorldCoords(worldX,worldY) ); }
 
         // Look up the index into the flat data array.
-        double dataIndex( const GridIndices &gridIndices ) const
+        int dataIndex( const GridIndices &gridIndices ) const
             { return gridIndices.y*numCellsX() + gridIndices.x; }
-        double dataIndex( int x, int y ) const
+        int dataIndex( int x, int y ) const
             { return dataIndex(GridIndices(x,y)); }
 
-        //! Set a cell indexed by map coords
+        //! Get a cell-reference, indexed by map coords
         //! (no bounds checking is performed)
         T &gridCell( int indX, int indY )
             { return gridCell(GridIndices(indX,indY)); }
@@ -301,14 +361,12 @@ namespace hydroogmap {
         //! (no bounds checking is performed)
         T &worldCell( const WorldCoords &worldCoords )
         { 
-            assert( offset().o == 0.0 );
             return gridCell( gridIndices(worldCoords) );
         }
         //! Get a cell, indexed by world coords
         //! (no bounds checking is performed)
         const T &worldCell( const WorldCoords &worldCoords ) const
         { 
-            assert( offset().o == 0.0 );
             return gridCell( gridIndices(worldCoords) );
         }
 
@@ -334,9 +392,9 @@ namespace hydroogmap {
 
         //! translate a world coord to a map coord
         int worldToIndexX( double worldX ) const
-        { assert(offset().o==0.0); return (int) std::floor( (worldX-offset().p.x)/metresPerCell() ); }
+        { return metaData_.worldToIndexX(worldX); }
         int worldToIndexY( double worldY ) const
-        { assert(offset().o==0.0); return (int) std::floor( (worldY-offset().p.y)/metresPerCell() ); }
+        { return metaData_.worldToIndexY(worldY); }
     
         //! Change the size of the map
         void reallocate( int numCellsX, int numCellsY )
@@ -358,19 +416,14 @@ namespace hydroogmap {
             { return coordsWithinMap(WorldCoords(worldX,worldY)); }
         //! Are the world coordinates within the map?
         bool coordsWithinMap( const WorldCoords &worldCoords ) const
-        { return metaData_.coordsWithinMap(worldCoords); }
+            { return metaData_.coordsWithinMap(worldCoords); }
 
         //! Is the grid cell within the map?
-        bool cellWithinMap( double gridX, double gridY ) const
-            { return cellWithinMap(GridIndices(gridX,gridY)); }
+        bool cellWithinMap( int gridX, int gridY ) const
+            { return metaData_.cellWithinMap(gridX,gridY); }
         //! Is the grid cell within the map?
         bool cellWithinMap( const GridIndices &gridIndices ) const
-        { 
-            return ( gridIndices.x >= 0 &&
-                     gridIndices.y >= 0 &&
-                     gridIndices.x <  numCellsX() &&
-                     gridIndices.y <  numCellsY() );
-        }
+            { return metaData_.cellWithinMap(gridIndices); }
 
     private:
 
@@ -383,7 +436,7 @@ namespace hydroogmap {
     template<typename T>
     SOEXPORT std::ostream &operator<<( std::ostream &s, const GenericMap<T> &o )
     {
-        s << " OgMap: \n"
+        s << " OgMap: "
           << o.metaData();
         return s;
     }
