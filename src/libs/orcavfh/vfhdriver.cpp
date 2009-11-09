@@ -388,6 +388,6 @@ std::ostream &operator<<( std::ostream &s, VfhDriver::DriverState state )
 }
 
 extern "C" {
-    orcalocalnav::DriverFactory *createVfhDriverFactory()
+    orcalocalnav::DriverFactory *createLocalNavDriverFactory()
     { return new vfh::VfhDriverFactory; }
 }
