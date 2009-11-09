@@ -10,13 +10,13 @@ set( buildUSB false )
 # CAN IO
 #
 ORCA_SET_LIBRARY_NAME( HydroSegwayRmpAcfrCan )
-set( LIB_INSTALL segwayrmpacfr )
+set( LIB_INSTALL hydrosegwayrmpacfr )
 
 set( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
 GBX_REQUIRE_VAR( build LIB ${LIB_NAME} GBX_OS_LINUX "Only Linux OS is supported" )
 
-set( dep_libs ${dep_libs} GbxUtilAcfr GbxIceUtilAcfr HydroInterfaces HydroIceUtil ) 
+set( dep_libs ${dep_libs} GbxUtilAcfr GbxIceUtilAcfr HydroInterfaces HydroIceUtil )
 GBX_REQUIRE_LIBS( build LIB ${LIB_NAME} ${dep_libs} )
 
 include(${ORCA_CMAKE_DIR}/FindPeakCan.cmake)
@@ -46,20 +46,20 @@ if( build )
     endif( ORCA_BUILD_TESTS )
 
     GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
-    
+
 endif( build )
 
 #
 #  USB IO
 #
 ORCA_SET_LIBRARY_NAME( HydroSegwayRmpAcfrUsb )
-set( LIB_INSTALL segwayrmpacfr )
+set( LIB_INSTALL hydrosegwayrmpacfr )
 
 set( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
 GBX_REQUIRE_VAR( build LIB ${LIB_NAME} GBX_OS_LINUX "Only Linux OS is supported" )
 
-set( dep_libs GbxUtilAcfr GbxIceUtilAcfr HydroInterfaces HydroIceUtil ) 
+set( dep_libs GbxUtilAcfr GbxIceUtilAcfr HydroInterfaces HydroIceUtil )
 GBX_REQUIRE_LIBS( build LIB ${LIB_NAME} ${dep_libs} )
 
 include( ${ORCA_CMAKE_DIR}/FindFtd2xx.cmake )

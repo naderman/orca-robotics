@@ -23,7 +23,7 @@ if( build )
 
     GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${LIB_VERSION} ${srcs} )
     
-    TARGET_LINK_LIBRARIES ( ${LIB_NAME} ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES} )
+    target_link_libraries( ${LIB_NAME} ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES} )
 
     GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
 

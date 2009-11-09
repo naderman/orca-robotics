@@ -2,54 +2,53 @@
 
 message( STATUS "== HYDRO DRIVERS ==" )
 
-# when adding new directories, please maintain alphabetical order 
+# when adding new directories, please maintain alphabetical order
 # unless there are inter-dependencies.
 
-add_subdirectory( bicycleplayerclient )
+add_subdirectory( hydrobicycleplayerclient )
 
-add_subdirectory( disparitysimple )
+add_subdirectory( hydrodisparitysimple )
 
-add_subdirectory( gpsfake )
-add_subdirectory( gpsgarmingbx )
+add_subdirectory( hydrogpsfake )
+add_subdirectory( hydrogpsgarmingbx )
 
-add_subdirectory( humaninput2djoystick )
-add_subdirectory( humaninput2dkbdiostream )
-add_subdirectory( humaninput2dkbdtermio )
+add_subdirectory( hydrohumaninput2djoystick )
+add_subdirectory( hydrohumaninput2dkbdiostream )
+add_subdirectory( hydrohumaninput2dkbdtermio )
 
-add_subdirectory( imagefake )
-add_subdirectory( imagefile )
-add_subdirectory( imagecvcamera )
-add_subdirectory( imagedc1394camera )
+add_subdirectory( hydroimagefake )
+add_subdirectory( hydroimagefile )
+add_subdirectory( hydroimagecvcamera )
+add_subdirectory( hydroimagedc1394camera )
 
-add_subdirectory( multiimagecvcamera )
-add_subdirectory( multiimagefake )
-add_subdirectory( multiimagefile )
+add_subdirectory( hydromultiimagecvcamera )
+add_subdirectory( hydromultiimagefake )
+add_subdirectory( hydromultiimagefile )
 
-add_subdirectory( rangerarrayfake )
-#add_subdirectory( rangerarrayplayersonarclient )
+add_subdirectory( hydrorangerarrayfake )
+#add_subdirectory( hydrorangerarrayplayersonarclient )
 
-add_subdirectory( insgpsfake )
-add_subdirectory( insgpsnovatelgbx )
-add_subdirectory( insgpsnovatelspan )
+add_subdirectory( hydroinsgpsfake )
+add_subdirectory( hydroinsgpsnovatelgbx )
 
-add_subdirectory( laserscanner2dfake )
-add_subdirectory( laserscanner2dhokuyoaist )
-add_subdirectory( laserscanner2dplayerclient )
-add_subdirectory( laserscanner2dsickcarmen )
-add_subdirectory( laserscanner2dsickgbx )
+add_subdirectory( hydrolaserscanner2dfake )
+add_subdirectory( hydrolaserscanner2dhokuyoaist )
+add_subdirectory( hydrolaserscanner2dplayerclient )
+add_subdirectory( hydrolaserscanner2dsickcarmen )
+add_subdirectory( hydrolaserscanner2dsickgbx )
 
-add_subdirectory( laserfeatureextractorcombined )
+add_subdirectory( hydrolaserfeatureextractorcombined )
 
-add_subdirectory( mhipa10arcnet )
-add_subdirectory( mhipa10fake )
+add_subdirectory( hydromhipa10arcnet )
+add_subdirectory( hydromhipa10fake )
 
-add_subdirectory( pathplanner2dfake )
-add_subdirectory( pathplanner2dacfr )
+add_subdirectory( hydropathplanner2dfake )
+add_subdirectory( hydropathplanner2dacfr )
 
-add_subdirectory( robot2dfake )
-add_subdirectory( robot2dplayerclient )
+add_subdirectory( hydrorobot2dfake )
+add_subdirectory( hydrorobot2dplayerclient )
 
-add_subdirectory( segwayrmpfake )
-add_subdirectory( segwayrmpacfr )
-add_subdirectory( segwayrmpplayerclient )
+add_subdirectory( hydrosegwayrmpfake )
+add_subdirectory( hydrosegwayrmpacfr )
+add_subdirectory( hydrosegwayrmpplayerclient )
 
