@@ -75,8 +75,8 @@ public:
     virtual void send() = 0;
     virtual void cancel() = 0;  
     virtual void saveUserPath( const hydroqguipath::GuiPath &guiPath,
-                               int numLoops,
-                               float timeOffset) = 0;
+                               int numLoops = 1,
+                               float timeOffset = 0.0 ) = 0;
     virtual void loadUserPath(hydroqguipath::GuiPath &guiPath) = 0;
     virtual void loadPreviousUserPath(hydroqguipath::GuiPath &guiPath) = 0;    
 };

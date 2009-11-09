@@ -73,8 +73,8 @@ public:
     void mouseDoubleClickEvent(QMouseEvent *e);
 
     void saveUserPath( const hydroqguipath::GuiPath &guiPath,
-                         int numLoops,
-                         float timeOffset );
+                       int                           numLoops = 1, 
+                       float                         timeOffset = 0.0 );
     
     void loadUserPath(hydroqguipath::GuiPath &guiPath);
     void loadPreviousUserPath(hydroqguipath::GuiPath &guiPath);

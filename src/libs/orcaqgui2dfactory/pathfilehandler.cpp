@@ -12,6 +12,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <orcaobjutil/pathfileutil.h>
+#include <orcaobj/pathfollower2d.h>
 #include <hydroqguielementutil/ihumanmanager.h>
 #include <orcaqgui2dfactory/pathconversionutil.h>
 
@@ -38,6 +39,12 @@ PathFileHandler::savePath( const QString                &filename,
     if (guiPath.size()==0)
     {
         humanManager_.showDialogWarning( "Path has no waypoints!" );
+        return;
+    }
+
+    if (numLoops==0)
+    {
+        humanManager_.showDialogWarning( "Path is empty because number of loops is 0!" );
         return;
     }
     

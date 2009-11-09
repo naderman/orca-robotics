@@ -84,7 +84,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - feature: add a mechanism to ping admin interfaces (alexm)
   - do general cleanup
 
-@section orca_doc_history_9110 Changes in Release 9.11.0
+@section orca_doc_history_head Changes in SVN since Last Release
 
 @par Project wide
 
@@ -195,11 +195,13 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
 - libOrcaSystemStatusUtil
   - wraps up tricky functionality of maintaining remote status of a component. Used in SystemStatus. (alexm)
 
+@par Updated driver interfaces
 @par Updated drivers
 
 - SegwayRmpAcfr
   - removed unnecessary dependency between CAN and USB drivers. (alexm)
 
+@par Updated non-framework utilities
 @par Updated non-framework libraries
 
 - libHydroIceUtil
@@ -342,11 +344,6 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
 
 - libOrcaCompModel
   -Registry information is now sorted alphabetically.
-
-@par Removed
-
-- libHydroInsGpsNovatelSpan
-  - migrated into GearBox, use a wrapper driver libHydroInsGpsNovatelGbx
 
 @section orca_doc_history_2130 Changes in Release 2.13.0
 

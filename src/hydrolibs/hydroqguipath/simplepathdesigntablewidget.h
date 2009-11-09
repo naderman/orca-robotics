@@ -19,10 +19,15 @@
 
 class QSpinBox;
 
+namespace hydroqguielementutil {
+    class IHumanManager;
+}
+
 namespace hydroqguipath {
     
 class SimplePathDesignTable;
 class IPathInput;
+class PathDesignScreen;
 
 //!
 //! A class used to design paths by manipulating values in a table
@@ -35,13 +40,19 @@ class SimplePathDesignTableWidget : public QWidget
     
     public:
         SimplePathDesignTableWidget ( IPathInput *pathInput,
-                                      GuiPath    &guiPath );
-        int numberOfLoops();
+                                      GuiPath    &guiPath,
+                                      PathDesignScreen &designScreen,
+                                      double maxApproachSpeedSetting,
+                                      double distToleranceSetting,
+                                      hydroqguielementutil::IHumanManager &humanManager );
+        virtual ~SimplePathDesignTableWidget();
     
     private:
         IPathInput *pathInput_;
         SimplePathDesignTable *wpTable_;
-//         QSpinBox *numLoopsSpin_;
+        hydroqguipath::PathDesignScreen &designScreen_;
+        void readSettings();
+        void writeSettings();
         
     public slots:
         void refreshTable();
@@ -50,8 +61,10 @@ class SimplePathDesignTableWidget : public QWidget
         void savePath();
         void loadPath();
         void loadPreviousPath();
-        void sendPath();
-        void cancelPath();
+//         void sendPath();
+//         void cancelPath();
+        void updateMaxApproachSpeedSetting(double);
+        void updateDistToleranceSetting(double);
     
 };
 
@@ -61,15 +74,16 @@ class SimplePathDesignTable : public QTableWidget
             
     public:
         SimplePathDesignTable( QWidget     *parent,
-                         IPathInput  *pathInput,
-                         GuiPath     &guiPath );
+                               IPathInput  *pathInput,
+                               GuiPath     &guiPath,
+                               hydroqguielementutil::IHumanManager &humanManager );
         void refreshTable();
-//         void computeVelocities();
         
     private:
         
         IPathInput *pathInput_;
         GuiPath &guiPath_;
+        hydroqguielementutil::IHumanManager &humanManager_;
         
         // not part of the path representation
         std::vector<float> velocities_;

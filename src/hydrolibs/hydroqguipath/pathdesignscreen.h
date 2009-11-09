@@ -46,6 +46,9 @@ class PathDesignScreen
         
         void updateWpSettings( WaypointSettings* wpSettings );
         void setWaypointFocus( int waypointId );
+
+        void updateMaxApproachSpeedSetting( double maxApproachSpeed ) { wpSettings_->maxApproachSpeed = maxApproachSpeed; };
+        void updateDistToleranceSettingSetting( double distTolerance ) { wpSettings_->distanceTolerance = distTolerance; };
         
         // Return the time it takes to complete a loop given the current path
         // (last waypoint to first waypoint of path)

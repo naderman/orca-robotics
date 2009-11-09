@@ -317,7 +317,7 @@ PathFollowerUserInteraction::savePath()
 
 void
 PathFollowerUserInteraction::saveUserPath(const hydroqguipath::GuiPath &guiPath, int numLoops, float timeOffset)
-{
+{   
     QString fileName = QFileDialog::getSaveFileName( 0, "Choose a filename to save under", userPathFileName_, "*.txt");
     
     if (!fileName.isEmpty())

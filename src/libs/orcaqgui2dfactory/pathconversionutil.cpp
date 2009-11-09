@@ -16,9 +16,11 @@ namespace orcaqgui2d {
         
 void guiPathToOrcaPath( const hydroqguipath::GuiPath &in, 
                         orca::Path2d                 &out,  
-                        int            numLoops, 
+                        int            numLoops,
                         float          timeOffset )
 {
+    assert( numLoops >= 0 && "Number of loops cannot be negative" );    
+    
     out.resize( in.size()*numLoops );
 
     int counter = 0;
