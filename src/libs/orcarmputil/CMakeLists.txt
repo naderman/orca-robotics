@@ -22,7 +22,7 @@ if( build )
     GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${LIB_VERSION} ${srcs} )
     GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
 
-    TARGET_LINK_LIBRARIES ( ${LIB_NAME} ${dep_libs} )
+    target_link_libraries( ${LIB_NAME} ${dep_libs} )
 
     add_subdirectory( util )
 

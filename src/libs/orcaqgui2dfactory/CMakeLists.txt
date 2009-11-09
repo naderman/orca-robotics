@@ -36,7 +36,7 @@ if( build )
     GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${LIB_VERSION} ${human_srcs} ${moc_srcs} )
 
     link_directories( ${PROJECT_SOURCE_DIR}/src/libs/qorcacm )
-    TARGET_LINK_LIBRARIES ( ${LIB_NAME} ${dep_libs} )
+    target_link_libraries( ${LIB_NAME} ${dep_libs} )
 
     GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
     GBX_ADD_SHARED_FILES( ${LIB_INSTALL} ogHazardLookupTable.png )

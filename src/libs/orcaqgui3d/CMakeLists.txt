@@ -24,7 +24,7 @@ if( build )
     GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${LIB_VERSION} ${srcs} )
 
     link_directories( ${PROJECT_SOURCE_DIR}/src/libs/qorcacm )
-    TARGET_LINK_LIBRARIES ( ${LIB_NAME} ${dep_libs} ${QT_QTOPENGL_LIBRARY} )
+    target_link_libraries( ${LIB_NAME} ${dep_libs} ${QT_QTOPENGL_LIBRARY} )
 
     GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
 

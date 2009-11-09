@@ -34,7 +34,7 @@ if( build )
     GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${LIB_VERSION} ${human_srcs} ${moc_srcs} )
 
     link_directories( ${PROJECT_SOURCE_DIR}/src/libs/qorcacm )
-    TARGET_LINK_LIBRARIES ( ${LIB_NAME} ${dep_libs} ${QT_QTOPENGL_LIBRARY} )
+    target_link_libraries( ${LIB_NAME} ${dep_libs} ${QT_QTOPENGL_LIBRARY} )
 
     if( ORCA_BUILD_TESTS )
         add_subdirectory( test )
