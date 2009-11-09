@@ -1,7 +1,7 @@
 #include "segwayrmp.h"
 #include <iostream>
-#include <segwayrmpacfr/driver.h>
-#include <segwayrmpfake/driver.h>
+#include <hydrosegwayrmpacfr/driver.h>
+#include <hydrosegwayrmpfake/driver.h>
 #include <hydroutil/stringutils.h>
 
 using namespace std;

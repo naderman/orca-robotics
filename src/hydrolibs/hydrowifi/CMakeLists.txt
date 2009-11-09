@@ -16,9 +16,9 @@ if( build )
     
     GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
     
-    if( ORCA_BUILD_TESTS ) 
+#     if( ORCA_BUILD_TESTS ) 
         add_subdirectory( test )
-    endif( ORCA_BUILD_TESTS )
+#     endif( ORCA_BUILD_TESTS )
 
 endif( build )
 

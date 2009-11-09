@@ -189,7 +189,7 @@ resolveLocalPlatform( const Context& context, const orca::FQComponentName& fqnam
             orca::FQComponentName resolvedFqname;
             resolvedFqname.platform = hydroutil::getHostname();
             resolvedFqname.component = fqname.component;
-            initTracerInfo( context, "resolved platform 'local' to hostname in component name '"+orcaice::toString( resolvedFqname )+"'" );
+            // initTracerInfo( context, "resolved platform 'local' to hostname in component name '"+orcaice::toString( resolvedFqname )+"'" );
             return resolvedFqname;
         }
     }
@@ -208,7 +208,7 @@ resolveLocalPlatform( const Context& context, const std::string& proxy )
         {
             fqname.platform = hydroutil::getHostname();
             string resolvedProxy = orcaice::toString( fqname );
-            initTracerInfo( context, "resolved platform 'local' to hostname in proxy '"+resolvedProxy+"'" );
+            // initTracerInfo( context, "resolved platform 'local' to hostname in proxy '"+resolvedProxy+"'" );
             return resolvedProxy;
         }
     }

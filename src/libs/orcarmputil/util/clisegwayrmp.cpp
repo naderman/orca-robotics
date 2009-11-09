@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <gbxutilacfr/trivialtracer.h>
 #include <hydroiceutil/localstatus.h>
-#include <hydrodrivers/humaninput2dkbdtermio/driver.h>
+#include <hydrodrivers/hydrohumaninput2dkbdtermio/driver.h>
 
 using namespace std;
 

@@ -10,12 +10,12 @@ GBX_REQUIRE_LIBS( build LIB ${LIB_NAME} ${dep_libs} )
 if( build )
 
     include( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
-    
-    include_directories( 
-        ${PROJECT_BINARY_DIR}
-        ${PROJECT_SOURCE_DIR}/src/libs
-    )
-    
+
+#     include_directories(
+#         ${PROJECT_BINARY_DIR}
+#         ${PROJECT_SOURCE_DIR}/src/libs
+#     )
+
     file( GLOB hdrs *.h )
     file( GLOB srcs *.cpp )
 
