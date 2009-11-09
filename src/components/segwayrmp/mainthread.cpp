@@ -85,7 +85,7 @@ MainThread::initialise()
     hydroDriverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
     std::auto_ptr<hydrointerfaces::SegwayRmpFactory> driverFactory( 
         hydrodll::dynamicallyLoadClass<hydrointerfaces::SegwayRmpFactory,SegwayRmpDriverFactoryMakerFunc>
-        ( *hydroDriverLib_, "createDriverFactory" ) );
+        ( *hydroDriverLib_, "createSegwayRmpDriverFactory" ) );
 
     //
     // Create powerbase managers

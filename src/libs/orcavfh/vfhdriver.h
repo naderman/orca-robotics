@@ -126,7 +126,7 @@ public:
 
 // Used for dynamically loading driver
 extern "C" {
-    orcalocalnav::DriverFactory *createDriverFactory();
+    orcalocalnav::DriverFactory *createVfhDriverFactory();
 }
 
 #endif

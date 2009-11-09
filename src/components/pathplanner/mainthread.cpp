@@ -253,7 +253,7 @@ MainThread::initDriver()
         driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
         driverFactory.reset( 
             hydrodll::dynamicallyLoadClass<hydrointerfaces::PathPlanner2dFactory,PathPlanner2dDriverFactoryMakerFunc>
-            ( *driverLib_, "createDriverFactory" ) );
+            ( *driverLib_, "createPathPlanner2dDriverFactory" ) );
     }
     catch (hydrodll::DynamicLoadException &e)
     {

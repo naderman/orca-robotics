@@ -134,7 +134,7 @@ MainThread::initHardwareInterface()
         driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
         driverFactory.reset( 
             hydrodll::dynamicallyLoadClass<hydrointerfaces::MultiImageFactory,MultiImageDriverFactoryMakerFunc>
-            ( *driverLib_, "createDriverFactory" ) );
+            ( *driverLib_, "createMultiImageDriverFactory" ) );
     }
     catch (hydrodll::DynamicLoadException &e)
     {

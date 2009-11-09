@@ -152,7 +152,7 @@ HwThread::initHardwareDriver()
         driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
         driverFactory.reset( 
             hydrodll::dynamicallyLoadClass<hydrointerfaces::InsGpsFactory,InsGpsDriverFactoryMakerFunc>
-            ( *driverLib_, "createDriverFactory" ) );
+            ( *driverLib_, "createInsGpsDriverFactory" ) );
     }
     catch(hydrodll::DynamicLoadException &e){
         // unrecoverable error

@@ -197,7 +197,7 @@ MainThread::initHardwareDriver()
         driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
         driverFactory.reset( 
             hydrodll::dynamicallyLoadClass<hydrointerfaces::LaserScanner2dFactory,LaserScanner2dDriverFactoryMakerFunc>
-            ( *driverLib_, "createDriverFactory" ) );
+            ( *driverLib_, "createLaserScanner2dDriverFactory" ) );
     }
     catch (hydrodll::DynamicLoadException &e)
     {

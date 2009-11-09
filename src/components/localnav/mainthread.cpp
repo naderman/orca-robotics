@@ -156,8 +156,8 @@ MainThread::initialise()
         // Dynamically load the driver from its library
         driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
         driverFactory_.reset(
-            hydrodll::dynamicallyLoadClass<orcalocalnav::DriverFactory,DriverFactoryMakerFunc>
-            ( *driverLib_, "createDriverFactory" ) );
+            hydrodll::dynamicallyLoadClass<orcalocalnav::DriverFactory,LocalNavDriverFactoryMakerFunc>
+            ( *driverLib_, "createLocalNavDriverFactory" ) );
     }
     catch (hydrodll::DynamicLoadException &e)
     {

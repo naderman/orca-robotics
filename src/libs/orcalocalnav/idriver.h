@@ -75,8 +75,8 @@ inline std::ostream &operator<<( std::ostream &s, const IDriver &inputs )
 // Function for dynamically instantiating drivers.
 // A driver must have a function like so:
 // extern "C" {
-//     orcalocalnav::DriverFactory *createDriverFactory();
+//     orcalocalnav::DriverFactory *createLocalNavDriverFactory();
 // }
-typedef orcalocalnav::DriverFactory *DriverFactoryMakerFunc();
+typedef orcalocalnav::DriverFactory *LocalNavDriverFactoryMakerFunc();
 
 #endif

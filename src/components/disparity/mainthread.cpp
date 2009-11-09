@@ -170,7 +170,7 @@ MainThread::initPluginInterface()
         pluginLib_.reset( new hydrodll::DynamicallyLoadedLibrary(pluginLibName) );
         pluginFactory.reset( 
             hydrodll::dynamicallyLoadClass<hydrointerfaces::DisparityFactory,DisparityDriverFactoryMakerFunc>
-            ( *pluginLib_, "createDriverFactory" ) );
+            ( *pluginLib_, "createDisparityDriverFactory" ) );
     }
     catch (hydrodll::DynamicLoadException &e)
     {

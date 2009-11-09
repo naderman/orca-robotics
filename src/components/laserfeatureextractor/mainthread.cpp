@@ -167,13 +167,13 @@ MainThread::initDriver()
         // now comes some magic...
         // The templated function hydrodll::dynamicallyLoadClass() goes inside
         // the code contained in the shared library driverLib_ and creates an
-        // instance of class returned by the C function createDriverFactory()
+        // instance of class returned by the C function createLaserFeatureExtractorDriverFactory()
         // This function is defined at the bottom of                
-        //   [HYDRO]/src/hydrodrivers/laserfeatureextractor/driver.h
+        //   [HYDRO]/src/hydrodrivers/hydrolaserfeatureextractor/driver.h
         //
         driverFactory.reset( 
             hydrodll::dynamicallyLoadClass<hydrointerfaces::LaserFeatureExtractorFactory,LaserFeatureExtractorDriverFactoryMakerFunc>
-            ( *driverLib_, "createDriverFactory" ) );
+            ( *driverLib_, "createLaserFeatureExtractorDriverFactory" ) );
     }
     catch (hydrodll::DynamicLoadException &e)
     {

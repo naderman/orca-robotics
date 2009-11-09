@@ -101,7 +101,7 @@ MainThread::initHardwareDriver()
         driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
         driverFactory.reset( 
             hydrodll::dynamicallyLoadClass<hydrointerfaces::RangerArrayFactory,RangerArrayDriverFactoryMakerFunc>
-            ( *driverLib_, "createDriverFactory" ) );
+            ( *driverLib_, "createRangerArrayDriverFactory" ) );
     }
     catch (hydrodll::DynamicLoadException &e)
     {
