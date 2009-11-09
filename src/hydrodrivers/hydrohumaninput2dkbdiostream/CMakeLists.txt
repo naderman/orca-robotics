@@ -11,10 +11,12 @@ if( build )
 
     include( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     include( ${GEARBOX_USE_FILE} )
-    
-    # Source files
+
+    file( GLOB hdrs *.h )
     file( GLOB srcs *.cpp )
-    
+
+    GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
+
     GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${LIB_VERSION} ${srcs} )
     target_link_libraries( ${LIB_NAME}  ${dep_libs} )
 

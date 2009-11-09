@@ -4,7 +4,7 @@ GBX_ADD_LICENSE( LGPL )
 set( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
 
-set( dep_libs HydroIceUtil HydroInterfaces HydroImage ) 
+set( dep_libs HydroIceUtil HydroInterfaces HydroImage )
 GBX_REQUIRE_LIBS( build LIB ${LIB_NAME} ${dep_libs} )
 
 include(${ORCA_CMAKE_DIR}/FindOpenCV.cmake)
@@ -20,11 +20,13 @@ if( build )
     include( ${ORCA_CMAKE_DIR}/UseIceUtil.cmake )
     INCLUDE (${ORCA_CMAKE_DIR}/UseOpenCV.cmake)
 
-    # Source files
+    file( GLOB hdrs *.h )
     file( GLOB srcs *.cpp )
-    
+
     GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${LIB_VERSION} ${srcs} )
     target_link_libraries( ${LIB_NAME} ${dep_libs} )
+
+    GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
 
     if( ORCA_BUILD_TESTS )
         HYDRO_ADD_LINK_TEST_WITH_CONFIG( Image imagecvcamera driver.h ${LIB_NAME} ${dep_libs} )

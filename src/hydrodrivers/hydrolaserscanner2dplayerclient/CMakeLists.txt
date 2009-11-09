@@ -8,7 +8,7 @@ GBX_REQUIRE_VAR( build LIB ${LIB_NAME} GBX_OS_LINUX "Only Linux OS is supported"
 include(${ORCA_CMAKE_DIR}/FindPlayer2.cmake)
 GBX_REQUIRE_VAR( build LIB ${LIB_NAME} PLAYER_FOUND "Player not found" )
 
-set( dep_libs HydroUtil HydroInterfaces HydroIceUtil ) 
+set( dep_libs HydroUtil HydroInterfaces HydroIceUtil )
 GBX_REQUIRE_LIBS( build LIB ${LIB_NAME} ${dep_libs} )
 
 if( build )
@@ -18,10 +18,13 @@ if( build )
     include( ${ORCA_CMAKE_DIR}/UsePlayer.cmake )
     include( ${ORCA_CMAKE_DIR}/UseIceUtil.cmake )
 
+    file( GLOB hdrs *.h )
     file( GLOB srcs *.cpp )
-    
+
     GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${LIB_VERSION} ${srcs} )
     target_link_libraries( ${LIB_NAME} ${dep_libs} )
+
+    GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
 
     if( ORCA_BUILD_TESTS )
         HYDRO_ADD_LINK_TEST_WITH_CONFIG( LaserScanner2d laserscanner2dplayerclient driver.h ${LIB_NAME} ${dep_libs} )
