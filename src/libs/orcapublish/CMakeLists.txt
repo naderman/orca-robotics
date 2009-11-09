@@ -3,6 +3,9 @@ ORCA_SET_LIBRARY_NAME( OrcaPublish )
 set( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
 
+find_package( Boost )
+GBX_REQUIRE_VAR( build LIB ${LIB_NAME} Boost_FOUND "Boost is required" )
+
 set( dep_libs OrcaIfaceImpl OrcaScanUtil OrcaNavUtil )
 GBX_REQUIRE_LIBS( build LIB ${LIB_NAME} ${dep_libs} )
 
