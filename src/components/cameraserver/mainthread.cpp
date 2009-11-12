@@ -130,7 +130,7 @@ MainThread::initHardwareInterface()
         driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
         driverFactory.reset( 
             hydrodll::dynamicallyLoadClass<hydrointerfaces::ImageFactory,ImageDriverFactoryMakerFunc>
-            ( *driverLib_, "createCameraServerDriverFactory" ) );
+            ( *driverLib_, "createImageDriverFactory" ) );
     }
     catch (hydrodll::DynamicLoadException &e)
     {
