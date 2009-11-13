@@ -232,8 +232,8 @@ calcForegroundPointReliability( const std::vector<float>          &ranges,
     // we've gotten one lucky return.
     if ( (fgPoint.pole.startI > 0 &&
           fgPoint.pole.endI   < (int)(ranges.size())-1) &&
-         ( !isValidRange( fgPoint.pole.startI-1, config.scannerConfig ) ||
-           !isValidRange( fgPoint.pole.endI+1, config.scannerConfig ) ) )
+         ( !isValidRange( ranges[fgPoint.pole.startI-1], config.scannerConfig ) ||
+           !isValidRange( ranges[fgPoint.pole.endI+1], config.scannerConfig ) ) )
     {
         //const double diff = pTruePositive_ - pFalsePositive_;
         const double diff = pTruePositive - pFalsePositive;
