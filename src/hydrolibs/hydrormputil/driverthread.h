@@ -1,12 +1,12 @@
-#ifndef ORCARMPUTIL_DRIVERTHREAD_H
-#define ORCARMPUTIL_DRIVERTHREAD_H
+#ifndef HYDRORMPUTIL_DRIVERTHREAD_H
+#define HYDRORMPUTIL_DRIVERTHREAD_H
 
-#include <orcaice/subsystemthread.h>
+#include <hydroiceutil/subsystemthread.h>
 #include <hydrointerfaces/segwayrmp.h>
 #include <hydrorobotdriverutil/statemachine.h>
-#include <orcarmputil/stallsensor.h>
+#include <hydrormputil/stallsensor.h>
 
-namespace orcarmputil {
+namespace hydrormputil {
 
 class Callback {
 public:
@@ -21,11 +21,14 @@ public:
 };
 
 //
+// Note that this class derives from a SubsystemThread defined in libHydroIceUtil,
+// not the one from libOrcaIce. See documentation for differences.
+//
 // @author Alex Brooks
 //
-class DriverThread : public orcaice::SubsystemThread
+class DriverThread : public hydroiceutil::SubsystemThread
 {
-public: 
+public:
 
     ////////////////////////////////////////
 
@@ -47,11 +50,11 @@ public:
 
     DriverThread( const Config               &config,
                   hydrointerfaces::SegwayRmp &segwayRmp,
-                  gbxutilacfr::Tracer        &tracer, 
+                  gbxutilacfr::Tracer        &tracer,
                   gbxutilacfr::Status        &status,
                   Callback                   &callback,
                   const std::string &name = "segwayRmpDriverThread" )
-        : orcaice::SubsystemThread(tracer,status,name),
+        : hydroiceutil::SubsystemThread(tracer,status,name),
           callback_(callback),
           config_(config),
           segwayRmp_(segwayRmp),
@@ -68,7 +71,7 @@ public:
     const hydrorobotdriverutil::StateMachine &stateMachine()
         { return stateMachine_; }
 
-private: 
+private:
 
     void enableHardware();
     void operateHardware();

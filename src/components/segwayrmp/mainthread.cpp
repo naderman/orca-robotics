@@ -104,8 +104,8 @@ MainThread::initialise()
         }
         std::auto_ptr<hydrointerfaces::SegwayRmp> hydroDriver( 
             driverFactory->createDriver( powerbaseNames[i], context_.toHydroContext(stripPrefix) ) );
-        powerbaseManagers_.push_back( orcarmputil::PowerbaseManagerPtr( 
-                                          new orcarmputil::PowerbaseManager( powerbaseNames[i],
+        powerbaseManagers_.push_back( hydrormputil::PowerbaseManagerPtr( 
+                                          new hydrormputil::PowerbaseManager( powerbaseNames[i],
                                                                              i,
                                                                              *this,
                                                                              hydroDriver,
@@ -145,7 +145,7 @@ MainThread::initialise()
     //
     // Initialise the powerbase managers
     //
-    orcarmputil::DriverThread::Config cfg;
+    hydrormputil::DriverThread::Config cfg;
     cfg.driveInReverse = (bool)prop.getPropertyAsIntWithDefault( "DriveInReverse", 0 );
     cfg.isMotionEnabled = (bool)prop.getPropertyAsIntWithDefault( "EnableMotion", 0 );
     cfg.maxForwardAcceleration = controlDescr->maxForwardAcceleration;
@@ -278,12 +278,12 @@ MainThread::setCommand( const orca::VelocityControl2dData &incomingCommand )
     {
         powerbaseManagers_[i]->setDesiredSpeed( internalCommand );
 
-        orcarmputil::StallType stallType = powerbaseManagers_[i]->stallType();
-        if ( stallType == orcarmputil::LeftMotorStall ||
-             stallType == orcarmputil::BothMotorsStall )
+        hydrormputil::StallType stallType = powerbaseManagers_[i]->stallType();
+        if ( stallType == hydrormputil::LeftMotorStall ||
+             stallType == hydrormputil::BothMotorsStall )
             leftSideStalled = true;
-        if ( stallType == orcarmputil::RightMotorStall ||
-             stallType == orcarmputil::BothMotorsStall )
+        if ( stallType == hydrormputil::RightMotorStall ||
+             stallType == hydrormputil::BothMotorsStall )
             rightSideStalled = true;
     }
     if ( leftSideStalled || rightSideStalled )

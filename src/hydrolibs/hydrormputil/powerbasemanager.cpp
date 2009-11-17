@@ -3,7 +3,7 @@
 
 using namespace std;
 
-namespace orcarmputil {
+namespace hydrormputil {
 
 PowerbaseManager::PowerbaseManager( const std::string                         &name,
                                     int                                        powerbaseID,
@@ -14,7 +14,7 @@ PowerbaseManager::PowerbaseManager( const std::string                         &n
       name_(name),
       powerbaseID_(powerbaseID),
       aggregatorCallback_(aggregatorCallback),
-      stallType_(orcarmputil::NoStall),
+      stallType_(hydrormputil::NoStall),
       context_(context)
 {
 }
@@ -25,13 +25,13 @@ PowerbaseManager::~PowerbaseManager()
 }
 
 void
-PowerbaseManager::init( const orcarmputil::DriverThread::Config &cfg )
+PowerbaseManager::init( const hydrormputil::DriverThread::Config &cfg )
 {
     //
     // Instantiate the segwayRmpDriverThread
     //
     std::string driverThreadName = name_+"-driverThread";
-    segwayRmpDriverThread_ = new orcarmputil::DriverThread( cfg,
+    segwayRmpDriverThread_ = new hydrormputil::DriverThread( cfg,
                                                             *hydroDriver_,
                                                             context_.tracer(),
                                                             context_.status(),

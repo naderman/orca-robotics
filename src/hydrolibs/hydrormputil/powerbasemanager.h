@@ -1,11 +1,11 @@
-#ifndef ORCARMPUTIL_POWERBASEMANAGER_H
-#define ORCARMPUTIL_POWERBASEMANAGER_H
+#ifndef HYDRORMPUTIL_POWERBASEMANAGER_H
+#define HYDRORMPUTIL_POWERBASEMANAGER_H
 
-#include <orcarmputil/driverthread.h>
+#include <hydrormputil/driverthread.h>
 #include <memory>
 #include <boost/shared_ptr.hpp>
 
-namespace orcarmputil {
+namespace hydrormputil {
 
 //
 // @brief Aggregates information about multiple powerbases, to give
@@ -26,7 +26,7 @@ public:
 //
 // @author Alex Brooks
 //
-class PowerbaseManager : public orcarmputil::Callback
+class PowerbaseManager : public hydrormputil::Callback
 {
 public: 
 
@@ -40,28 +40,28 @@ public:
     hydrointerfaces::SegwayRmp::Capabilities capabilities() const
         { return hydroDriver_->capabilities(); }
 
-    void init( const orcarmputil::DriverThread::Config &cfg );
+    void init( const hydrormputil::DriverThread::Config &cfg );
     void startThread();
 
     const std::string &name() const { return name_; }
 
     void setDesiredSpeed( const hydrointerfaces::SegwayRmp::Command &cmd );
 
-    // from orcarmputil::Callback
+    // from hydrormputil::Callback
     void hardwareInitialised()
         { aggregatorCallback_.hardwareInitialised( powerbaseID_ ); }
     void receiveData( const hydrointerfaces::SegwayRmp::Data &data,
-                      orcarmputil::StallType                  stallType )
+                      hydrormputil::StallType                  stallType )
         { 
             stallType_ = stallType;
             aggregatorCallback_.receiveData( powerbaseID_, data ); 
         }
 
-    orcarmputil::StallType stallType() const { return stallType_; }
+    hydrormputil::StallType stallType() const { return stallType_; }
 
 private: 
 
-    orcarmputil::DriverThread *segwayRmpDriverThread_;
+    hydrormputil::DriverThread *segwayRmpDriverThread_;
     gbxiceutilacfr::ThreadPtr segwayRmpDriverThreadPtr_;
 
     // Generic hydro driver for the hardware
@@ -72,7 +72,7 @@ private:
 
     AggregatorCallback &aggregatorCallback_;
 
-    orcarmputil::StallType stallType_;
+    hydrormputil::StallType stallType_;
 
     hydroutil::Context context_;
 };

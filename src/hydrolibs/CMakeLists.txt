@@ -33,4 +33,5 @@ add_subdirectory( hydroping )
 add_subdirectory( hydroqguielementutil )
 add_subdirectory( hydroqgui ) # requires hydroqguielementutil
 add_subdirectory( hydroqguipath )
+add_subdirectory( hydrormputil )
 add_subdirectory( hydrowifi )

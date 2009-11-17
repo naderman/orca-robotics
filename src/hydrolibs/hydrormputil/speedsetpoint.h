@@ -7,12 +7,12 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef ORCARMPUTIL_SPEEDSETPOINT_H
-#define ORCARMPUTIL_SPEEDSETPOINT_H
+#ifndef HYDRORMPUTIL_SPEEDSETPOINT_H
+#define HYDRORMPUTIL_SPEEDSETPOINT_H
 
 #include <gbxsickacfr/gbxiceutilacfr/timer.h>
 
-namespace orcarmputil {
+namespace hydrormputil {
 
 //
 // @brief Represents a speed set-point, for managing acceleration limits

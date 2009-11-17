@@ -1,7 +1,7 @@
 #ifndef SEGWAYRMP_SEGWAYRMP_H
 #define SEGWAYRMP_SEGWAYRMP_H
 
-#include <orcarmputil/powerbasemanager.h>
+#include <hydrormputil/powerbasemanager.h>
 #include <hydroutil/context.h>
 
 namespace segwayrmp {
@@ -26,7 +26,7 @@ public:
     SegwayRmp( hydrointerfaces::SegwayRmp::Capabilities &capabilitiesConstraints,
                double                                    maxForwardAcceleration,
                double                                    maxReverseAcceleration,
-               orcarmputil::AggregatorCallback          &callback,
+               hydrormputil::AggregatorCallback          &callback,
                bool                                      fakeDriver,
                const hydroutil::Context                 &context );
 
@@ -41,7 +41,7 @@ public:
 private: 
 
     hydrointerfaces::SegwayRmp::Capabilities      capabilities_;
-    std::vector<orcarmputil::PowerbaseManagerPtr> powerbaseManagers_;
+    std::vector<hydrormputil::PowerbaseManagerPtr> powerbaseManagers_;
     hydroutil::Context                            context_;
 };
 

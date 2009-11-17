@@ -11,7 +11,7 @@ namespace segwayrmp {
 SegwayRmp::SegwayRmp( hydrointerfaces::SegwayRmp::Capabilities &capabilitiesConstraints,
                       double                                    maxForwardAcceleration,
                       double                                    maxReverseAcceleration,
-                      orcarmputil::AggregatorCallback          &callback,
+                      hydrormputil::AggregatorCallback          &callback,
                       bool                                      fakeDriver,
                       const hydroutil::Context                 &context )
     : context_(context)
@@ -38,8 +38,8 @@ SegwayRmp::SegwayRmp( hydrointerfaces::SegwayRmp::Capabilities &capabilitiesCons
         {
             hydroDriver.reset( new segwayrmpacfr::Driver( powerbaseNames[i], contextThisPowerbase ) );
         }
-        powerbaseManagers_.push_back( orcarmputil::PowerbaseManagerPtr( 
-                                          new orcarmputil::PowerbaseManager( powerbaseNames[i],
+        powerbaseManagers_.push_back( hydrormputil::PowerbaseManagerPtr( 
+                                          new hydrormputil::PowerbaseManager( powerbaseNames[i],
                                                                              i,
                                                                              callback,
                                                                              hydroDriver,
@@ -61,7 +61,7 @@ SegwayRmp::SegwayRmp( hydrointerfaces::SegwayRmp::Capabilities &capabilitiesCons
     //
     // Initialise the powerbase managers
     //
-    orcarmputil::DriverThread::Config cfg;
+    hydrormputil::DriverThread::Config cfg;
     cfg.driveInReverse = (bool)prop.getPropertyAsIntWithDefault( "DriveInReverse", 0 );
     cfg.isMotionEnabled = (bool)prop.getPropertyAsIntWithDefault( "EnableMotion", 0 );
     cfg.maxForwardAcceleration = maxForwardAcceleration;

@@ -11,7 +11,7 @@ using namespace std;
 //
 // Callback to receive odometry etc from the RMP
 //
-class Callback : public orcarmputil::AggregatorCallback {
+class Callback : public hydrormputil::AggregatorCallback {
 public:
     void hardwareInitialised( int powerbaseID )
         {

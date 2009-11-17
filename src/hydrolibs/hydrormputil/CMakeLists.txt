@@ -1,4 +1,4 @@
-ORCA_SET_LIBRARY_NAME( OrcaRmpUtil )
+ORCA_SET_LIBRARY_NAME( HydroRmpUtil )
 GBX_ADD_LICENSE( LGPL )
 
 set( build TRUE )
@@ -12,12 +12,9 @@ GBX_REQUIRE_LIBS( build LIB ${LIB_NAME} ${dep_libs} )
 
 if( build )
 
-    include( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
-
-#     include_directories(
-#         ${PROJECT_BINARY_DIR}
-#         ${PROJECT_SOURCE_DIR}/src/libs
-#     )
+    include( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
+    include( ${GEARBOX_USE_FILE} )
+    include( ${ORCA_CMAKE_DIR}/UseIceUtil.cmake )
 
     file( GLOB hdrs *.h )
     file( GLOB srcs *.cpp )

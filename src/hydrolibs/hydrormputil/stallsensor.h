@@ -5,7 +5,7 @@
 #include <hydrointerfaces/segwayrmp.h>
 #include <iostream>
 
-namespace orcarmputil {
+namespace hydrormputil {
 
 // Tells us what kind of stall-situation we have
 enum StallType {

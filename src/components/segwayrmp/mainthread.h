@@ -18,7 +18,7 @@
 #include <orcaifaceimpl/velocitycontrol2d.h>
 #include <orcaifaceimpl/estop.h>
 #include <orcaestoputil/estopmonitor.h>
-#include <orcarmputil/powerbasemanager.h>
+#include <hydrormputil/powerbasemanager.h>
 #include "publisherthread.h"
 #include <hydrodll/dynamicload.h>
 
@@ -26,7 +26,7 @@ namespace segwayrmp
 {
 
 class MainThread : public orcaice::SubsystemThread,
-                   public orcarmputil::AggregatorCallback,
+                   public hydrormputil::AggregatorCallback,
                    public orcaifaceimpl::AbstractVelocityControl2dCallback,
                    public gbxiceutilacfr::NotifyHandler<orca::EStopData>
 {
@@ -49,7 +49,7 @@ private:
     // from NotifyHandler<orca::EStopData>
     virtual void handleData( const orca::EStopData &incomingEStopData );
 
-    // from orcarmputil::AggregatorCallback
+    // from hydrormputil::AggregatorCallback
     void hardwareInitialised( int powerbaseID );
     void receiveData( int                                     powerbaseID,
                       const hydrointerfaces::SegwayRmp::Data &data );
@@ -74,7 +74,7 @@ private:
     
     std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> hydroDriverLib_;
 
-    std::vector<orcarmputil::PowerbaseManagerPtr> powerbaseManagers_;
+    std::vector<hydrormputil::PowerbaseManagerPtr> powerbaseManagers_;
 
     orcaice::Context context_;
 };

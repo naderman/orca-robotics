@@ -5,7 +5,7 @@
 
 using namespace std;
 
-namespace orcarmputil {
+namespace hydrormputil {
 
 namespace {
 

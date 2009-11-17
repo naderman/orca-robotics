@@ -1,11 +1,11 @@
 #include "driverthread.h"
 #include <iostream>
-#include <orcaice/orcaice.h>
+#include <hydroiceutil/catchutils.h>
 #include "speedsetpoint.h"
 
 using namespace std;
 
-namespace orcarmputil {
+namespace hydrormputil {
 
 namespace {
 
@@ -26,7 +26,7 @@ namespace {
         data.vx     = -data.vx;
         data.droll  = -data.droll;
         data.dpitch = -data.dpitch;
-        
+
         swap( data.leftTorque, data.rightTorque );
     }
 
@@ -54,18 +54,18 @@ DriverThread::work()
     while ( !isStopping() )
     {
         try {
-            setMaxHeartbeatInterval( 5.0 );    
+            setMaxHeartbeatInterval( 5.0 );
             enableHardware();
 
             setMaxHeartbeatInterval( 1.0 );
             operateHardware();
         }
         catch ( ... ) {
-            string problem = orcaice::catchExceptionsWithStatusAndSleep( "work loop", health(), gbxutilacfr::SubsystemFault, 1000 );
+            string problem = hydroiceutil::catchExceptionsWithStatusAndSleep( "work loop", health(), gbxutilacfr::SubsystemFault, 1000 );
 
             stateMachine_.setFault( problem );
         }
-    }    
+    }
 }
 
 void
@@ -82,7 +82,7 @@ DriverThread::enableHardware()
             return;
         }
         catch ( ... ) {
-            string problem = orcaice::catchExceptionsWithStatusAndSleep( "enabling", health(), gbxutilacfr::SubsystemFault, 2000 );
+            string problem = hydroiceutil::catchExceptionsWithStatusAndSleep( "enabling", health(), gbxutilacfr::SubsystemFault, 2000 );
 
             stateMachine_.setFault( problem );
         }
@@ -137,7 +137,7 @@ DriverThread::operateHardware()
             callback_.receiveData( data, stallType );
 
             // Check for warnings/faults
-            if ( data.hasFaults || 
+            if ( data.hasFaults ||
                  (stallType != NoStall) )
             {
                 stringstream ssFault;
@@ -168,8 +168,8 @@ DriverThread::operateHardware()
             }
         }
         catch ( ... ) {
-            string problem = orcaice::catchExceptionsWithStatus( "reading from hardware", health() );
-            stateMachine_.setFault( problem ); 
+            string problem = hydroiceutil::catchExceptionsWithStatus( "reading from hardware", health() );
+            stateMachine_.setFault( problem );
             break;
         }
 
@@ -206,8 +206,8 @@ DriverThread::operateHardware()
                 segwayRmp_.write( command );
             }
             catch ( ... ) {
-                string problem = orcaice::catchExceptionsWithStatus( "writing to hardware", health() );
-                stateMachine_.setFault( problem ); 
+                string problem = hydroiceutil::catchExceptionsWithStatus( "writing to hardware", health() );
+                stateMachine_.setFault( problem );
                 break;
             }
         }
@@ -236,12 +236,12 @@ DriverThread::operateHardware()
 
 void
 DriverThread::setDesiredSpeed( const hydrointerfaces::SegwayRmp::Command &command )
-{ 
+{
     if ( !config_.isMotionEnabled )
     {
         throw gbxutilacfr::Exception( ERROR_INFO, "Motion is disabled in this configuration" );
     }
-    commandStore_.set( command ); 
+    commandStore_.set( command );
 }
 
 }
