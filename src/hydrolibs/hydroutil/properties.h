@@ -50,7 +50,8 @@ public:
     //! unmodified.
     Properties( const std::map<std::string,std::string>& props, 
                 const std::string& removePrefix="",
-                const Config& config=Config() );
+                const Config& config=Config(),
+                const std::string &previouslyStrippedPrefix="" );
 
     //! Returns TRUE if the property with @c key is defined (even if it's empty) and 
     //! FALSE if it is not defined.
@@ -105,8 +106,8 @@ public:
     //! Sets property
     void setProperty( const ::std::string& key, const ::std::string& value );
     
-    //! Returns const reference to the property map
-    const std::map<std::string,std::string>& data() const { return props_; };
+    //! Returns a version with the just those properties beginning with prefixToStrip, with that prefix stripped.
+    Properties propertiesWithStrippedPrefix( const std::string &prefixToStrip ) const;
 
     //! Returns number of properties in the set
     size_t size() const { return props_.size(); }; 
@@ -116,14 +117,16 @@ public:
 
     //! Returns standardized text which warns that a configuration property is not set.
     //! If @c fatal is TRUE, the message adds that "operation cannot continue".
-    static std::string missingPropertyWarning( const std::string& key, bool fatal=false );
+    std::string missingPropertyWarning( const std::string& key, bool fatal=false );
 
     const Config &config() const { return config_; }
 
 private:
-    
-    std::map<std::string,std::string> props_;
 
+    // Track the stripped prefix so we can report the _entire_ property string when defaults are used
+    std::string strippedPrefix_;
+
+    std::map<std::string,std::string> props_;
     Config config_;
 };
 

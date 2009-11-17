@@ -24,9 +24,12 @@ Properties::Properties( const Config& config ) :
 {
 }
 
-Properties::Properties( const map<string,string>& props, const std::string& removePrefix,
-             const Config& config ) :
-    config_(config)
+Properties::Properties( const map<string, string>& props,
+                        const std::string&         removePrefix,                        
+                        const Config&              config,
+                        const std::string&         previouslyStrippedPrefix)
+    : strippedPrefix_(previouslyStrippedPrefix+removePrefix),
+      config_(config)
 {
     if ( removePrefix.empty() ) 
     {
@@ -149,7 +152,14 @@ Properties::getPropertyWithDefault( const string& key, const string &defaultValu
         value = defaultValue;
 
         if ( config_.warnDefaultProperty )
-            cout << "hydro: Set property to default value: "<<key<<"="<<value<<endl;
+        {
+            std::string keyString;
+            if ( strippedPrefix_.empty() )
+                keyString = key;
+            else
+                keyString = "["+strippedPrefix_+"]"+key;
+            cout << "hydro: Set property to default value: "<<keyString<<"="<<value<<endl;
+        }
     }
     return value;
 }
@@ -240,6 +250,12 @@ Properties::setProperty( const string& key, const string& value )
     props_[key] = value;
 }
 
+Properties
+Properties::propertiesWithStrippedPrefix( const std::string &prefixToStrip ) const
+{
+    return hydroutil::Properties( props_, prefixToStrip, config_, strippedPrefix_ );
+}
+
 string
 Properties::toString() const
 {
@@ -254,8 +270,14 @@ Properties::toString() const
 std::string 
 Properties::missingPropertyWarning( const std::string& key, bool fatal )
 {
-    if ( fatal )
-        return "Cannot continue because property '" + key + "' is not set.";
+    std::string keyString;
+    if ( strippedPrefix_.empty() )
+        keyString = key;
     else
-        return "Property '" + key + "' is not set.";
+        keyString = "["+strippedPrefix_+"]"+key;
+
+    if ( fatal )
+        return "Cannot continue because property '" + keyString + "' is not set.";
+    else
+        return "Property '" + keyString + "' is not set.";
 }
