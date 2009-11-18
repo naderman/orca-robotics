@@ -70,7 +70,7 @@ Note: The documentation on the Orca website matches the latest release, not the 
 
 @section orca_doc_index_news News
 
-- 09-Nov-09 Version 9.11.0  Merged Hydro back into the main project. Lots of changes and improvements. Switched to new versioning scheme identical to GearBox. See @ref orca_doc_history_9110 "Release Notes" for details.
+- 18-Nov-09 Version 9.11.0  Merged Hydro back into the main project. Lots of changes and improvements. Switched to new versioning scheme identical to GearBox. See @ref orca_doc_history_9110 "Release Notes" for details.
 - 01-Mar-09 Version 2.13.0  Our meatiest release to date. Lots of changes under the hood. New components related to images and cameras. Substantial contributions by new developers. Check out the updated @ref orca_doc_projects "list of current users of Orca". Big thanks to all. See @ref orca_doc_history_2130 "Release Notes" for details.
 - 11-Oct-08 Version 2.12.0  Numerous improvements and bug fixes targeting long-term operation. Plus a complete re-write of OrcaView3d. See @ref orca_doc_history_2120 "Release Notes" for details.
 - 23-Jun-08 Version 2.11.0. Improvements in long-term stability of libraries and components. Updated for CMake 2.6.0 and Ice 3.3.0. See @ref orca_doc_history_2110 "Release Notes" for details.

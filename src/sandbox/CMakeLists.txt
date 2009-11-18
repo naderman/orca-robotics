@@ -7,7 +7,6 @@ message( STATUS "== SANDBOX ==" )
 if( NOT GBX_OS_WIN AND ORCA_BUILD_SANDBOX )
 
     # when adding new directories, please maintain alphabetical order
-    add_subdirectory( slice2string )
 
 else( NOT GBX_OS_WIN AND ORCA_BUILD_SANDBOX )
 

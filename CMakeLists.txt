@@ -1,6 +1,7 @@
 #
 # Official dependency number 0: CMake.
 # Obviously, we must have it if we are here but test its version.
+# Note: 2.6.2 fails to properly import GearBox targets.
 #
 cmake_minimum_required( VERSION 2.6.3 FATAL_ERROR )
 

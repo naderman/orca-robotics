@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
@@ -12,15 +12,15 @@
 
 @page orca_doc_release Release Instructions
 
-@note Reviewed for release 2.9.0.
+@note Reviewed for release 9.11.
 
 @section orca_doc_release_release Release
 
 -# On any machine
   - Make sure the distributions compile cleanly and the tests don't fail.
 -# On a machine that doesn't build regularly (eg bamboo):
-  -# Blow away old installations of orca/hydro.
-  -# Check out clean copies of orca/hydro.
+  -# Blow away old installations of orca.
+  -# Check out clean copies of orca.
   -# Modify the project versions in the top-level CMakeLists.txt files.
   -# Modify the 'news' sections in the 'index.dox' files.
   -# Remove old contents of src/retired directory from SVN.
@@ -28,12 +28,7 @@
   -# Shunt everything down in 'todo.dox'.
   -# Delete any temporary files created by an editor.
   -# Check in those changes.
-  -# Tag the distributions, eg with:
-    - %hydro:
-@verbatim
-$ svn copy --username [USERNAME] https://orca-robotics.svn.sf.net/svnroot/orca-robotics/hydro/trunk https://orca-robotics.svn.sf.net/svnroot/orca-robotics/hydro/tags/RELEASE_2.7.0 -m 'Tagging release 2.7.0'
-@endverbatim
-    - %orca:
+  -# Tag the distributions
 @verbatim
 $ svn copy --username [USERNAME] https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/trunk https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/tags/RELEASE_2.7.0 -m 'Tagging release 2.7.0'
 @endverbatim
