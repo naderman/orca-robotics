@@ -1,7 +1,0 @@
-DefaultComponentTag=SystemTracerMon
-
-# Provided Interfaces
-
-# Required Interfaces
-Requires.Tracer0.Type=Tracer
-Requires.Tracer0.DefaultProxy=tracer@local/laser2d
