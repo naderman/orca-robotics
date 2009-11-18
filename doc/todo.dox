@@ -35,6 +35,26 @@ TEMPLATE
 
 Developers: as you make substantial changes in the code (add features, fix bugs, etc.), add an item in the section on changes. When the next version is released, this list will be copied into the release notes.
 
+@section orca_doc_todo_contents Contents
+
+- @ref orca_doc_todo_todo
+- @ref orca_doc_history_9110
+- @ref orca_doc_history_2130
+- @ref orca_doc_history_2120
+- @ref orca_doc_history_2110
+- @ref orca_doc_history_2100
+- @ref orca_doc_history_290
+- @ref orca_doc_history_280
+- @ref orca_doc_history_270
+- @ref orca_doc_history_260
+- @ref orca_doc_history_250
+- @ref orca_doc_history_240
+- @ref orca_doc_history_230
+- @ref orca_doc_history_220
+- @ref orca_doc_history_211
+- @ref orca_doc_history_210
+- @ref orca_doc_history_202
+- @ref orca_doc_history_201
 
 
 @section orca_doc_todo_todo To-Do List
@@ -1404,10 +1424,6 @@ Update is published when subsystems are added and removed. (alex m)
     names and API. (alex m)
 
 @par Removed
-
-
-
-
 
 @section orca_doc_history_250 Changes in Release 2.5.0
 
