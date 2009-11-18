@@ -30,18 +30,20 @@
   -# Check in those changes.
   -# Tag the distributions
 @verbatim
-$ svn copy --username [USERNAME] https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/trunk https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/tags/RELEASE_2.7.0 -m 'Tagging release 2.7.0'
+$ svn copy --username [USERNAME] https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/trunk https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/tags/RELEASE_10.02.0 -m 'Tagging release 10.02.0'
 @endverbatim
   -# Delete all build and .svn directories (eg with 'find . -name .svn | xargs rm -rf')
-  -# Create tar-balls of these distributions, named eg. 'hydro-2.7.0.tar.gz' and 'orca-2.7.0.tar.gz'
+  -# Create tar-balls of these distributions, named e.g.'orca-10.02.0.tar.gz'
   -# Now the tar-balls are ready to roll.  But first test that the originals build cleanly.
-  -# Copy the tar-balls to a machine with external access (eg lowrider).
--# From eg lowrider:
-  -# sftp [USERNAME]\@frs.sf.net
-  -# cd uploads
-  -# 'put' both tarballs
+  -# Copy the tar-balls to a machine with external access.
 -# Create the distros through the sourceforge web interface
-  - (Go through "'Admin' -> 'File Releases'" from the Orca project page)
+  - Login a project administrator
+  - Click on the 'Edit' link
+  - Click on "'Project Admin' -> 'File Manager'"
+  - Click on the gear icon next to 'gearbox' directory -> New Folder
+  - Name it with the new version name, e.g. 10.02
+  - Click on the gear icon next to the new folder -> Uploads Here
+  - Click on the 'Upload File' link above the directory listing, select the tar archive, wait for upload.
 -# Update the web page
   - Use the script from lowrider: <distro>/doc/updatesfweb
 -# On any machine increment the version again
