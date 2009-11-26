@@ -107,6 +107,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @section orca_doc_history_head Changes in SVN since Last Release
 
 @par Project wide
+
+- Build system
+  - Fixed bug in CMake files preventing finding gearbox on 64 bit Linux systems.
+
 @par New driver interfaces
 @par New drivers
 @par New non-framework utilities

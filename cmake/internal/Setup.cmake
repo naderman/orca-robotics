@@ -27,18 +27,18 @@ if( ORCA_MOTHERSHIP )
     set( ORCA_CMAKE_DIR ${${PROJECT_NAME}_SOURCE_DIR}/cmake )
 
 else( ORCA_MOTHERSHIP )
-        
+
     if( DEFINED IS_SUPER_PROJECT )
-        
+
         set( o_config_file orca-config-internal.cmake )
         set( o_search_dir ${CMAKE_SOURCE_DIR}/orca/cmake/internal )
         find_path( o_found_dir ${o_config_file} PATHS ${o_search_dir} NO_DEFAULT_PATH )
-    
-        ORCA_ASSERT( o_found_dir 
-                "Looking for super-project Orca - not found. Is this a super-project?" 
-                "Looking for super-project Orca - found internal config in ${o_found_dir}" 
+
+        ORCA_ASSERT( o_found_dir
+                "Looking for super-project Orca - not found. Is this a super-project?"
+                "Looking for super-project Orca - found internal config in ${o_found_dir}"
                 1 )
-    
+
         include( ${o_found_dir}/${o_config_file} )
 
     else( DEFINED IS_SUPER_PROJECT )
@@ -54,14 +54,19 @@ else( ORCA_MOTHERSHIP )
             "C:/Program Files/orca/Include"
             C:/orca )
         message( STATUS "Searching for Orca in: ${orca_search_path}" )
-                 
-        find_package( orca REQUIRED 
+
+        find_package( orca REQUIRED
             PATHS ${orca_search_path}
+            # as of 2.6.2 find_package is apparently aware of lib64 paths
+            # http://lists.kde.org/?l=kde-buildsystem&m=122235568201839&w=2
+            # but it does not seem to work and the documentation does not
+            # reflect it. so we are adding this manually.
+            PATH_SUFFIXES lib64/orca
             NO_DEFAULT_PATH )
 
-        ORCA_ASSERT( ORCA_FOUND 
-                "Looking for Orca - not found." 
-                "Looking for Orca - found package config in ${ORCA_LINK_DIR}" 
+        ORCA_ASSERT( ORCA_FOUND
+                "Looking for Orca - not found."
+                "Looking for Orca - found package config in ${ORCA_LINK_DIR}"
                 1 )
 
     endif( DEFINED IS_SUPER_PROJECT )

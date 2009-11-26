@@ -7,7 +7,7 @@ message( STATUS "Setting project version to ${GBX_PROJECT_VERSION}" )
 #
 # Set CMake policies
 # For help on policy CMPxxxx: $ cmake --help-policy CMPxxxx
-# 
+#
 if(COMMAND cmake_policy)
     cmake_policy( SET CMP0003 OLD )
     cmake_policy( SET CMP0011 NEW )
@@ -15,24 +15,24 @@ endif(COMMAND cmake_policy)
 
 #
 # Official dependency number 1: Gearbox
-#         
-         
+#
+
 if( DEFINED IS_SUPER_PROJECT )
-    
+
     set( g_config_file gearbox-config-internal.cmake )
     set( g_search_dir ${CMAKE_SOURCE_DIR}/gearbox/cmake/internal )
     find_path( g_found_dir ${g_config_file} PATHS ${g_search_dir} NO_DEFAULT_PATH )
 
-    ORCA_ASSERT( g_found_dir 
-            "Looking for super-project Gearbox - not found. Is this a super-project?" 
-            "Looking for super-project Gearbox - found internal config in ${g_found_dir}" 
+    ORCA_ASSERT( g_found_dir
+            "Looking for super-project Gearbox - not found. Is this a super-project?"
+            "Looking for super-project Gearbox - found internal config in ${g_found_dir}"
             1 )
 
     include( ${g_found_dir}/${g_config_file} )
 
 else( DEFINED IS_SUPER_PROJECT )
 
-    set( gearbox_search_path 
+    set( gearbox_search_path
         # Test user-specified installation point (first look in the dir specified
         # with command line CMake variable, then with environment variable)
         ${GEARBOX_HOME}
@@ -47,13 +47,18 @@ else( DEFINED IS_SUPER_PROJECT )
     # before getting to manually specified PATHS.
     # otherwise we cannot manually point it to a particular installation
     # if the standard one also exists.
-    find_package( gearbox REQUIRED 
+    find_package( gearbox REQUIRED
         PATHS ${gearbox_search_path}
+        # as of 2.6.2 find_package is apparently aware of lib64 paths
+        # http://lists.kde.org/?l=kde-buildsystem&m=122235568201839&w=2
+        # but it does not seem to work and the documentation does not
+        # reflect it. so we are adding this manually.
+        PATH_SUFFIXES lib64/gearbox
         NO_DEFAULT_PATH )
 
-    ORCA_ASSERT( GEARBOX_FOUND 
-            "Looking for Gearbox - not found." 
-            "Looking for Gearbox - found package config in ${GEARBOX_LINK_DIR}" 
+    ORCA_ASSERT( GEARBOX_FOUND
+            "Looking for Gearbox - not found."
+            "Looking for Gearbox - found package config in ${GEARBOX_LINK_DIR}"
             1 )
 
 endif( DEFINED IS_SUPER_PROJECT )
@@ -65,7 +70,7 @@ endif( DEFINED IS_SUPER_PROJECT )
 # ORCA_ASSERT ( GEARBOX_WORKS
 #          "Testing Gearbox - failed. Please check or reinstall it, ** delete CMakeCache.txt **, then re-run CMake."
 #          "Testing Gearbox - ok."
-# 
+#
 
 #
 # Process project name
@@ -97,13 +102,13 @@ include( ${PROJECT_SOURCE_DIR}/cmake/internal/buildtype.cmake )
 #
 include( ${PROJECT_SOURCE_DIR}/cmake/internal/compiler.cmake )
 
-# 
+#
 # Official dependency number 2: ZeroC's Ice
 #
 include( ${ORCA_CMAKE_DIR}/FindIce.cmake )
-ORCA_ASSERT( ICE_FOUND 
-        "Looking for Ice - not found. Please install Ice, ** delete CMakeCache.txt **, then re-run CMake." 
-        "Looking for Ice - found in ${ICE_HOME}" 
+ORCA_ASSERT( ICE_FOUND
+        "Looking for Ice - not found. Please install Ice, ** delete CMakeCache.txt **, then re-run CMake."
+        "Looking for Ice - found in ${ICE_HOME}"
         1 )
 
 # Test Ice installation
@@ -129,7 +134,7 @@ include( ${ORCA_CMAKE_DIR}/NameUtils.cmake )
 include( ${ORCA_CMAKE_DIR}/AddLinkTest.cmake )
 
 #
-# Defaults for big source code switches 
+# Defaults for big source code switches
 # (these are defaults. after the user modifies these in ccmake, the values stay in cache)
 #
 option( ORCA_BUILD_SERVICES "Enables compilation of all IceBox services" OFF )
@@ -141,17 +146,17 @@ option( ORCA_BUILD_SANDBOX  "Enables compilation of everything in the sandbox" O
 option( ORCA_BUILD_LICENSE  "Enables writing LICENCE file. For admins only." OFF )
 option( ORCA_BUILD_XML      "Enables generation of XML file for IceGrid" ON )
 
-#                                                         
-# Look for low-level C headers, write defines to config.h 
-#                                                         
+#
+# Look for low-level C headers, write defines to config.h
+#
 include( ${GEARBOX_CMAKE_DIR}/WriteConfigH.cmake )
 
-#                                                         
-# Look for dependencies required by individual components 
+#
+# Look for dependencies required by individual components
 # alexm: everything or most of what's currently in this file
 # will move into individual comps and libs, only the global dependencies
 # will be checked globally.
-#                                                         
+#
 include( ${ORCA_CMAKE_DIR}/CheckCommonDependencies.cmake )
 
 #
@@ -165,10 +170,10 @@ include( ${ORCA_CMAKE_DIR}/CheckCommonDependencies.cmake )
 
 # when building, don't use the install RPATH already
 # (but later on when installing)
-# set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
+# set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 
 # the RPATH to be used when installing
-set( CMAKE_INSTALL_RPATH 
+set( CMAKE_INSTALL_RPATH
         ${ICE_LIB_DIR}
         ${GEARBOX_LINK_DIR}
         ${ORCA_LINK_DIR}        # this is where satellite projects found Orca
@@ -203,15 +208,15 @@ endif( ORCA_MOTHERSHIP )
 # Store the location of utilities in cache.
 # These are special because they are used for code and config file generation.
 #
-set( ORCA_DEF2CFG_COMMAND ${DEFTOOLS_HOME}/def2cfg${EXE_EXTENSION} 
+set( ORCA_DEF2CFG_COMMAND ${DEFTOOLS_HOME}/def2cfg${EXE_EXTENSION}
         CACHE PATH "Path to def2cfg executable." FORCE )
 message( STATUS "Using ${ORCA_DEF2CFG_COMMAND}" )
 
-set( ORCA_DEF2XML_COMMAND ${DEFTOOLS_HOME}/def2xml${EXE_EXTENSION} 
+set( ORCA_DEF2XML_COMMAND ${DEFTOOLS_HOME}/def2xml${EXE_EXTENSION}
         CACHE PATH "Path to def2xml executable." FORCE )
 message( STATUS "Using ${ORCA_DEF2XML_COMMAND}" )
 
-set( ORCA_SLICE2ORCA_COMMAND ${SLICE2ORCA_HOME}/slice2orca${EXE_EXTENSION} 
+set( ORCA_SLICE2ORCA_COMMAND ${SLICE2ORCA_HOME}/slice2orca${EXE_EXTENSION}
         CACHE PATH "Path to slice2log$ executable." FORCE )
 message( STATUS "Using ${ORCA_SLICE2ORCA_COMMAND}" )
 
@@ -223,9 +228,9 @@ message( STATUS "Using ${ORCA_SLICE2ORCA_COMMAND}" )
 include(${CMAKE_ROOT}/Modules/Dart.cmake)
 enable_testing()
 
-#                                                         
-# Enter the source tree                                   
-#                                                         
+#
+# Enter the source tree
+#
 add_subdirectory( src )
 
 #
@@ -250,7 +255,7 @@ endif()
 #
 # Write installation manifest in CMake format
 #
-# GBX_WRITE_MANIFEST()   
+# GBX_WRITE_MANIFEST()
 # GBX_WRITE_OPTIONS()
 
 #
@@ -260,9 +265,9 @@ if( ORCA_BUILD_LICENSE )
     GBX_WRITE_LICENSE()
 endif()
 
-#                                                         
-# Print results of CMake activity                         
-#                                                  
+#
+# Print results of CMake activity
+#
 GBX_CONFIG_REPORT( "Ice version       ${ICE_VERSION}" )
 
 #
