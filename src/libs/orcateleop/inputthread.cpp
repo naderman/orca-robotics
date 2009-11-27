@@ -43,7 +43,7 @@ InputThread::walk()
         driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
         driverFactory.reset( 
             hydrodll::dynamicallyLoadClass<hydrointerfaces::HumanInput2dFactory,HumanInput2dDriverFactoryMakerFunc>
-            ( *driverLib_, "createVfhDriverFactory" ) );
+            ( *driverLib_, "createHumanInput2dDriverFactory" ) );
     }
     catch (hydrodll::DynamicLoadException &e)
     {
