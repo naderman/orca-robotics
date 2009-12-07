@@ -21,10 +21,23 @@ if( build )
     if ( ORCALOGFACTORY_USE_OPENCV )
         include( ${ORCA_CMAKE_DIR}/FindOpenCV.cmake )
         if( OPENCV_FOUND )
-            include( ${ORCA_CMAKE_DIR}/UseOpenCV.cmake )
-            add_definitions( -DOPENCV_FOUND )
-            set( dep_libs ${dep_libs} HydroDll HydroImage HydroImageOcvUtil )
-            message( STATUS "libOrcaLogFactory is using OpenCV" )
+            set( dep_libs_ocv HydroDll HydroImage HydroImageOcvUtil )
+
+	    set( build_with_ocv TRUE )
+	    GBX_REQUIRE_LIBS( build_with_ocv LIB "${LIB_NAME} OpenCV support" ${dep_libs_ocv} )
+
+	    if( build_with_ocv )
+
+                include( ${ORCA_CMAKE_DIR}/UseOpenCV.cmake )
+                add_definitions( -DOPENCV_FOUND )
+	        set( dep_libs ${dep_libs} ${dep_libs_ocv} )
+		message( STATUS "libOrcaLogFactory is using OpenCV" )
+
+	    else( build_with_ocv )
+
+	        message( STATUS "libOrcaLogFactory not using OpenCV due to dependencies" )
+
+	    endif( build_with_ocv )
         endif( OPENCV_FOUND )
     endif( ORCALOGFACTORY_USE_OPENCV )
 
