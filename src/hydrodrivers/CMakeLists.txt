@@ -22,6 +22,7 @@ add_subdirectory( hydroimagecvcamera )
 add_subdirectory( hydroimagedc1394camera )
 
 add_subdirectory( hydromultiimagecvcamera )
+add_subdirectory( hydromultiimagedc1394camera )
 add_subdirectory( hydromultiimagefake )
 add_subdirectory( hydromultiimagefile )
 

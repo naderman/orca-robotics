@@ -1,0 +1,35 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2009 Tom Burdick, Alex Brooks, Alexei Makarenko, Tobias Kaupp, Michael Warren
+ *
+ * This distribution is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup hydro_drivers_multiimage
+@ingroup orca_cpp
+@ingroup orca_linux
+@ingroup orca_win
+@defgroup hydro_driver_multiimagedc1394 MultiImageDc1394
+@brief Directly uses the dc1394 driver to create a multicamera
+interface, rather than using OpenCV. My experience with OpenCV's
+ability to handle multiple cameras, such as in the
+hydromultiimagecvcamera driver, has been difficult (to put it
+nicely). This driver achieves similar functionality by generating a
+multicamera driver without the 'middleman' of OpenCV, and as a
+consequence allows better robustness and the ability to edit camera
+parameters that are not available through OpenCV.
+ 
+
+@par Dependencies.
+
+- TODO: document me
+
+@par Extra configuration
+
+TODO: document me
+
+*/
