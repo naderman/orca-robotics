@@ -14,6 +14,8 @@
 #include <hydrointerfaces/gps.h>
 #include <gbxgarminacfr/driver.h>
 #include <memory>
+#include <string>
+
 
 namespace gpsgarmingbx {
 
@@ -30,6 +32,8 @@ public:
 private:
 
     std::auto_ptr<gbxgarminacfr::Driver> device_;
+    //! Communications protocol: Garmin proprietry or NMEA
+    std::string protocol;
 
     hydrointerfaces::Gps::Config config_;
     hydroutil::Context context_;

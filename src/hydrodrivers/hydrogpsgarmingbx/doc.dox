@@ -15,13 +15,22 @@
 @defgroup hydro_driver_gpsgarmin GpsGarmin
 @brief Garmin GPS receiver.
 
-Uses Garmin serial implementation. Written for Garmin-GPS15L.
+Talks to a GPS unit over serial.
+
+Capable of talking to Garmin GPS units (which use special Garmin-only
+messages) or NMEA-only GPS units.
+
+Tested on:
+ - Garmin-GPS15L.
 
 Tries to establish communication at 4800 baud (non-configurable).
 
 - @c Garmin.Device (string)
   - The unix device to use
   - Default: "/dev/ttyS0"
+- @c Garmin.Protocol (string)
+  - Either "Garmin" for reading Garmin-only messages, or "NMEA" for NMEA-only units.
+  - Default: "Garmin"
 
 @par Dependencies.
 
