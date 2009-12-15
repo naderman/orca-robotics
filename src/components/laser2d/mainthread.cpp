@@ -63,9 +63,12 @@ MainThread::work()
                 health().ok();
             }
 
-            stringstream ss;
-            ss << "MainThread: Read laser data: " << ifaceutil::toString(orcaLaserData_);
-            context_.tracer().debug( ss.str(), 5 );
+            if ( context_.tracer().verbosity( gbxutilacfr::DebugTrace ) >= 5 )
+            {
+                stringstream ss;
+                ss << "MainThread: Read laser data: " << ifaceutil::toString(orcaLaserData_);
+                context_.tracer().debug( ss.str(), 5 );
+            }
         }
         catch ( ... ) 
         {
