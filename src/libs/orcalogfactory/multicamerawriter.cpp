@@ -223,7 +223,7 @@ MultiCameraWriter::writeCameraDataAsJpeg(const orca::MultiCameraDataPtr& data)
         // image filename (different file for each image)
         std::stringstream filename;
         filename << ".//" << directoryPrefix_ << "//";
-        filename << "cam" << i << "_image" << std::setw(5) << std::setfill('0') << dataCounter_++ << ".jpg";
+        filename << "cam" << i << "_image" << std::setw(5) << std::setfill('0') << dataCounter_ << ".jpg";
         std::string outputname;
         outputname = filename.str();
         // check if the opencv image data structure is padded
@@ -249,7 +249,7 @@ MultiCameraWriter::writeCameraDataAsJpeg(const orca::MultiCameraDataPtr& data)
         // Perform proper Bayer colour conversions
         std::string format = data->cameraDataVector.at(i)->description->format;
         if (format == "BayerBG8" ||
-            format == "BayerGB8"||
+            format == "BayerGB8" ||
             format == "BayerRG8" ||
             format == "BayerGR8")
         {
@@ -261,6 +261,8 @@ MultiCameraWriter::writeCameraDataAsJpeg(const orca::MultiCameraDataPtr& data)
             cvSaveImage(outputname.c_str(), cvImage_[i]);
         }
     }
+    // Increment output image number
+    dataCounter_++;
 #endif
 }
 
@@ -295,7 +297,7 @@ MultiCameraWriter::writeCameraDataAsVideo (const orca::MultiCameraDataPtr& data)
         // Perform proper Bayer colour conversions
         std::string format = data->cameraDataVector.at(i)->description->format;
         if (format == "BayerBG8" ||
-            format == "BayerGB8"||
+            format == "BayerGB8" ||
             format == "BayerRG8" ||
             format == "BayerGR8")
         {

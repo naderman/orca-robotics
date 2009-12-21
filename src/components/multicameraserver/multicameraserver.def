@@ -7,7 +7,7 @@ Provides.MultiCamera.DefaultName=multicamera
 # Required Interfaces
 
 # Config Parameters
-Config.DriverLib.Comment=Valid values are at least: { 'libHydroMultiImageFake.so' }
+Config.DriverLib.Comment=Valid values are at least: { 'libHydroMultiImageFake.so', 'libHydroMultiImageDc1394Camera.so', 'libHydroMultiImageCvCamera.so' }
 Config.DriverLib.Default=libHydroMultiImageFake.so
 
 Config.NumberOfCameras.Comment=The number of cameras simultaneously grabbing image frames
@@ -29,4 +29,8 @@ Config.0.ImageHeight.Comment=Image Height [pixels]
 Config.0.ImageHeight.Default=240
 Config.0.ImageFormat.Comment=Valid values are at least: {'BGR8', 'GRAY8'}
 Config.0.ImageFormat.Default=BGR8
-
+Config.0.FrameRate.Comment=Valid values are at least: {'1.875', '3.75', '7.5', '15', '30', '60'}
+Config.0.FrameRate.Default=30
+Config.DC1394.IsoMode.Default=1394A
+Config.DC1394.NumBufs.Default=16
+Config.DC1394.0.ShutterSpeed.Default=Auto

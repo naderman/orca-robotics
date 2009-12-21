@@ -17,6 +17,8 @@ Config.AntennaOffset.Default=0.0 0.0 0.0  0.0 0.0 0.0
 Config.ReportIfNoFix.Default=1
 
 Config.Garmin.Device.Default=/dev/ttyS2
+Config.Garmin.Protocol.Comment=Valid values are at least: { 'Garmin', 'NMEA' }
+Config.Garmin.Protocol.Default=Garmin
 
 Config.Fake.Latitudes.Default=-35 -35.5;
 Config.Fake.Longitudes.Default=150 -149.5;

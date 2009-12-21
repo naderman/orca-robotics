@@ -22,6 +22,7 @@ messages) or NMEA-only GPS units.
 
 Tested on:
  - Garmin-GPS15L.
+ - Haicom HI-204 III USB
 
 Tries to establish communication at 4800 baud (non-configurable).
 

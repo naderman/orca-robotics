@@ -72,6 +72,7 @@ context_(context)
         //
         hydroutil::Properties &prop = context_.properties();
         std::string prefix = "DC1394.";
+        // "DC1394.IsoMode=..."
         string mode = prop.getPropertyWithDefault(prefix + "IsoMode", "1394A");
         if (mode == "1394B")
         {
@@ -88,9 +89,13 @@ context_(context)
 
         //
         //Read GUID of camera, used to distinguish cameras on the bus
-        //Otherwise first camera on bus selected
+        //Otherwise first available camera on bus selected
         //
-        string sGuid = prop.getPropertyWithDefault(prefix + "Guid", "Any");
+        std::stringstream dc1394_prefix_ss;
+        dc1394_prefix_ss << prefix << cam_index << ".";
+        std::string dc1394_prefix = dc1394_prefix_ss.str();
+        // "DC1394.N.Guid=..."
+        string sGuid = prop.getPropertyWithDefault(dc1394_prefix + "Guid", "Any");
 
         //
         //Copy desired width and height from the config settings
@@ -154,7 +159,7 @@ context_(context)
             if (!found)
             {
                 stringstream ss;
-                ss << "Failed to initialize camera with guid" << sGuid;
+                ss << "Failed to initialize camera with guid: " << sGuid;
                 throw gbxutilacfr::Exception(ERROR_INFO, ss.str());
             }
         }
@@ -163,7 +168,7 @@ context_(context)
         if (!camera.at(cam_index))
         {
             stringstream ss;
-            ss << "Failed to initialize camera with guid" << hex << list->ids[connectToCam].guid;
+            ss << "Failed to initialize camera with guid: " << hex << list->ids[connectToCam].guid;
             throw gbxutilacfr::Exception(ERROR_INFO, ss.str());
         }
         else
@@ -175,7 +180,6 @@ context_(context)
             ss1 << "Working with the camera " << camera.at(cam_index)->vendor << " " << camera.at(cam_index)->model;
             context_.tracer().info(ss1.str());
         }
-
 
         // free the other cameras
         dc1394_camera_free_list(list);
@@ -299,6 +303,7 @@ context_(context)
             std::stringstream multicam_prefix_ss;
             multicam_prefix_ss << cam_index << ".";
             std::string multicam_prefix = multicam_prefix_ss.str();
+            // "N.FrameRate=..."
             string sfps = prop.getPropertyWithDefault(multicam_prefix + "FrameRate", "30");
             if (sfps == "1.875")
             {
@@ -350,7 +355,8 @@ context_(context)
             }
 
             //Check for non-auto shutterval
-            string shutterMode = prop.getPropertyWithDefault(multicam_prefix + "ShutterSpeed", "Auto");
+            // "DC1394.N.ShutterSpeed=..."
+            string shutterMode = prop.getPropertyWithDefault(dc1394_prefix + "ShutterSpeed", "Auto");
             if (shutterMode != "Auto") {
                 int shutterVal;
                 istringstream shutterStream(shutterMode);
@@ -379,10 +385,16 @@ context_(context)
             }
 
             // Set the number of dc1394 buffers
-            string numBufsString = prop.getPropertyWithDefault(multicam_prefix + "NumBufs", "16");
+            // "DC1394.NumBufs=..."
+            string numBufsString = prop.getPropertyWithDefault(prefix + "NumBufs", "16");
             numBufs.at(cam_index) = 16;
             istringstream numBufsStream(numBufsString);
-            numBufsStream>>numBufs.at(cam_index);
+            if (!(numBufsStream>>numBufs.at(cam_index))) {
+                    stringstream ss;
+                    ss << "Unable to set size of dc1394 buffer to \"" <<
+                        numBufsStream.str() << ". Defaulting to 16.";
+                    throw gbxutilacfr::Exception(ERROR_INFO, ss.str());
+            }
 
             // setup capture
             context_.tracer().info("Setting capture");
