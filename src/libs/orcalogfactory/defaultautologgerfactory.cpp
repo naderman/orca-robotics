@@ -33,6 +33,7 @@ DefaultAutoLoggerFactory::DefaultAutoLoggerFactory()
     addSupportedType("Camera");
     addSupportedType("Image");
     addSupportedType("PathFollower2d");
+    addSupportedType("MultiCamera");
 }
 
 orcalog::AutoLogger* 
