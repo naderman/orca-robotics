@@ -72,10 +72,15 @@ MultiCameraWriter::init(const orca::MultiCameraDescriptionPtr &descr, const std:
     if (format == "jpeg")
     {
 #ifndef OPENCV_FOUND
-        // we don't have context here
-//         context.tracer().info("Images can only be logged in 'jpeg' format if you have OpenCV.");
-//         context.tracer().info("Please have a look at the documentation for ImageServer component for installing OpenCV.");
         throw orcalog::FormatNotSupportedException(ERROR_INFO, "Logger: 'jpeg' format not supported because OpenCV is not installed.");
+#else
+        initMultiImageLogWriter(descr);
+#endif
+    }
+    else if (format == "bmp")
+    {
+#ifndef OPENCV_FOUND
+        throw orcalog::FormatNotSupportedException(ERROR_INFO, "Logger: 'bmp' format not supported because OpenCV is not installed.");
 #else
         initMultiImageLogWriter(descr);
 #endif
@@ -83,9 +88,6 @@ MultiCameraWriter::init(const orca::MultiCameraDescriptionPtr &descr, const std:
     else if (format == "avi")
     {
 #ifndef OPENCV_FOUND
-        // we don't have context here
-//         context.tracer().info("Images can only be logged in 'avi' format if you have OpenCV.");
-//         context.tracer().info("Please have a look at the documentation for ImageServer component for installing OpenCV.");
         throw orcalog::FormatNotSupportedException(ERROR_INFO, "Logger: 'avi' format not supported because OpenCV is not installed.");
 #else
         initMultiImageLogWriter(descr);
@@ -145,7 +147,14 @@ MultiCameraWriter::initVideoLogWriter(const orca::MultiCameraDescriptionPtr &des
         filename << ".//" << directoryPrefix_ << "//";
         filename << "cam" << i << "_avi_video.avi";
         std::string outputname = filename.str();
-        cvVideoWriters[i] = cvCreateVideoWriter(outputname.c_str(),FOURCC_RAWRGB, (int) fps, cvSize(width, height), 1);
+        int isColor;
+        if (descr->descriptions[i]->format == "GRAY8")
+            isColor = 0;
+        else
+            isColor = 1;
+        // Create video writer
+        cvVideoWriters[i] = cvCreateVideoWriter(outputname.c_str(),FOURCC_RAWRGB, (int) fps, cvSize(width, height), isColor);
+        
     }
 #endif
 }
@@ -172,7 +181,7 @@ MultiCameraWriter::logToFile( std::ofstream *file, const std::string &format, or
         ice_writeMultiCameraDescription( helper.stream_, obj );
         helper.write( file );
     }
-    else if ( format=="jpeg" ||  format=="avi") {
+    else if ( format=="jpeg" || format == "bmp" ||  format=="avi") {
         //Log the MultiCamera Description to an ascii file
         (*file) << toLogString(obj) << endl;
     }
@@ -197,7 +206,14 @@ MultiCameraWriter::logToFile( std::ofstream *file, const std::string &format, or
             (*file) << toLogString(obj) << endl;
 
             // the images are saved as individual jpegs
-            writeCameraDataAsJpeg(obj);
+            writeCameraDataAsFile(obj, format);
+        }
+        else if ( format=="bmp" ){
+            // write object meta data into a ascii file
+            (*file) << toLogString(obj) << endl;
+
+            // the images are saved as individual bitmaps
+            writeCameraDataAsFile(obj, format);
         }
         else if (format =="avi") {
             // write object meta data into a ascii file
@@ -215,7 +231,7 @@ MultiCameraWriter::logToFile( std::ofstream *file, const std::string &format, or
 
 // Write image to file after compressing to jpeg format using opencv
 void
-MultiCameraWriter::writeCameraDataAsJpeg(const orca::MultiCameraDataPtr& data)
+MultiCameraWriter::writeCameraDataAsFile(const orca::MultiCameraDataPtr& data, const std::string &format)
 {
 #ifdef OPENCV_FOUND
     for (unsigned int i = 0; i < data->cameraDataVector.size(); ++i)
@@ -223,7 +239,13 @@ MultiCameraWriter::writeCameraDataAsJpeg(const orca::MultiCameraDataPtr& data)
         // image filename (different file for each image)
         std::stringstream filename;
         filename << ".//" << directoryPrefix_ << "//";
-        filename << "cam" << i << "_image" << std::setw(5) << std::setfill('0') << dataCounter_ << ".jpg";
+        filename << "cam" << i << "_image" << std::setw(5) << std::setfill('0') << dataCounter_;
+        if (format == "jpeg") {
+            filename << ".jpeg";
+        }
+        else if (format == "bmp") {
+            filename << ".bmp";
+        }
         std::string outputname;
         outputname = filename.str();
         // check if the opencv image data structure is padded

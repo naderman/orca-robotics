@@ -1000,6 +1000,7 @@ MultiCameraLogWriter::checkFormat( const std::string &format )
     vector<string> okFormats;
     okFormats.push_back("ice");
     okFormats.push_back("jpeg");
+    okFormats.push_back("bmp");
     okFormats.push_back("avi");
     orcalog::checkFormats( format, okFormats );
 }
@@ -1051,7 +1052,7 @@ MultiCameraLogWriter::createLogFile( const std::string &filename, const std::str
     if ( format == "ice" ) {
         file_ = orcalog::openBinaryFileForWriting(filename);
     }
-    else if ( format == "jpeg" || format == "avi") {
+    else if ( format == "jpeg" || format == "bmp" || format == "avi") {
         multiCameraWriter.createLogDirectory(filename);
         file_ = orcalog::openAsciiFileForWriting(filename);
     }

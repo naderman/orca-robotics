@@ -357,18 +357,18 @@ context_(context)
             //Check for non-auto shutterval
             // "DC1394.N.ShutterSpeed=..."
             string shutterMode = prop.getPropertyWithDefault(dc1394_prefix + "ShutterSpeed", "Auto");
-            if (shutterMode != "Auto") {
+            if (shutterMode != "Auto") {  // If user has defined a shutter mode
                 int shutterVal;
                 istringstream shutterStream(shutterMode);
                 if (!(shutterStream >> shutterVal)) {
                     stringstream ss;
                     ss << "Unable to set shutter value of \"" <<
-                        shutterVal << "\" on camera "<< cam_index;
+                        shutterVal << "\" on camera " << cam_index;
                     throw gbxutilacfr::Exception(ERROR_INFO, ss.str());
                 }
                 else {
                     stringstream ss;
-                    ss << "Setting shutter to " << shutterVal;
+                    ss << "Setting shutter to \"" << shutterVal << "\" on camera " << cam_index;;
                     context_.tracer().info(ss.str());
                     if (dc1394_feature_set_mode(camera.at(cam_index),DC1394_FEATURE_SHUTTER,DC1394_FEATURE_MODE_MANUAL)!= DC1394_SUCCESS) {
                         stringstream ss;
@@ -381,6 +381,16 @@ context_(context)
                        throw gbxutilacfr::Exception(ERROR_INFO, ss.str());
                     }
 
+                }
+            }
+            else { // Ensure that shutter is set to Auto
+                stringstream ss;
+                ss << "Setting shutter to Auto on camera " << cam_index;
+                context_.tracer().info(ss.str());
+                if (dc1394_feature_set_mode(camera.at(cam_index),DC1394_FEATURE_SHUTTER,DC1394_FEATURE_MODE_AUTO)!= DC1394_SUCCESS) {
+                    stringstream ss;
+                    ss << "Could not set SHUTTER to AUTO on camera "<< cam_index;
+                    throw gbxutilacfr::Exception(ERROR_INFO, ss.str());
                 }
             }
 

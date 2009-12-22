@@ -74,7 +74,7 @@ private:
     #endif
 
     //Write JPEG's    
-    void writeCameraDataAsJpeg( const orca::MultiCameraDataPtr& data);
+    void writeCameraDataAsFile( const orca::MultiCameraDataPtr& data, const std::string &format);
     // Write video's
     void writeCameraDataAsVideo( const orca::MultiCameraDataPtr& data);
     //Count the succesive images logged
