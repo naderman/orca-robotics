@@ -6,6 +6,9 @@ DefaultComponentTag=LogRecorder
 Requires.Camera0.Type=Camera
 Requires.Camera0.DefaultProxy=camera@local/imageserver
 
+Requires.MultiCamera0.Type=MultiCamera
+Requires.MultiCamera0.DefaultProxy=multicamera@local/multicameraserver
+
 Requires.Cpu0.Type=Cpu
 Requires.Cpu0.DefaultProxy=cpu@local/roverhw
 
@@ -46,6 +49,8 @@ Config.FilenameTimestamp.Default=1
 Config.FactoryLibNames.Default=libOrcaLogFactory.so
 
 Config.Camera0.Format.Default=ice
+Config.MultiCamera0.Format.Comment=Valid values for MultiCamera Format are: {'ice', 'jpeg', 'bmp', 'avi'}
+Config.MultiCamera0.Format.Default=ice
 Config.Cpu0.Format.Default=ice
 Config.Gps0.Format.Default=ice
 Config.Imu0.Format.Default=ascii

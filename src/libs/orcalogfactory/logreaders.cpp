@@ -541,6 +541,66 @@ CameraLogReader::openLogFile()
 
 //////////////////////////////////////////////////////////////////////
 
+MultiCameraLogReader::MultiCameraLogReader( const orcalog::LogReaderInfo &logReaderInfo )
+    : orcalog::LogReader( logReaderInfo )
+{
+    vector<string> okFormats;
+    okFormats.push_back("ice");
+    okFormats.push_back("jpeg");
+    okFormats.push_back("bmp");
+    okFormats.push_back("avi");
+    orcalog::checkFormats( logReaderInfo, okFormats );
+}
+void
+MultiCameraLogReader::read( orca::MultiCameraDataPtr &obj )
+{
+    multiCameraReader.readFromFile( file_,
+                  orcalog::LogReader::logReaderInfo().format,
+                  orcalog::LogReader::logReaderInfo().context,
+                  obj );
+    orcalog::LogReader::advanceLogIndex();
+}
+void
+MultiCameraLogReader::read( orca::MultiCameraDescriptionPtr &obj )
+{
+    assert( orcalog::LogReader::logIndex() == -1 );
+    multiCameraReader.readFromFile( file_,
+                  orcalog::LogReader::logReaderInfo().format,
+                  orcalog::LogReader::logReaderInfo().context,
+                  obj );
+    orcalog::LogReader::zeroLogIndex();
+}
+
+//
+//alen - had to overwrite this method from logwriter.h to include jpegs
+//
+void
+MultiCameraLogReader::openLogFile()
+{
+    logReaderInfo_.context.tracer().debug( "Opening log file "+logReaderInfo_.filename,2 );
+
+    if ( file_ ) {
+        std::string s = "Log file already exists.";
+        throw orcalog::FileException( ERROR_INFO, s );
+    }
+
+    //
+    // open log file, may throw and it will kill us
+    //
+    if ( logReaderInfo_.format == "ice" ) {
+        file_ = orcalog::openBinaryFileForReading( logReaderInfo_.filename );
+    }
+    else if ( logReaderInfo_.format == "jpeg" ||  logReaderInfo_.format == "bmp"  ||  logReaderInfo_.format == "avi") {
+        file_ = orcalog::openAsciiFileForReading( logReaderInfo_.filename );
+    }
+    else {
+        assert( false && "base class can only handle 'ice', 'jpeg', 'bmp' or 'avi' formats" );
+    }
+}
+
+
+//////////////////////////////////////////////////////////////////////
+
 DriveBicycleLogReader::DriveBicycleLogReader( const orcalog::LogReaderInfo &logReaderInfo )
     : orcalog::LogReader( logReaderInfo )
 {

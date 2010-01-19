@@ -202,52 +202,91 @@ MultiCameraWriter::logToFile( std::ofstream *file, const std::string &format, or
             helper.write( file );
         }
         else if ( format=="jpeg" ){
-            // write object meta data into a ascii file
-            (*file) << toLogString(obj) << endl;
+             // write object meta data into a ascii file
+             (*file) << toLogString(obj);
 
-            // the images are saved as individual jpegs
-            writeCameraDataAsFile(obj, format);
+             // For each image in MultiCameraDatPtr, write it to disk
+             for (unsigned int i = 0; i < obj->cameraDataVector.size(); ++i)
+             {
+                 // generate image filename (different file for each image)
+                 std::stringstream filename;
+                 filename << ".//" << directoryPrefix_ << "//" << "cam" << i << "_image"
+                        << std::setw(5) << std::setfill('0') << dataCounter_ << ".jpeg";
+                 std::string outputname;
+                 outputname = filename.str();
+
+                 // Write the outputted filename to the logfile as well
+                 (*file) << " " << outputname;
+
+                // the images are saved as individual jpegs
+                writeCameraDataAsFile(obj, outputname, i);
+            }
+            // Make sure we put in a newline
+            (*file) << endl;
+
         }
         else if ( format=="bmp" ){
             // write object meta data into a ascii file
-            (*file) << toLogString(obj) << endl;
+            (*file) << toLogString(obj);
 
-            // the images are saved as individual bitmaps
-            writeCameraDataAsFile(obj, format);
+            // For each image in MultiCameraDatPtr, write it to disk
+            for (unsigned int i = 0; i < obj->cameraDataVector.size(); ++i)
+            {
+                // generate image filename (different file for each image)
+                std::stringstream filename;
+                filename << ".//" << directoryPrefix_ << "//" << "cam" << i << "_image"
+                        << std::setw(5) << std::setfill('0') << dataCounter_ << ".bmp";
+                std::string outputname;
+                outputname = filename.str();
+
+                // Write the outputted filename to the logfile as well
+                (*file) << " " <<outputname;
+                
+                // the images are saved as individual bitmaps
+                writeCameraDataAsFile(obj, outputname, i);
+            }
+
+            // Make sure we put in a newline
+            (*file) << endl;
         }
         else if (format =="avi") {
             // write object meta data into a ascii file
-            (*file) << toLogString(obj) << endl;
+            (*file) << toLogString(obj);
 
-             // the images are saved as uncompressed video into separate files
-             writeCameraDataAsVideo(obj);
+            // For each image in MultiCameraDatPtr, write it to disk
+            for (unsigned int i = 0; i < obj->cameraDataVector.size(); ++i)
+            {
+                // generate image filename. This will be the same for each video,
+                // but is important for the logplayer to know what the filename is.
+                // Also allows for future enhancements to split the video file into
+                // manageable pieces
+                std::stringstream filename;
+                filename << ".//" << directoryPrefix_ << "//" << "cam" << i << "_avi_video.avi";
+                std::string outputname = filename.str();
+
+                // Write the outputted filename to the logfile as well
+                (*file) << " " << outputname;
+
+                 // the images are saved as uncompressed video into separate files
+                 writeCameraDataAsVideo(obj, i);
+            }
+            // Make sure we put in a newline
+            (*file) << endl;
         }
         else{
             stringstream ss;
             ss << "can't handle format: " << format;
             throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
         }
+        // Increment output image number
+        dataCounter_++;
 }
 
 // Write image to file after compressing to jpeg format using opencv
 void
-MultiCameraWriter::writeCameraDataAsFile(const orca::MultiCameraDataPtr& data, const std::string &format)
+MultiCameraWriter::writeCameraDataAsFile(const orca::MultiCameraDataPtr& data, const std::string &filename, int i)
 {
 #ifdef OPENCV_FOUND
-    for (unsigned int i = 0; i < data->cameraDataVector.size(); ++i)
-    {
-        // image filename (different file for each image)
-        std::stringstream filename;
-        filename << ".//" << directoryPrefix_ << "//";
-        filename << "cam" << i << "_image" << std::setw(5) << std::setfill('0') << dataCounter_;
-        if (format == "jpeg") {
-            filename << ".jpeg";
-        }
-        else if (format == "bmp") {
-            filename << ".bmp";
-        }
-        std::string outputname;
-        outputname = filename.str();
         // check if the opencv image data structure is padded
         if (!isPadded_[i])
         {
@@ -276,26 +315,21 @@ MultiCameraWriter::writeCameraDataAsFile(const orca::MultiCameraDataPtr& data, c
             format == "BayerGR8")
         {
             cvtToBgr(cvImage_[i], cvBayer_[i], data->cameraDataVector.at(i)->description->format);
-            cvSaveImage(outputname.c_str(), cvBayer_[i]);
+            cvSaveImage(filename.c_str(), cvBayer_[i]);
         }
         else
         {
-            cvSaveImage(outputname.c_str(), cvImage_[i]);
+            cvSaveImage(filename.c_str(), cvImage_[i]);
         }
-    }
-    // Increment output image number
-    dataCounter_++;
 #endif
 }
 
 
 // Write image to video file using opencv
 void
-MultiCameraWriter::writeCameraDataAsVideo (const orca::MultiCameraDataPtr& data)
+MultiCameraWriter::writeCameraDataAsVideo (const orca::MultiCameraDataPtr& data, int i)
 {
 #ifdef OPENCV_FOUND
-  for (unsigned int i = 0; i < data->cameraDataVector.size (); ++i)
-    {
       // check if the opencv image data structure is padded
       if (!isPadded_[i])
         {
@@ -327,7 +361,5 @@ MultiCameraWriter::writeCameraDataAsVideo (const orca::MultiCameraDataPtr& data)
             cvWriteFrame(cvVideoWriters[i], cvBayer_[i]);
         }
         else cvWriteFrame(cvVideoWriters[i], cvImage_[i]);
-    }
 #endif
-
 }

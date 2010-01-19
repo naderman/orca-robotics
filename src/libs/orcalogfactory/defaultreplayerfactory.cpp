@@ -1,7 +1,7 @@
 /*
  * Orca-Robotics Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp, Michael Warren
  *
  * This copy of Orca is licensed to you under the terms described in
  * the LICENSE file included in this distribution.
@@ -31,6 +31,7 @@ DefaultReplayerFactory::DefaultReplayerFactory()
     addSupportedType("Wifi");
     addSupportedType("Gps");
     addSupportedType("PathFollower2d");
+    addSupportedType("MultiCamera");
 }
 
 orcalog::Replayer* 
@@ -85,6 +86,10 @@ DefaultReplayerFactory::create( const orcalog::LogReaderInfo &logReaderInfo )
     else if ( logReaderInfo.interfaceType == "PathFollower2d" )
     {
         return new PathFollower2dReplayer( logReaderInfo );
+    }
+    else if ( logReaderInfo.interfaceType == "MultiCamera")
+    {
+        return new MultiCameraReplayer( logReaderInfo );
     }
     else
     {

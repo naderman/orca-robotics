@@ -15,11 +15,11 @@
 #include <orcaifaceimpl/odometry3d.h>
 #include <orcaifaceimpl/power.h>
 #include <orcaifaceimpl/wifi.h>
+#include <orcaifaceimpl/multicamera.h>
 #include <orcaifaceimpl/pathfollower2d.h>
 
 namespace orcalogfactory {
 
-//////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
 typedef orcalog::GenericReplayer< orcaifaceimpl::CameraImpl,
@@ -115,6 +115,14 @@ typedef orcalog::GenericReplayer<orcaifaceimpl::WifiImpl,
 
 //////////////////////////////////////////////////////////////////////
 
+typedef orcalog::GenericReplayer< orcaifaceimpl::MultiCameraImpl,
+                                  MultiCameraLogReader,
+                                  orca::MultiCameraDataPtr,
+                                  orcalog::DescriptionIfaceImplSetup<MultiCameraLogReader,
+                                                                     orcaifaceimpl::MultiCameraImpl,
+                                                                     orca::MultiCameraDescriptionPtr> >       MultiCameraReplayer;
+
+//////////////////////////////////////////////////////////////////////
 //
 // This one is non-standard because the interface is non-standard.
 //

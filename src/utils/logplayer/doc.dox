@@ -18,6 +18,7 @@
 @par Provides
 
 - @ref orca_interface_camera [LogPlayer.Provides.CameraX]
+- @ref orca_interface_multicamera [LogPlayer.Provides.MultiCameraX]
 - @ref orca_interface_gps [LogPlayer.Provides.GpsX]
 - @ref orca_interface_home
 - @ref orca_interface_laserscanner2d [LogPlayer.Provides.LaserX]
@@ -113,6 +114,6 @@ called @c encoding @c type.
 An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
 @par Authors
-- Tobias Kaupp, Alex Brooks, Alexei Makarenko
+- Tobias Kaupp, Alex Brooks, Alexei Makarenko, Michael Warren
 
 */

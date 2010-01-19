@@ -3,6 +3,7 @@
 
 #include <orcalog/logreader.h>
 #include <orca/camera.h>
+#include <orca/multicamera.h>
 #include <orca/drivebicycle.h>
 #include <orca/laserscanner2d.h>
 #include <orca/localise2d.h>
@@ -15,6 +16,7 @@
 #include <orca/gps.h>
 
 #include "camerareader.h"
+#include "multicamerareader.h"
 
 namespace orcalogfactory {
 
@@ -34,6 +36,22 @@ public:
 private:
 // alen - member class for camera log readingso we can handle jpegs
     CameraReader cameraReader;
+
+};
+
+//////////////////////////////////////////////////////////////////////
+
+class MultiCameraLogReader : public orcalog::LogReader
+{
+public:
+    MultiCameraLogReader( const orcalog::LogReaderInfo &logReaderInfo );
+    void read( orca::MultiCameraDataPtr &obj );
+    void read( orca::MultiCameraDescriptionPtr &obj );
+    void read() { orca::MultiCameraDataPtr obj=new orca::MultiCameraData; read(obj); }
+    void openLogFile();
+private:
+// michael - member class for multicamera log reading so we can handle jpegs, bmp's and avi's
+    MultiCameraReader multiCameraReader;
 
 };
 

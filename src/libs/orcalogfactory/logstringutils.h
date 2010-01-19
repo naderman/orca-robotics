@@ -1,7 +1,7 @@
 /*
  * Orca-Robotics Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp, Ben Upcroft
+ * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp, Ben Upcroft, Michael Warren
  *
  * This copy of Orca is licensed to you under the terms described in
  * the LICENSE file included in this distribution.
@@ -95,10 +95,10 @@ void fromLogString( std::stringstream &, orca::ImageData& );
 
 // Multicameras
  std::string toLogString( const orca::MultiCameraDescriptionPtr& );
-void fromLogString( std::stringstream &, orca::MultiCameraDescription& );
+void fromLogString( std::stringstream &, orca::MultiCameraDescriptionPtr& );
 
 std::string toLogString( const orca::MultiCameraDataPtr& );
-void fromLogString( std::stringstream &, orca::MultiCameraData& );
+void fromLogString( std::stringstream &, orca::MultiCameraDataPtr& );
 
 //}
 

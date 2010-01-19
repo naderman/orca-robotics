@@ -1,7 +1,7 @@
 /*
  * Orca-Robotics Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp, Ben Upcroft
+ * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp, Ben Upcroft, Michael Warren
  *
  * This copy of Orca is licensed to you under the terms described in
  * the LICENSE file included in this distribution.
@@ -1029,11 +1029,11 @@ fromLogString ( std::stringstream &s, orca::ImageData& obj )
 
 std::string
 toLogString(const orca::MultiCameraDescriptionPtr& obj) {
-    int length = obj->descriptions.size();
     stringstream s;
-    for (int i = 0; i < length; i++) {
-        s << "Camera" << i << ": "
-                << obj->descriptions[i]->width << " "
+    // Need to have some knowledge of the size of the data storage
+    s << obj->descriptions.size() << " ";
+    for (unsigned int i = 0; i < obj->descriptions.size(); i++) {
+        s << obj->descriptions[i]->width << " "
                 << obj->descriptions[i]->height << " "
                 << obj->descriptions[i]->format << " "
                 << obj->descriptions[i]->frameRate << " "
@@ -1046,28 +1046,38 @@ toLogString(const orca::MultiCameraDescriptionPtr& obj) {
                 << obj->descriptions[i]->k1 << " "
                 << obj->descriptions[i]->k2 << " "
                 << obj->descriptions[i]->p1 << " "
-                << obj->descriptions[i]->p2 << " " << endl;
+                << obj->descriptions[i]->p2;
+                if (i < obj->descriptions.size() - 1) s << " ";
     }
     return s.str();
 }
 
 void
-fromLogString( std::stringstream &s, orca::MultiCameraDescription& obj )
+fromLogString( std::stringstream &s, orca::MultiCameraDescriptionPtr& obj )
 {
-    /*fromLogString(s,obj.width);
-    fromLogString(s,obj.height);
-    s >> obj.format;
-    fromLogString(s,obj.frameRate);
-    fromLogString(s,obj.offset);
-    fromLogString(s,obj.caseSize);
-    fromLogString(s,obj.focalLength.x);
-    fromLogString(s,obj.focalLength.y);
-    fromLogString(s,obj.principlePoint.x);
-    fromLogString(s,obj.principlePoint.y);
-    fromLogString(s,obj.k1);
-    fromLogString(s,obj.k2);
-    fromLogString(s,obj.p1);
-    fromLogString(s,obj.p2);*/
+    // First part of data is size of multicamera data vector
+    int length;
+    fromLogString(s,length);
+    // Resize the descriptions to fit the data
+    obj->descriptions.resize(length);
+    // Put it all back in
+    for (unsigned int i = 0; i < obj->descriptions.size(); i++) {
+        obj->descriptions[i] = new orca::CameraDescription();
+        fromLogString(s,obj->descriptions[i]->width);
+        fromLogString(s,obj->descriptions[i]->height);
+        s >> obj->descriptions[i]->format;
+        fromLogString(s,obj->descriptions[i]->frameRate);
+        fromLogString(s,obj->descriptions[i]->offset);
+        fromLogString(s,obj->descriptions[i]->caseSize);
+        fromLogString(s,obj->descriptions[i]->focalLength.x);
+        fromLogString(s,obj->descriptions[i]->focalLength.y);
+        fromLogString(s,obj->descriptions[i]->principlePoint.x);
+        fromLogString(s,obj->descriptions[i]->principlePoint.y);
+        fromLogString(s,obj->descriptions[i]->k1);
+        fromLogString(s,obj->descriptions[i]->k2);
+        fromLogString(s,obj->descriptions[i]->p1);
+        fromLogString(s,obj->descriptions[i]->p2);
+    }
 }
 
 
@@ -1077,26 +1087,25 @@ toLogString( const orca::MultiCameraDataPtr& obj )
     int length = obj->cameraDataVector.size();
     stringstream s;
     for (int i = 0; i < length; i++) {
-        //s << "multicameradatapointer test!";
         s << toLogString(obj->cameraDataVector[i]->timeStamp) << " ";
         s << obj->cameraDataVector[i]->description->width << " ";
         s << obj->cameraDataVector[i]->description->height << " ";
-        s << obj->cameraDataVector[i]->description->format << " ";
+        s << obj->cameraDataVector[i]->description->format;
+        if (i < length - 1) s << " ";
     }
     return s.str();
 }
 
 void
-fromLogString ( std::stringstream &s, orca::MultiCameraData& obj )
+fromLogString ( std::stringstream &s, orca::MultiCameraDataPtr& obj )
 {
-    /*fromLogString(s,obj.timeStamp );
-
-    orca::ImageDescription* ptr = new orca::ImageDescription;
-    obj.description  = ptr;
-
-    fromLogString(s,ptr->width);
-    fromLogString(s,ptr->height);
-    s >> ptr->format; */
+    int length = obj->cameraDataVector.size();
+    for (int i = 0; i < length; i++) {
+        fromLogString(s, obj->cameraDataVector[i]->timeStamp );
+        fromLogString(s, obj->cameraDataVector[i]->description->width);
+        fromLogString(s, obj->cameraDataVector[i]->description->height);
+        s >> obj->cameraDataVector[i]->description->format;
+    }
 }
 
 }

@@ -26,6 +26,7 @@
 @par Requires (any number and combination of the following)
 
 - @ref orca_interface_camera [LogRecorder.Requires.CameraX]
+- @ref orca_interface_multicamera [LogRecorder.Requires.MultiCameraX]
 - @ref orca_interface_cpu [LogRecorder.Requires.CpuX]
 - @ref orca_interface_drivebicycle [LogRecorder.Requires.DriveBicycleX]
 - @ref orca_interface_gps [LogRecorder.Requires.GpsX]
@@ -111,7 +112,7 @@ To parse the 'ascii' log files in Matlab, you can use the files provided in [ORC
 @endverbatim
 
 @par Authors
-- Tobias Kaupp, Alex Brooks, Alexei Makarenko
+- Tobias Kaupp, Alex Brooks, Alexei Makarenko, Michael Warren
 
 @section orca_component_logrecorder_plugins Writing custom logwriters
 
