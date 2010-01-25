@@ -149,6 +149,7 @@ Driver::Driver( const hydrointerfaces::Gps::Config &cfg, const hydroutil::Contex
         gbxConfig.readRme = true;
         gbxConfig.readRmc = false;
         gbxConfig.ignoreUnknown = true;
+        gbxConfig.protocol = "Garmin";
     }
     else if (protocol == "NMEA")
     {
@@ -157,6 +158,7 @@ Driver::Driver( const hydrointerfaces::Gps::Config &cfg, const hydroutil::Contex
         gbxConfig.readRme = false;
         gbxConfig.readRmc = true;
         gbxConfig.ignoreUnknown = true;
+        gbxConfig.protocol = "NMEA";
     }
     else
     {
