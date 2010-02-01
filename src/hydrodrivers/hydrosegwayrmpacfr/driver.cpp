@@ -394,7 +394,6 @@ Driver::readData()
     while( canPacketsProcessed < maxCanPacketsProcessed && timeoutCount < maxTimeoutCount )
     {
         status = rmpIo_->readPacket( pkt );
-
         if ( status == RmpIo::NO_DATA ) 
         {
             // too many of these and we'll exit the loop with an error.

@@ -57,6 +57,8 @@ class PathFollowerInput : public hydroqguipath::IPathInput
         virtual void setWaypointFocus( int waypointId );
         
         virtual void getPath( hydroqguipath::GuiPath &guiPath, int &numLoops, float &timeOffset ) const;
+
+        virtual void switchTableView( bool onOff );
         
     private:
         

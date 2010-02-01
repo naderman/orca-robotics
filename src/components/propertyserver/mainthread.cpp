@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
@@ -24,7 +24,7 @@ MainThread::MainThread( const orcaice::Context &context ) :
 {
 }
 
-void 
+void
 MainThread::initialise()
 {
     setMaxHeartbeatInterval( 20.0 );
@@ -43,7 +43,7 @@ MainThread::work()
 
     while ( !isStopping() )
     {
-        try 
+        try
         {
             // this blocks until new data arrives
             const int TIMEOUT_MS = 1000;
@@ -55,20 +55,20 @@ MainThread::work()
                 ss << "Received new properties: " << ifaceutil::toString( incomingProperties );
                 context_.tracer().info( ss.str() );
 
-                // Set our local database.
+                // Merge incoming properties with the local database.
                 propertyDb_.addProperties( incomingProperties.properties );
 
                 // Then inform the world
-                orca::PropertiesData propData;
-                propData.properties = propertyDb_.properties();
-                propertiesInterface_->localSetAndSend( propData );
+                orca::PropertiesData resultantProperties;
+                resultantProperties.properties = propertyDb_.properties();
+                propertiesInterface_->localSetAndSend( resultantProperties );
             }
 
             health().ok();
             continue;
 
         } // end of try
-        catch ( ... ) 
+        catch ( ... )
         {
             orcaice::catchMainLoopExceptions( health() );
         }
@@ -95,8 +95,8 @@ MainThread::initPropertiesDb()
     if ( !persistanceFile_.empty() )
     {
         try {
-            std::map<std::string,std::string> propsFromFile = readFromFile( persistanceFile_ );
-            cout<<"Properties loaded from persistance file: " << toString(propsFromFile) << endl;
+            std::map<std::string,std::string> propsFromFile = hydropropertydb::readFromFile( persistanceFile_ );
+            cout<<"Properties loaded from persistance file: " << hydropropertydb::toString(propsFromFile) << endl;
             propertyDb_.addProperties( propsFromFile );
         }
         catch ( std::exception &e )
@@ -114,11 +114,11 @@ MainThread::initPropertiesDb()
     map<string,string> props = context_.properties()->getPropertiesForPrefix(prefix);
 
     map<string,string> strippedProps;
-    for ( map<string,string>::const_iterator it=props.begin(); it!=props.end(); ++it ) 
+    for ( map<string,string>::const_iterator it=props.begin(); it!=props.end(); ++it )
     {
         strippedProps.insert( make_pair(it->first.substr(prefix.size()),it->second) );
     }
-    cout << "Properties loaded from config file: " << toString(strippedProps) << endl;
+    cout << "Properties loaded from config file: " << hydropropertydb::toString(strippedProps) << endl;
 
     propertyDb_.addProperties( strippedProps );
 }

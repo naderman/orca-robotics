@@ -148,9 +148,12 @@ Context::toHydroContext( const std::string &prefixToStrip ) const
     if ( properties()->getPropertyAsIntWithDefault( "Orca.Warn.DefaultProperty", 1 ) )
         config.warnDefaultProperty = true;
 
-    return hydroutil::Context( hydroutil::Properties( properties()->getPropertiesForPrefix(prefixToStrip), prefixToStrip, config ), 
-                               tracer(), 
-                               status() );
+    return hydroutil::Context( 
+        hydroutil::Properties( properties()->getPropertiesForPrefix(prefixToStrip),
+                               prefixToStrip,
+                               config ),
+        tracer(), 
+        status() );
 }
 
 std::string 

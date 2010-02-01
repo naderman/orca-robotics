@@ -1,5 +1,5 @@
-#ifndef ORCANAVUTIL_POSE_H
-#define ORCANAVUTIL_POSE_H
+#ifndef HYDRONAVUTIL_POSE_H
+#define HYDRONAVUTIL_POSE_H
 
 #include <cmath>
 #include <iostream>

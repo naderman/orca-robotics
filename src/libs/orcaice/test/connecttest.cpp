@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
@@ -34,7 +34,7 @@ public:
     virtual void start();
 };
 
-void 
+void
 TestComponent::start()
 {
     // if set to FALSE, will return success when registry is not available
@@ -61,7 +61,7 @@ TestComponent::start()
 
     cout<<"testing activate() ... ";
     try {
-        activate();
+        context().activate();
     }
     catch ( const orcaice::NetworkException & e ) {
         cout<<"failed"<<endl<<e.what()<<endl;
@@ -70,7 +70,7 @@ TestComponent::start()
     cout<<"ok"<<endl;
 
     Ice::ObjectPtr homeObj = new HomeI();
-    
+
     cout<<"testing isInterfaceReachable() with non-existant interface ... ";
     {
         string diagnostic;
@@ -94,7 +94,7 @@ TestComponent::start()
         }
     }
     cout<<"ok"<<endl;
-    
+
     cout<<"testing isInterfaceReachable() with existing interface ... ";
     {
         string proxyString = "homeless@" + orcaice::toString(context().name());
@@ -139,8 +139,8 @@ TestComponent::start()
     // every object can have multiple identities in the adapter
     orca::HomePrx homeDirPrx =
             orcaice::createConsumerInterface<orca::HomePrx>( context(), homeObj );
-    homeDirPrx->ice_getIdentity();            
-    // it doesn't throw and there's nothing to test, just make sure it works            
+    homeDirPrx->ice_getIdentity();
+    // it doesn't throw and there's nothing to test, just make sure it works
     cout<<"ok"<<endl;
 
     cout<<"testing connectToInterfaceWithString() ... ";
@@ -175,7 +175,7 @@ TestComponent::start()
         exit(EXIT_FAILURE);
     }
     cout<<"ok"<<endl;
-    
+
     cout<<"testing connectToInterfaceWithTag() to indirect with bad comp name ... ";
     try {
         orcaice::connectToInterfaceWithTag<orca::HomePrx>( context(), homePrx, "IndirectBadCompName" );
@@ -283,7 +283,7 @@ TestComponent::start()
     context().shutdown();
 }
 
-int 
+int
 main(int argc, char * argv[])
 {
     TestComponent component;

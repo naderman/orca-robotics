@@ -1,5 +1,5 @@
-#ifndef ORCANAVUTIL_COV2D_H
-#define ORCANAVUTIL_COV2D_H
+#ifndef HYDRONAVUTIL_COV2D_H
+#define HYDRONAVUTIL_COV2D_H
 
 #include <iostream>
 #include <assert.h>

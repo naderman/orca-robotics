@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
@@ -31,11 +31,15 @@ class TestComponent : public orcaice::Component
 {
 public:
     // don't create standard interfaces, because we'll use Home as a dummy iface.
-    TestComponent() : orcaice::Component( "IceTest", orcaice::NoStandardInterfaces ) {};
+    TestComponent() :
+        orcaice::Component( "IceTest",
+                            orcaice::NoStandardInterfaces,
+                            orcaice::AdapterManualActivation )
+    {};
     virtual void start();
 };
 
-void 
+void
 TestComponent::start()
 {
     // if set to FALSE, will return success when registry is not available
@@ -62,7 +66,7 @@ TestComponent::start()
 
     cout<<"testing activate() ... ";
     try {
-        activate();
+        context().activate();
     }
     catch ( const orcaice::NetworkException & e ) {
         cout<<"failed"<<endl<<e.what()<<endl;
@@ -84,7 +88,7 @@ TestComponent::start()
         }
     }
     cout<<"ok"<<endl;
-    
+
     cout<<"testing isInterfaceReachable() with existing interface ... ";
     {
         string proxyString = "homeless@" + orcaice::toString(context().name());
@@ -129,8 +133,8 @@ TestComponent::start()
     // every object can have multiple identities in the adapter
     orca::HomePrx homeDirPrx =
             orcaice::createConsumerInterface<orca::HomePrx>( context(), homeObj );
-    homeDirPrx->ice_getIdentity();            
-    // it doesn't throw and there's nothing to test, just make sure it works            
+    homeDirPrx->ice_getIdentity();
+    // it doesn't throw and there's nothing to test, just make sure it works
     cout<<"ok"<<endl;
 
     cout<<"testing connectToInterfaceWithString() ... ";
@@ -153,7 +157,7 @@ TestComponent::start()
     context().shutdown();
 }
 
-int 
+int
 main(int argc, char * argv[])
 {
     TestComponent component;

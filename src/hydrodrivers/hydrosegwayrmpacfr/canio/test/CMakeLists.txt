@@ -1,10 +1,11 @@
 include( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
 
-# to include driver files
 include_directories( ${PROJECT_SOURCE_DIR}/src/hydrodrivers/hydrosegwayrmpacfr)
-
-#Tell the system to build a standalone app for us to use for testing
-GBX_ADD_EXECUTABLE( rmptestcan main.cpp )
-
-#The target needs to be linked with these libraries
+GBX_ADD_EXECUTABLE( rmptestcan rmptestcan.cpp )
 target_link_libraries( rmptestcan HydroSegwayRmpAcfrCan HydroIceUtil GbxIceUtilAcfr HydroTime )
+
+GBX_ADD_EXECUTABLE( testreadfromcan testreadfromcan.cpp )
+target_link_libraries( testreadfromcan pcan GbxUtilAcfr HydroSegwayRmpAcfrCan )
+
+GBX_ADD_EXECUTABLE( canpeakrmpiotest canpeakrmpiotest.cpp )
+target_link_libraries( canpeakrmpiotest pcan GbxUtilAcfr HydroSegwayRmpAcfrCan )

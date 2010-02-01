@@ -10,7 +10,7 @@
 
 
 #include <orcaice/orcaice.h>
-#include <orcaobj/wifi.h>
+#include <orcaifaceutil/wifi.h>
 #include "fakedriver.h"
 
 
@@ -22,13 +22,10 @@ void FakeDriver::read( orca::WifiData &data )
     data.timeStamp = orcaice::getNow();
     
     orca::WifiInterface w;
-    orcaobj::setInit(w);
+    ifaceutil::zeroAndClear(w);
 
     // Set some sane values
     w.interfaceName = "fake";
-    w.linkQuality   = 60;
-    w.signalLevel = -75;
-    w.noiseLevel  = -125;
 
     data.interfaces.push_back( w );
 }

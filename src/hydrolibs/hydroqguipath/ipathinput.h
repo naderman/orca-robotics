@@ -66,6 +66,9 @@ public:
     // get the gui path
     virtual void getPath( hydroqguipath::GuiPath &guiPath, int &numLoops, float &timeOffset ) const = 0;
 
+    // table view
+    virtual void switchTableView( bool onOff ) = 0;
+
 };
 
 class IPathUserInteraction

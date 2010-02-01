@@ -1,5 +1,5 @@
-#ifndef ORCANAVUTIL_COV3D_H
-#define ORCANAVUTIL_COV3D_H
+#ifndef HYDRONAVUTIL_COV3D_H
+#define HYDRONAVUTIL_COV3D_H
 
 #include <cstdlib>
 #include <iostream>

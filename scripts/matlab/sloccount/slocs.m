@@ -33,6 +33,7 @@ Sice321 = 169725;
 % sloccount cpp/include/ cpp/src/
 Sice330 = 159523;
 Sice331 = 162357;
+Sice340 = 175887;
 
 % indeces
 iyy=1;

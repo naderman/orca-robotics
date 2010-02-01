@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <sstream>
 #include <gbxutilacfr/exceptions.h>
+#include <assert.h>
 
 using namespace std;
 
@@ -40,7 +41,11 @@ CanPacket::CanPacket( uint32_t id )
 //    flags = canMSG_STD;
 //    dlc = 8;                 //Data Length Code
 }
-
+void
+CanPacket::setId( uint32_t id )
+{
+    id_ = id; 
+}
 uint16_t CanPacket::getSlot(int s)  const
 {
     return (uint16_t) ((msg_[s*2] << 8) | (msg_[s*2+1]));
@@ -55,7 +60,7 @@ void CanPacket::putSlot(const int slot, const uint16_t val)
 char* CanPacket::toString() const
 {
     static char buf[256];
-    sprintf(buf, "id_:%04lX %02X %02X %02X %02X %02X %02X %02X %02X",
+    sprintf(buf, "id:%04lX msg:%02X %02X %02X %02X %02X %02X %02X %02X",
             id_, msg_[0], msg_[1], msg_[2], msg_[3], msg_[4], msg_[5],
             msg_[6], msg_[7]);
 

@@ -1,5 +1,5 @@
 /*
- * Orca Project: Components for robotics 
+ * Orca Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
@@ -18,7 +18,7 @@
 // the base, and rangescanner2d does not.
 #include <orca/polarfeature2d.ice>
 #include <orca/rangescanner2d.ice>
-// should it be this? 
+// should it be this?
 // #include <orcaiface/polarfeature2d.ice>
 
 // example of including an Ice Slice file
@@ -27,6 +27,21 @@
 
 module test
 {
+
+module sub
+{
+
+struct MyStruct2
+{
+    int mInt;
+};
+
+class MyClass10
+{
+    double mDouble;
+};
+
+};
 
 enum MyEnum
 {
@@ -64,6 +79,12 @@ class MyClass0
     bool mBool;
 };
 
+// special struct to test processing of null classes
+struct MyStruct2
+{
+    MyClass0 mClass;
+};
+
 class MyClass1 extends MyClass0
 {
     int mInt;
@@ -75,7 +96,7 @@ class MyClass2 extends MyClass0
 };
 
 struct MyStruct1
-{   
+{
     MyStruct0 mStruct;
     orca::FloatSeq mOrcaSeq;
     MyStruct0Seq mSeq;
@@ -109,6 +130,18 @@ interface MyInterface1 extends MyInterface0
     void set( MyInterface0* iface );
 
 //     idempotent IceStorm::Topic* topic();
+};
+
+module subtest
+{
+    struct MyStruct0
+    {
+        int mInt;
+    };
+    struct MyStruct3
+    {
+        int mInt;
+    };
 };
 
 }; // module

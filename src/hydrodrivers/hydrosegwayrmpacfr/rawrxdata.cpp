@@ -157,14 +157,6 @@ RawRxData::addPacket( const CanPacket &pkt )
         cout<<"TRACE(rawrxdata.cpp): Ignoring Msg 0x414" << endl;
         break;
     }
-    case 0x00:
-    {
-        // This seems to happen if the RMP is powered off.
-        stringstream ss;
-        ss << "RawRxData::"<<__func__<<"(): Received CAN packet with id 0x"<<std::hex<<pkt.id()<<".  Looks like the RMP is powered off.";
-        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
-        break;        
-    }
     case 0x413:
     {
         stringstream ss;

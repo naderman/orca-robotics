@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
@@ -24,7 +24,7 @@ namespace orcaice {
 void createInterfaceWithString( const Context& context,
                 Ice::ObjectPtr& object,
                 const std::string& name,
-                gbxutilacfr::Stoppable* activity, const std::string& subsysName, 
+                gbxutilacfr::Stoppable* activity, const std::string& subsysName,
                 int retryIntervalSec, int retryNumber )
 {
     assert( activity && "Null activity pointer" );
@@ -64,7 +64,7 @@ void createInterfaceWithString( const Context& context,
 void createInterfaceWithTag( const Context& context,
             Ice::ObjectPtr& object,
             const std::string& interfaceTag,
-            gbxutilacfr::Stoppable* activity, const std::string& subsysName, 
+            gbxutilacfr::Stoppable* activity, const std::string& subsysName,
             int retryIntervalSec, int retryNumber )
 {
     assert( activity && "Null activity pointer" );
@@ -101,8 +101,8 @@ void createInterfaceWithTag( const Context& context,
     }
 }
 
-void activate( Context& context, 
-            gbxutilacfr::Stoppable* activity, const std::string& subsysName, 
+void activateAdapter( Context& context,
+            gbxutilacfr::Stoppable* activity, const std::string& subsysName,
             int retryIntervalSec, int retryNumber )
 {
     assert( activity && "Null activity pointer" );

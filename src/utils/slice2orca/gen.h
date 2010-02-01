@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2008 Alex Makarenko
  *
@@ -45,7 +45,7 @@ public:
     bool operator!() const; // Returns true if there was a constructor error
 
     void generate(const Slice::UnitPtr&);
-    
+
     static bool setUseWstring(Slice::ContainedPtr, std::list<bool>&, bool);
     static bool resetUseWstring(std::list<bool>&);
 
@@ -288,6 +288,10 @@ private:
         // [D],<S>
         typedef std::map<std::string,std::vector<std::string> > InheritanceMap;
         InheritanceMap inherit_;
+
+        // some code generation only needs to be done for the top-level module only.
+        // we need to remember which one it is.
+        std::string topModule_;
 
         OutputType outputType_;
     };

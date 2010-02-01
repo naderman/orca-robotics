@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alex Makarenko
  *
@@ -15,7 +15,6 @@
 #include <gbxsickacfr/gbxiceutilacfr/safethread.h>
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <orcaice/context.h>
-#include <IceUtil/Time.h>
 
 namespace orcaicegrid
 {
@@ -42,17 +41,17 @@ public:
     //!
     //! The session will automatically register these observers the next time
     //! (and every time) session is created. Pass an null proxy in place
-    //! of an observer which you don't want to register. 
+    //! of an observer which you don't want to register.
     IceGridSession( const orcaice::Context& context,
-        const IceGrid::RegistryObserverPrx&     reg =IceGrid::RegistryObserverPrx(), 
-        const IceGrid::NodeObserverPrx&         node=IceGrid::NodeObserverPrx(), 
-        const IceGrid::ApplicationObserverPrx&  app=IceGrid::ApplicationObserverPrx(), 
-        const IceGrid::AdapterObserverPrx&      adpt=IceGrid::AdapterObserverPrx(), 
+        const IceGrid::RegistryObserverPrx&     reg =IceGrid::RegistryObserverPrx(),
+        const IceGrid::NodeObserverPrx&         node=IceGrid::NodeObserverPrx(),
+        const IceGrid::ApplicationObserverPrx&  app=IceGrid::ApplicationObserverPrx(),
+        const IceGrid::AdapterObserverPrx&      adpt=IceGrid::AdapterObserverPrx(),
         const IceGrid::ObjectObserverPrx&       obj=IceGrid::ObjectObserverPrx() );
 
     ~IceGridSession() {};
 
-    //! State of the Session 
+    //! State of the Session
     enum SessionState
     {
         //! Disconnected
@@ -71,14 +70,14 @@ public:
     //! Set the observer proxies that receive notifications when the state of the registry or nodes changes.
     //! Calls the corresponding method of the Admin session. Catches the ObserverAlreadyRegisteredException
     //! exception.
-    //! If the session has already been created, the observers are registered with the session. If the 
+    //! If the session has already been created, the observers are registered with the session. If the
     //! session does not exist, local variables are set and registration will happen the next time
     //! the session is created.
-    void setObservers( 
-        const IceGrid::RegistryObserverPrx&     reg =IceGrid::RegistryObserverPrx(), 
-        const IceGrid::NodeObserverPrx&         node=IceGrid::NodeObserverPrx(), 
-        const IceGrid::ApplicationObserverPrx&  app=IceGrid::ApplicationObserverPrx(), 
-        const IceGrid::AdapterObserverPrx&      adpt=IceGrid::AdapterObserverPrx(), 
+    void setObservers(
+        const IceGrid::RegistryObserverPrx&     reg =IceGrid::RegistryObserverPrx(),
+        const IceGrid::NodeObserverPrx&         node=IceGrid::NodeObserverPrx(),
+        const IceGrid::ApplicationObserverPrx&  app=IceGrid::ApplicationObserverPrx(),
+        const IceGrid::AdapterObserverPrx&      adpt=IceGrid::AdapterObserverPrx(),
         const IceGrid::ObjectObserverPrx&       obj=IceGrid::ObjectObserverPrx() );
 
     //! Reimplement this to perform custom action right after a new session is created.
@@ -96,7 +95,6 @@ public:
 
 protected:
     IceGrid::AdminSessionPrx session_;
-//     IceUtil::Mutex   sessionMutex_;
 
     bool tryCreateSession();
 
@@ -104,7 +102,6 @@ private:
 
     gbxiceutilacfr::Store<SessionState> stateStore_;
     int timeoutSec_;
-    IceUtil::Time lastKeepaliveTime_;
 
     IceGrid::RegistryObserverPrx     registryObserverPrx_;
     IceGrid::NodeObserverPrx         nodeObserverPrx_;

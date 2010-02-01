@@ -1,13 +1,13 @@
-#ifndef PROPSERVER_PROPERTYDB_H
-#define PROPSERVER_PROPERTYDB_H
+#ifndef HYDROPROPERTYDB_PROPERTYDB_H
+#define HYDROPROPERTYDB_PROPERTYDB_H
 
 #include <string>
 #include <map>
 
-namespace propserver {
+namespace hydropropertydb {
 
 //
-// @brief Property Database
+// @brief A simplistic database of properties: key-value pairs.
 //
 // @author Alex Brooks
 //

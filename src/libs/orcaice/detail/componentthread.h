@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
@@ -14,6 +14,11 @@
 #include <gbxsickacfr/gbxiceutilacfr/safethread.h>
 #include <orcaice/context.h>
 #include <orcaice/component.h> // for ComponentAdapterActivationPolicy
+#include <Glacier2/Session.h>
+
+namespace gbxiceutilacfr {
+    class Timer;
+}
 
 namespace orcaice {
 namespace detail {
@@ -28,17 +33,22 @@ namespace detail {
 class ComponentThread : public gbxiceutilacfr::SafeThread
 {
 
-public: 
+public:
 
     ComponentThread( ComponentAdapterActivationPolicy adapterPolicy,
                      const orcaice::Context& context );
 
-private: 
+private:
 
     virtual void walk();
 
     // Returns: true = success
     bool tryRegisterHome();
+    void tryKeepRouterSessionAlive();
+
+    Glacier2::SessionPrx routerSession_;
+    int sessionTimeoutSec_;
+    gbxiceutilacfr::Timer* keepAliveTimer_;
 
     ComponentAdapterActivationPolicy adapterPolicy_;
     orcaice::Context context_;

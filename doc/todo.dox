@@ -104,6 +104,18 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - feature: add a mechanism to ping admin interfaces (alexm)
   - do general cleanup
 
+@section orca_doc_history_new Post 9.11 changes, to be merged in after sync.
+
+- libHydroColourText
+  - added options to colourtest to render a subset of all color combinations.
+
+- slice2orca
+  - fixed bug related to nested namespace definitions
+  - exceptions are no longer thrown when a null pointer to a class object are encountered in the following cases:
+    - toString(): "null pointer" is returned.
+    - zeroAndClear(): a null pointer is ignored.
+    - toLogStream(): still throws.
+
 @section orca_doc_history_head Changes in SVN since Last Release
 
 @par Project wide
@@ -389,6 +401,10 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
 
 - libOrcaCompModel
   -Registry information is now sorted alphabetically.
+
+@par Removed
+
+- SystemTracerMon
 
 @section orca_doc_history_2130 Changes in Release 2.13.0
 

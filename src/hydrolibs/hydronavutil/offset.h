@@ -7,8 +7,8 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef ORCA_NAV_UTIL_OFFSET__H
-#define ORCA_NAV_UTIL_OFFSET__H
+#ifndef HYDRONAVUTIL_OFFSET__H
+#define HYDRONAVUTIL_OFFSET__H
 
 #include <iostream>
 #include <gbxutilacfr/mathdefs.h>

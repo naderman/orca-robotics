@@ -78,13 +78,19 @@ public:
     
     void loadUserPath(hydroqguipath::GuiPath &guiPath);
     void loadPreviousUserPath(hydroqguipath::GuiPath &guiPath);
-    
+
+//     void waypointModeToggled(bool);
+
+signals:
+    void pathSent();
+    void pathCanceled();    
     
 public slots:
     void savePath();
     void savePathAs();
     void waypointSettingsDialog();
     void waypointModeToggled(bool);
+    void switchTableView(int);
 
     void send();
     void cancel();
@@ -93,6 +99,8 @@ public slots:
     void go();
     void stop();
     void toggleEnabled();
+
+    void waypointModeToggled(bool checked, bool tableView );
 
 private:
 

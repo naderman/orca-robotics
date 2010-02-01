@@ -115,4 +115,14 @@ PathFollowerInput::cancelPath()
     pathUI_->cancel(); 
 }
 
+void 
+PathFollowerInput::switchTableView( bool onOff )
+{
+    if (onOff==true)
+        pathDesignTableWidget_->show();
+    else
+        pathDesignTableWidget_->hide();
+         
+}
+
 }

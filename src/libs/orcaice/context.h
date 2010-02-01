@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
@@ -40,8 +40,8 @@ class Component;
  *  hardware handlers from the class derived from Component.
  *
  *  A note on thread safety. None of access functions are thread-safe. However, all
- *  object which are referenced (with pointers and smart pointers) are themselves thread-safe. 
- *  
+ *  object which are referenced (with pointers and smart pointers) are themselves thread-safe.
+ *
  *  This means that once a copy of of Context is created, it is safe to use it from different threads.
  *  Pass context by const reference and store a copy, e.g. a class definition would look like this:
 @verbatim
@@ -97,8 +97,17 @@ public:
 
 
     //! Actiates server functionality of the component. This function is useful when component activation
-    //! (technically Ice::ObjectAdapter activation) must be delayed until after something is 
+    //! (technically Ice::ObjectAdapter activation) must be delayed until after something is
     //! initialized in the child thread.
+    //!
+    //! Activation makes provided interfaces accessible from the outside world.
+    //! It also tries to register the adapter with the IceGrid Registry.
+    //! If the registry is unreachable, the adapter is not fully activated.
+    //!
+    //! An Orca configuration property Orca.Component.RequireRegistry determines what happens if the Registry
+    //! is not available. If RequireRegistry=1 (default) and the registry is unreachable,
+    //! an orcaice::NetworkException is thrown. In this case it is safe to call activate again later,
+    //! hoping that the regisry will become reachable. If RequireRegistry=0 no exception is thrown.
     //!
     //! It is safe to call this function multiple times (activating an active adapter has no effect, sees
     //! Ice Manual sec. 32.4.5 Adapter States).

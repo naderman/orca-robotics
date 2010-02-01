@@ -4,7 +4,7 @@ set( COMP_NAMESPACE propserver )
 set( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 
-set( dep_libs OrcaIfaceImpl OrcaIfaceUtil )
+set( dep_libs OrcaIfaceImpl OrcaIfaceUtil HydroPropertyDb )
 GBX_REQUIRE_LIBS( build EXE ${APP_NAME} ${dep_libs} )
 
 if( build)

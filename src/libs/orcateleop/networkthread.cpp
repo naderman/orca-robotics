@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
@@ -31,12 +31,12 @@ NetworkThread::NetworkThread( Display* display, const orcaice::Context& context 
     events_->setOptimizer( opt );
 }
 
-void 
+void
 NetworkThread::newMixedCommand( const hydrointerfaces::HumanInput2d::Command& command )
 {
 //     cout<<"DEBUG: NetworkThread::newMixedCommand: "<<command.toString()<<endl;
-    
-    hydroiceutil::EventPtr e = new MixedCommandEvent( 
+
+    hydroiceutil::EventPtr e = new MixedCommandEvent(
         command.longitudinal, command.isLongIncrement,
         command.transverse, command.isTransverseIncrement,
         command.angular, command.isAngularIncrement );
@@ -46,7 +46,7 @@ NetworkThread::newMixedCommand( const hydrointerfaces::HumanInput2d::Command& co
 //         cout<<endl<<"DEBUG: NetworkThread::newMixedCommand: events stack size = "<<events_->size()<<endl;
 }
 
-void 
+void
 NetworkThread::newIncrementCommand( int longitudinal, int transverse, int angle )
 {
 // cout<<"DEBUG: got command increment : "<<longitudinal<<" "<<transverse<<" "<<angle<<endl;
@@ -54,7 +54,7 @@ NetworkThread::newIncrementCommand( int longitudinal, int transverse, int angle 
     events_->optimizedAdd( e );
 }
 
-void 
+void
 NetworkThread::newRelativeCommand( double longitudinal, double transverse, double angle )
 {
 // cout<<"DEBUG: got relative command : "<<longitudinal<<"% "<<transverse<<"% "<<angle<<"%"<<endl;
@@ -65,13 +65,6 @@ NetworkThread::newRelativeCommand( double longitudinal, double transverse, doubl
 void
 NetworkThread::walk()
 {
-    // The only provided interfaces are the 2 standard ones: Home and Status.
-    // We can just skip this activation step and they will not be visible on
-    // on the network (if network traffic is an issue, for example).
-    //
-    // multi-try function
-    orcaice::activate( context_, this );
-
     //
     // Read settings
     //
@@ -94,10 +87,10 @@ NetworkThread::walk()
     }
     else {
         string errorStr = "Unsupported interface ID="+ifaceId;
-        context_.tracer().error( errorStr); 
+        context_.tracer().error( errorStr);
         context_.tracer().info( "Valid driver values are {'VelocityControl2d', 'DriveBicycle'}" );
         throw gbxutilacfr::Exception( ERROR_INFO, errorStr );
-    }    
+    }
 
     // don't forget to enable the driver, but check isStopping() to see if we should quit
     while ( driver_->enable() && !isStopping() ) {
@@ -112,7 +105,7 @@ NetworkThread::walk()
     context_.tracer().debug("Network driver enabled",2);
 
 
-    hydroiceutil::EventPtr event;    
+    hydroiceutil::EventPtr event;
     int timeoutMs = (int)floor(1000.0 * orcaice::getPropertyAsDoubleWithDefault(
             context_.properties(), prefix+"RepeatInterval", 0.2 ) );
     //
@@ -133,26 +126,26 @@ NetworkThread::walk()
             MixedCommandEventPtr e = MixedCommandEventPtr::dynamicCast( event );
             if ( !e ) break;
 
-            driver_->processMixedCommand( 
-                e->longitudinal, e->isLongIncrement, 
+            driver_->processMixedCommand(
+                e->longitudinal, e->isLongIncrement,
                 e->transverse, e->isTransverseIncrement,
                 e->angular, e->isAngularIncrement );
             break;
-        }        
+        }
         case IncrementCommand : {
             //cout<<"focus changed event"<<endl;
             IncrementCommandEventPtr e = IncrementCommandEventPtr::dynamicCast( event );
             if ( !e ) break;
             driver_->processIncrementCommand( e->longitudinal, e->transverse, e->angular );
             break;
-        }        
+        }
         case RelativeCommand : {
             //cout<<"focus changed event"<<endl;
             RelativeCommandEventPtr e = RelativeCommandEventPtr::dynamicCast( event );
             if ( !e ) break;
             driver_->processRelativeCommand( e->longitudinal, e->transverse, e->angular );
             break;
-        }        
+        }
         default : {
             cout<<"unknown network event "<<event->type()<<". Ignoring..."<<endl;
             break;

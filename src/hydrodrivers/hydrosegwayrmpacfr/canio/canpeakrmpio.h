@@ -35,7 +35,7 @@ class CanPeakRmpIo : public RmpIo, public hydroutil::Uncopyable
     
 public:
     // There should only be one instance of this class
-    CanPeakRmpIo( const std::string & portName );
+    CanPeakRmpIo( const std::string &portName );
     ~CanPeakRmpIo();
     
     // from RmpIo
@@ -49,13 +49,11 @@ private:
     bool isEnabled_;
     int debugLevel_;
 
-    // Private methods to swap between the data representation for the PCMCIA card and
-    // that used by the rest of the segwayrmp driver code....
-    void convertCanPacketToPeak(TPCANMsg *peakCanOut, const CanPacket *pktIn);
-    void convertPeakToCanPacket(CanPacket *pktOut, const TPCANMsg *peakCanIn);
+//     // Private methods to swap between the data representation for the PCMCIA card and
+//     // that used by the rest of the segwayrmp driver code....
+//     void convertCanPacketToPeak(TPCANMsg *peakCanOut, const CanPacket *pktIn);
+//     void convertPeakToCanPacket(CanPacket *pktOut, const TPCANMsg *peakCanIn);
 
-    // String representation of the peak can card error
-    std::string peakStatusToString(DWORD status);
     gbxiceutilacfr::Timer writeTimer_;
     
 }; // end of class declaration

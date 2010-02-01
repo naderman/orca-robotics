@@ -23,6 +23,7 @@ add_subdirectory( hydromapload ) # requires hydroogmap
 add_subdirectory( hydronavutil )
 add_subdirectory( hydrorobotdriverutil )
 add_subdirectory( hydropathplan )
+add_subdirectory( hydropropertydb )
 add_subdirectory( hydropublish )
 add_subdirectory( hydrotime )
 add_subdirectory( hydroscanutil ) # requires hydronavutil

@@ -25,10 +25,50 @@
 #include <hydrointerfaces/segwayrmp.h> // for Exception
 #include <gbxutilacfr/exceptions.h>
 #include "canpeakrmpio.h"
+#include "peakutil.h"
 
 using namespace std;
 using namespace segwayrmpacfr;
 
+namespace {
+
+//***********************************************************************
+void 
+convertCanPacketToPeak(TPCANMsg *peakCanOut, const CanPacket *pktIn ){
+
+    peakCanOut->ID      =  pktIn->id();
+    peakCanOut->LEN     =  CanPacket::CAN_DATA_SIZE;
+    memcpy(peakCanOut->DATA, pktIn->msg(), CanPacket::CAN_DATA_SIZE * sizeof(BYTE));
+
+    // Use the peak driver definition for a standard (not extended type message)
+    // Note that this does not match that used in the FDTI library (see below)
+    peakCanOut->MSGTYPE =  MSGTYPE_STANDARD; 
+}
+
+//***********************************************************************
+void 
+convertPeakToCanPacket(CanPacket *pktOut, const TPCANMsg *peakCanIn )
+{
+    pktOut->setId( peakCanIn->ID );
+    assert( peakCanIn->LEN == CanPacket::CAN_DATA_SIZE );
+    memcpy(pktOut->msg(), peakCanIn->DATA, CanPacket::CAN_DATA_SIZE * sizeof(BYTE));
+
+    // NOTE:- We do not change the value in the flags field. It seems the 
+    // different drivers peak / FDTI etc have different definitions of how a standard
+    // (not extended) can message is denoted.
+    
+    /* These two never need to change and are set in the default constructor for CanPacket
+      pktOut -> flags   =  pktOut -> flags; 
+      pktOut -> dlc     =  CAN_DATA_SIZE;
+    */
+
+}
+
+//*****************************************************************************
+
+}
+
+//////////////////////////////////////////////////////////////////////
 
 //**************************************************************
 // Take the name of the port and attempt to open it, throws an
@@ -44,7 +84,7 @@ CanPeakRmpIo::CanPeakRmpIo(const string & portName):
     {
         stringstream ss;
         ss << "CanPeakRmpIo::constructor(): Error: "<<
-            "Unable to open the can port-> " << portName << endl;
+            "Unable to open the can port '" << portName << "': "<<strerror(nGetLastError()) << endl;
 // AlexB: I don't understand why, but a
 // hydrointerfaces::SegwayRmp::Exception appears to result in a
 // seg-fault
@@ -73,8 +113,7 @@ CanPeakRmpIo::~CanPeakRmpIo()
             retVal = CAN_Close(portHandle_);  // close access to the CAN port
             if(retVal != 0 ){
                 ss << "CanPeakRmpIo::destructor(): Error: "<<
-                    "Unable to close can port. " << peakStatusToString(retVal) << endl;
-//                throw hydrointerfaces::SegwayRmp::Exception(ss.str());
+                    "Unable to close can port: " << errorInfo(retVal);
                 throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
             }
             portHandle_ = NULL;      // clear the port handle
@@ -84,7 +123,7 @@ CanPeakRmpIo::~CanPeakRmpIo()
     catch ( std::exception &e )
     {
         // Don't throw exceptions from destructor
-        cout << e.what();
+        cout << e.what() << endl;
     }
 }
 
@@ -103,26 +142,28 @@ CanPeakRmpIo::readPacket(CanPacket &pkt){
 
     assert ( isEnabled_ );
 
-    RmpIo::RmpIoStatus status = NO_DATA;
-
     // Using data structs from pcan.h
     TPCANRdMsg canDataReceived;
      
     // Call the peak library code
     DWORD retVal = LINUX_CAN_Read_Timeout(portHandle_, &canDataReceived, timeOutMicroSeconds ); 
 
-    if ( retVal == 0 ){
+    if ( retVal == 0 )
+    {
+        if ( canDataReceived.Msg.MSGTYPE != MSGTYPE_STANDARD )
+        {
+            cout<<"TRACE(canpeakrmpio.cpp): Ignoring special message: " << toString(canDataReceived) << endl;
+            return NO_DATA;
+        }
         convertPeakToCanPacket(&pkt, &canDataReceived.Msg);
-        status = OK;
-    }else{        
-        if( debugLevel_ > 0){ 
-            cout << "peakcandriver::readPacket(): Data Rx timed out, call returned "
-                 << peakStatusToString(retVal) << endl;
-        }  
-        status = NO_DATA;
+        return OK;
     }
-  
-    return status;
+    else
+    {
+//      if( debugLevel_ > 0)
+        cout << __func__ << ": LINUX_CAN_Read_Timeout failed (t="<<timeOutMicroSeconds<<"us). "<<errorInfo(retVal)<<endl;
+        return NO_DATA;
+    }
 }
 
 
@@ -158,8 +199,7 @@ void CanPeakRmpIo::writePacket(const CanPacket &pktToSend){
     if( retVal != 0){
         // The send data failed!
         stringstream ss;
-        ss << endl << " --> Attempted write data to CAN card failed: Call Returned "<< 
-            peakStatusToString(retVal) << endl;
+        ss << "LINUX_CAN_Write_Timeout failed.  " << errorInfo(retVal);
         throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 
@@ -177,15 +217,8 @@ CanPeakRmpIo::enable(int debugLevel){
         std::cout << "TRACE(peakcandriver.cpp): enable()" << endl;
     }
 
-    // get version info from the driver
-    char textString[VERSIONSTRING_LEN];
-    if ( CAN_VersionInfo(portHandle_,textString) == 0 ){
-	    if(debugLevel_ > 0)
-	    	{std::cout << "Using Peak can driver:- version = " << textString << endl ;}
-    }else{
-		std::cout << "Peak can driver: failed to get version info\n";
-	}
-
+    // Get the version
+    cout << __func__ << ": version: " << versionString(portHandle_) << endl;
 
     // Force the default initialisation state of the CAN card. This should happen anyway
     // But let's be explicit about it. We are set to 500K baud and extended can message type...
@@ -195,8 +228,7 @@ CanPeakRmpIo::enable(int debugLevel){
     
     if( retVal != 0 ){
         stringstream ss;
-        ss << endl << " --> Attempted initialisation of the CAN card failed: Error Returned " << 
-            peakStatusToString(retVal )<< endl;
+        ss << endl << " --> Attempted initialisation of the CAN card failed: " << errorInfo(retVal) << endl;
         throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );      
     }
 
@@ -204,7 +236,6 @@ CanPeakRmpIo::enable(int debugLevel){
     // Potentially we could call the CAN_MsgFilter() from libpcan here to filter out some
     // of the un-needed packets (ie heartbeat messages) at a low level. However I haven't
     // been able to get this to work!
-   
     isEnabled_ = true; 
 
 }
@@ -214,89 +245,15 @@ CanPeakRmpIo::enable(int debugLevel){
 //************************************************************************
 // This function is just a place holder, and does very little 
 void 
-CanPeakRmpIo::disable(void){
-    DWORD retVal=0;
-
-    if(debugLevel_ > 0)
-    {
-        retVal = CAN_Status(portHandle_);
-        cout << "TRACE(peakcandriver.cpp): disable() CAN Status:- " <<
-           peakStatusToString(retVal) << endl;
-    }
+CanPeakRmpIo::disable(void)
+{
+//     DWORD retVal=0;
+//     if(debugLevel_ > 0)
+//     {
+//         retVal = CAN_Status(portHandle_);
+//         cout << "TRACE(peakcandriver.cpp): disable() CAN Status:- " <<
+//            peakStatusToString(retVal) << endl;
+//     }
     
     isEnabled_ = false;
-}
-
-
-
-//***********************************************************************
-void 
-CanPeakRmpIo::convertCanPacketToPeak(TPCANMsg *peakCanOut, const CanPacket *pktIn ){
-
-    peakCanOut->ID      =  pktIn->id();
-    peakCanOut->LEN     =  CanPacket::CAN_DATA_SIZE;
-    memcpy(peakCanOut->DATA, pktIn->msg(), CanPacket::CAN_DATA_SIZE * sizeof(BYTE));
-
-    // Use the peak driver definition for a standard (not extended type message)
-    // Note that this does not match that used in the FDTI library (see below)
-    peakCanOut->MSGTYPE =  MSGTYPE_STANDARD; 
-}
-
-//***********************************************************************
-void 
-CanPeakRmpIo::convertPeakToCanPacket(CanPacket *pktOut, const TPCANMsg *peakCanIn ){
-
-    pktOut->setId( peakCanIn->ID );
-    memcpy(pktOut->msg(), peakCanIn->DATA, CanPacket::CAN_DATA_SIZE * sizeof(BYTE));
-
-    // NOTE:- We do not change the value in the flags field. It seems the 
-    // different drivers peak / FDTI etc have different definitions of how a standard
-    // (not extended) can message is denoted.
-    
-    /* These two never need to change and are set in the default constructor for CanPacket
-      pktOut -> flags   =  pktOut -> flags; 
-      pktOut -> dlc     =  CAN_DATA_SIZE;
-    */
-
-}
-
-//*****************************************************************************
-
-std::string 
-CanPeakRmpIo::peakStatusToString (DWORD status){
-    switch (status){
-    case CAN_ERR_OK: 
-        return "CAN_ERR_OK";        // no error
-    case CAN_ERR_XMTFULL:
-        return "CAN_ERR_XMTFULL";   // transmit buffer full
-    case CAN_ERR_OVERRUN:
-        return "CAN_ERR_OVERRUN";   // overrun in receive buffer
-    case CAN_ERR_BUSLIGHT:
-        return "CAN_ERR_BUSLIGHT";  // bus error, errorcounter limit reached
-    case CAN_ERR_BUSHEAVY:
-        return "CAN_ERR_BUSHEAVY";  // bus error, errorcounter limit reached
-    case CAN_ERR_BUSOFF:
-        return "CAN_ERR_BUSOFF";    // bus error, 'bus off' state entered
-    case CAN_ERR_QRCVEMPTY:
-        return "CAN_ERR_QRCVEMPTY";  // receive queue is empty
-    case CAN_ERR_QOVERRUN:
-        return " CAN_ERR_QOVERRUN:"; // receive queue overrun
-    case CAN_ERR_QXMTFULL:
-        return "CAN_ERR_QXMTFULL";   // transmit queue full 
-    case CAN_ERR_REGTEST:
-        return "CAN_ERR_REGTEST";    // test of controller registers failed
-    case CAN_ERR_NOVXD:
-        return "CAN_ERR_NOVXD";       // Win95/98/ME only
-    case CAN_ERR_RESOURCE:
-        return "CAN_ERR_RESOURCE";      // can't create resource
-    case CAN_ERR_ILLPARAMTYPE:
-        return "CAN_ERR_ILLPARAMTYPE";  // illegal parameter
-    case CAN_ERR_ILLPARAMVAL:         
-        return "CAN_ERR_ILLPARAMVAL";   // value out of range
-    case CAN_ERRMASK_ILLHANDLE:
-        return "CAN_ERRMASK_ILLHANDLE"; // wrong handle, handle error
-    default:
-        return "CAN status unknown!";
-    }
-
 }

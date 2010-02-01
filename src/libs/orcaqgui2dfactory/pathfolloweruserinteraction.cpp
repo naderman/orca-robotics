@@ -127,6 +127,14 @@ void PathFollowerUserInteraction::waypointSettingsDialog()
 }
 
 void
+PathFollowerUserInteraction::waypointModeToggled(bool checked, bool tableView )
+{
+    waypointModeToggled( checked );
+    if ( pathInput_.get() )
+        pathInput_->switchTableView( tableView );
+}
+
+void
 PathFollowerUserInteraction::waypointModeToggled(bool checked)
 {
     
@@ -221,6 +229,8 @@ PathFollowerUserInteraction::send()
     
     pfElement_->sendPath( pathInput_.get(), readActivateImmediately(context_.properties(), context_.tag()) );
     
+    emit pathSent();
+
     cancel();
 }
 
@@ -228,6 +238,7 @@ void
 PathFollowerUserInteraction::cancel()
 {
     noLongerMouseEventReceiver();
+    emit pathCanceled();
 }
 
 void 
@@ -341,6 +352,17 @@ void
 PathFollowerUserInteraction::loadPreviousUserPath( hydroqguipath::GuiPath &guiPath )
 {
     userPathFileHandler_->loadPreviousPath( guiPath );
+}
+
+void 
+PathFollowerUserInteraction::switchTableView(int state)
+{
+   if ( !pathInput_.get() ) return;
+
+    if (state>0)
+        pathInput_->switchTableView( true );
+    else
+        pathInput_->switchTableView( false );
 }
 
 }

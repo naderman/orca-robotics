@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
@@ -7,7 +7,7 @@
  * the LICENSE file included in this distribution.
  *
  */
- 
+
 #include <string>
 #include <orca/common.h>
 #include <orcaice/orcaice.h>
@@ -28,8 +28,9 @@ using namespace std;
 
 namespace orcaice {
 
-Component::Component( const std::string& tag, ComponentInterfaceFlag interfaceFlag,
-               ComponentAdapterActivationPolicy adapterPolicy ) :
+Component::Component( const std::string& tag,
+                      ComponentInterfaceFlag interfaceFlag,
+                      ComponentAdapterActivationPolicy adapterPolicy ) :
     interfaceFlag_(interfaceFlag),
     adapterPolicy_(adapterPolicy)
 {
@@ -40,7 +41,7 @@ Component::Component( const std::string& tag, ComponentInterfaceFlag interfaceFl
 // IMPORTANT! This destructor must be here (in the .cpp file)
 // Otherwise, the destructors of the forward-declared types will not be called.
 //
-Component::~Component() 
+Component::~Component()
 {
 }
 
@@ -114,7 +115,7 @@ Component::init( const orca::FQComponentName& name,
         status_->initInterface();
         initTracerInfo( context_.tag() + ": Status interface initialized." );
     }
-        
+
     if ( props->getPropertyAsInt( "Orca.Component.EnableHome" ) ) {
         home_->initInterface();
         initTracerInfo( context_.tag() + ": Home interface initialized." );

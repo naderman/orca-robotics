@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
@@ -26,7 +26,7 @@ namespace detail
     class TracerImpl;
 }
 
-/*! 
+/*!
 This enum type is used to describe which standard interfaces the component
 will provide.
 
@@ -35,7 +35,7 @@ Flags can be combined. For example to initialize Home and Status but not Tracer.
 orcaice::ComponentInterfaceFlag flag = orcaice::HomeInterface | orcaice::StatusInterface;
 @endverbatim
 */
-enum ComponentInterfaceFlag 
+enum ComponentInterfaceFlag
 {
     //! No standard interfaces
     NoStandardInterfaces    = 0x000,
@@ -49,7 +49,7 @@ enum ComponentInterfaceFlag
     AllStandardInterfaces   = HomeInterface | StatusInterface | TracerInterface
 };
 
-/*! 
+/*!
 This enum type is used to describe the policy of activating the component's adapter.
 */
 enum ComponentAdapterActivationPolicy
@@ -70,11 +70,11 @@ enum ComponentAdapterActivationPolicy
 //! must be implemented: start and stop.
 //!
 //! Most of the state of the component is summarized in its
-//! Component::context. The information is read-only because it is set 
+//! Component::context. The information is read-only because it is set
 //! prior to the component's initialization.
 //!
 //! @par Component Initialisation
-//! 
+//!
 //!   Component initialisation code can be put in two places:
 //!
 //!   1. Component Constructor
@@ -82,7 +82,7 @@ enum ComponentAdapterActivationPolicy
 //!      - In the constructor, none of the orcaice machinery is initialised.  This
 //!        means that no remote calls can be made (the communicator isn't initialised yet),
 //!        and the tracer isn't available yet.
-//!      - Any code that should be executed before any remote calls are made belongs in 
+//!      - Any code that should be executed before any remote calls are made belongs in
 //!        the Component constructor.
 //!
 //!   2. Component::start()
@@ -118,7 +118,7 @@ friend class Application;
 friend class Service;
 
 public:
-/*! 
+/*!
 Takes the text tag with which to identify it in the config files. The @e flag
 specifies what standard interfaces to initialize. It is also possible to configure
 standard interfaces with the following configuration parameters.
@@ -130,7 +130,7 @@ Orca.Component.EnableHome
 
 Inside this contructor the component context is not initialized yet and cannot be used.
 */
-    Component( const std::string& tag, 
+    Component( const std::string& tag,
                ComponentInterfaceFlag flag=AllStandardInterfaces,
                ComponentAdapterActivationPolicy adapterPolicy=AdapterAutoActivation );
     virtual ~Component();
@@ -150,10 +150,10 @@ Inside this contructor the component context is not initialized yet and cannot b
     //! command line option.
     virtual const std::string help( const std::string& executable ) const;
 
-    /*! This function is called by Application on startup (including when the executable is 
+    /*! This function is called by Application on startup (including when the executable is
     //! called with @c --version command line option). Standard Orca components return an
     //! empty string. Component from external project may reimplement this function to supply
-    //! the project version, which is probably different from the Orca version. 
+    //! the project version, which is probably different from the Orca version.
     //! Example:
 @verbatim
 virtual const std::string version() const { return std::string(PROJECT_VERSION); };
@@ -164,24 +164,13 @@ virtual const std::string version() const { return std::string(PROJECT_VERSION);
 
 protected:
 
-    //! Activates the component's adapter.
-    //! Activation makes provided interfaces accessible from the outside world.
-    //! It also tries to register the adapter with the IceGrid Registry. 
-    //! If the registry is unreachable, the adapter is not fully activated.
-    //!
-    //! An Orca configuration property Orca.Component.RequireRegistry determines what happens if the Registry
-    //! is not available. If RequireRegistry=1 (default) and the registry is unreachable,
-    //! an orcaice::NetworkException is thrown. In this case it is safe to call activate again later, 
-    //! hoping that the regisry will become reachable. If RequireRegistry=0 no exception is thrown.
-    void activate() { context_.activate(); };
-
     //! Component's "context", which contains component's naming and networking information.
     //! It can be used directly or passed to threads and classes. For example:
     //! @verbatim
     //!context().tracer().info("Everything is OK");
     //!MainLoop myloop( context() );
     //! @endverbatim
-    const Context& context() const { return context_; };
+    Context& context() { return context_; };
 
 private:
 

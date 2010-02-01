@@ -14,7 +14,7 @@
 #include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
 #include <orcaifaceimpl/properties.h>
-#include "propertydb.h"
+#include <hydropropertydb/propertydb.h>
 
 namespace propserver {
 
@@ -41,7 +41,7 @@ private:
     orcaifaceimpl::PropertiesImplPtr propertiesInterface_;
 
     // The database of properties
-    PropertyDb propertyDb_;
+    hydropropertydb::PropertyDb propertyDb_;
 
     // Where we load/save our properties
     std::string persistanceFile_;

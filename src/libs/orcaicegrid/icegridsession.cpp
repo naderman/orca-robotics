@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks
  *
@@ -13,16 +13,17 @@
 
 #include "icegridsession.h"
 #include <orcaice/orcaice.h>
+#include <gbxsickacfr/gbxiceutilacfr/timer.h>
 
 using namespace std;
 
 namespace orcaicegrid {
 
 IceGridSession::IceGridSession( const orcaice::Context &context,
-        const IceGrid::RegistryObserverPrx& reg, 
-        const IceGrid::NodeObserverPrx& node, 
-        const IceGrid::ApplicationObserverPrx& app, 
-        const IceGrid::AdapterObserverPrx& adpt, 
+        const IceGrid::RegistryObserverPrx& reg,
+        const IceGrid::NodeObserverPrx& node,
+        const IceGrid::ApplicationObserverPrx& app,
+        const IceGrid::AdapterObserverPrx& adpt,
         const IceGrid::ObjectObserverPrx& obj ) :
     SafeThread(context.tracer()),
     timeoutSec_(0),
@@ -31,7 +32,7 @@ IceGridSession::IceGridSession( const orcaice::Context &context,
     applicationObserverPrx_(app),
     adapterObserverPrx_(adpt),
     objectObserverPrx_(obj),
-    context_(context)     
+    context_(context)
 {
     stateStore_.set(Disconnected);
 }
@@ -44,11 +45,11 @@ IceGridSession::tryCreateSession()
     // config file parameters
     Ice::PropertiesPtr props = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
-   
-    std::string instanceName = context_.properties()->getPropertyWithDefault( 
+
+    std::string instanceName = context_.properties()->getPropertyWithDefault(
             prefix+"IceGrid.InstanceName", "IceGrid" );
     IceGrid::RegistryPrx registry;
-    
+
     //
     // connect to the Registry
     //
@@ -56,7 +57,7 @@ IceGridSession::tryCreateSession()
     try {
         string regName = instanceName+"/Registry";
         registry = IceGrid::RegistryPrx::checkedCast( context_.communicator()->stringToProxy(regName) );
-        
+
         if( !registry )
         {
             context_.tracer().error( "IceGridSession: Could not contact registry" );
@@ -83,7 +84,7 @@ IceGridSession::tryCreateSession()
         context_.tracer().error( exceptionSS.str() );
         return false;
     }
-            
+
     //
     // create Session
     //
@@ -118,8 +119,6 @@ IceGridSession::tryCreateSession()
 void
 IceGridSession::walk()
 {
-    bool sentKeepalive = false;
-
     // This outer loop is repeated on session failure.
     while( !isStopping() )
     {
@@ -129,7 +128,7 @@ IceGridSession::walk()
 
             while ( !isStopping() )
             {
-                if ( tryCreateSession() && connectedEvent() ) 
+                if ( tryCreateSession() && connectedEvent() )
                 {
                     //
                     // Connected!
@@ -143,45 +142,37 @@ IceGridSession::walk()
                 IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
             }
 
+            gbxiceutilacfr::Timer keepAliveTimer;
+
             // From now on, keep it alive
-            std::stringstream exceptionSS;
             while ( !isStopping() )
             {
                 gbxiceutilacfr::checkedSleep( this, IceUtil::Time::seconds( timeoutSec_/4 ), 1000 );
 
+                if ( keepAliveTimer.elapsedSec() > timeoutSec_ )
+                {
+                    stringstream ss;
+                    ss << "IceGridSession: Failed to send keepAlives quicker than timeout.  timeoutSec_="
+                        <<timeoutSec_<<", elapsed=" << keepAliveTimer.elapsedSec();
+                    context_.tracer().warning( ss.str() );
+                }
+                context_.tracer().debug( "IceGridSession: sending keepAlive()", 10 );
+
                 try
                 {
-                    // do we need this lock?
-//                     IceUtil::Mutex::Lock lock(mutex_);
-//                     double secSinceLastKeepalive = orcaice::timeDiffAsDouble( orcaice::getNow(), lastKeepaliveTime_ );
-                    double secSinceLastKeepalive = ( IceUtil::Time::now()-lastKeepaliveTime_ ).toSecondsDouble();
-                    if ( sentKeepalive && secSinceLastKeepalive > timeoutSec_ )
-                    {
-                        stringstream ss;
-                        ss << "IceGridSession: Failed to send keepAlives quicker than timeout.  timeoutSec_="
-                           <<timeoutSec_<<", secSinceLastKeepalive=" << secSinceLastKeepalive;
-                        context_.tracer().warning( ss.str() );
-                    }
-                    context_.tracer().debug( "IceGridSession: sending keepAlive()", 10 );
-
                     //
                     // remote call
                     //
                     session_->keepAlive();
 
-                    lastKeepaliveTime_ = IceUtil::Time::now(); //orcaice::getNow();
-                    sentKeepalive = true;
+                    keepAliveTimer.restart();
                 }
                 catch( const Ice::CommunicatorDestroyedException & ) {
                     // This is OK, we're shutting down.
                     break;
                 }
                 catch( const std::exception& e ) {
-                    exceptionSS<<"IceGridSession: Failed to keep session alive: "<<e.what();
-                }
-        
-                if ( !exceptionSS.str().empty() ) {
-                    context_.tracer().warning( exceptionSS.str() );
+                    context_.tracer().warning( "IceGridSession: Failed to keep session alive: "+string(e.what()) );
                     break;
                 }
             }
@@ -196,7 +187,7 @@ IceGridSession::walk()
         catch ( ... ) {
             context_.tracer().warning( "IceGridSession: caught unknown stray exception." );
         }
-        
+
         //
         // Lost it!
         //
@@ -222,7 +213,7 @@ IceGridSession::walk()
     disconnectedEvent();
 }
 
-IceGridSession::SessionState 
+IceGridSession::SessionState
 IceGridSession::getState()
 {
     SessionState state;
@@ -230,12 +221,12 @@ IceGridSession::getState()
     return state;
 }
 
-void 
-IceGridSession::setObservers( 
-        const IceGrid::RegistryObserverPrx& reg, 
-        const IceGrid::NodeObserverPrx& node, 
-        const IceGrid::ApplicationObserverPrx& app, 
-        const IceGrid::AdapterObserverPrx& adpt, 
+void
+IceGridSession::setObservers(
+        const IceGrid::RegistryObserverPrx& reg,
+        const IceGrid::NodeObserverPrx& node,
+        const IceGrid::ApplicationObserverPrx& app,
+        const IceGrid::AdapterObserverPrx& adpt,
         const IceGrid::ObjectObserverPrx& obj )
 {
     {
@@ -250,7 +241,7 @@ IceGridSession::setObservers(
     trySetObservers();
 }
 
-void 
+void
 IceGridSession::trySetObservers()
 {
     SessionState state;
@@ -265,8 +256,8 @@ IceGridSession::trySetObservers()
     {
         IceUtil::Mutex::Lock lock( observerMutex_ );
         // register observers if ANY of them are not NULL
-        int obsCount = (int)(registryObserverPrx_!=0) + (int)(nodeObserverPrx_!=0) 
-                     + (int)(applicationObserverPrx_!=0) + (int)(adapterObserverPrx_!=0) 
+        int obsCount = (int)(registryObserverPrx_!=0) + (int)(nodeObserverPrx_!=0)
+                     + (int)(applicationObserverPrx_!=0) + (int)(adapterObserverPrx_!=0)
                      + (int)(objectObserverPrx_!=0);
         if ( obsCount )
         {
@@ -284,7 +275,7 @@ IceGridSession::trySetObservers()
     }
 }
 
-std::string 
+std::string
 IceGridSession::toString( SessionState state )
 {
     switch ( state )

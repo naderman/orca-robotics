@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
@@ -22,7 +22,7 @@ namespace bicycle {
 
 namespace {
 
-void 
+void
 convert( const hydrointerfaces::Bicycle::Data& internal,
 	 double wheelbase,
 	 double referenceSpeed,
@@ -36,16 +36,16 @@ convert( const hydrointerfaces::Bicycle::Data& internal,
     odometry2dData.pose.p.x = internal.x;
     odometry2dData.pose.p.y = internal.y;
     odometry2dData.pose.o = internal.yaw;
-    
+
     odometry2dData.motion.v.x = internal.vlong * cos( internal.steerAngle );
     odometry2dData.motion.v.y = 0;
-    
+
     odometry2dData.motion.w =
 	internal.vlong * sin( internal.steerAngle ) /
 	(2.0 * M_PI * wheelbase );
 
     odometry2dData.odometryWasReset = false;
-    
+
     driveBicycleData.timeStamp.seconds = internal.seconds;
     driveBicycleData.timeStamp.useconds = internal.useconds;
 
@@ -55,7 +55,7 @@ convert( const hydrointerfaces::Bicycle::Data& internal,
     driveBicycleData.currentSpeed = internal.vlong;
 }
 
-void 
+void
 convert( const orca::DriveBicycleCommand& network, hydrointerfaces::Bicycle::Command& internal )
 {
     internal.vlong = network.speed;
@@ -88,16 +88,9 @@ NetThread::NetThread( HwThread                      &HwThread,
 	new orca::VehicleControlVelocityBicycleDescription(*controlDescr);
 }
 
-void 
+void
 NetThread::initialise()
 {
-    // multi-try function
-    context_.tracer().debug( "NetThread: activating..." );
-    orcaice::activate( context_, this );
-    // check for stop signal after retuning from multi-try
-    if ( isStopping() )
-        return;
-    
     // Initialise external interfaces, multi-try init functions
     odometry2dI_ = new orcaifaceimpl::Odometry2dImpl( descr_, "Odometry2d", context_ );
     odometry2dI_->initInterface( this );
@@ -120,7 +113,7 @@ NetThread::work()
     std::string prefix = context_.tag() + ".Config.";
 
     gbxiceutilacfr::Timer publishTimer;
-    double publishInterval = orcaice::getPropertyAsDoubleWithDefault( 
+    double publishInterval = orcaice::getPropertyAsDoubleWithDefault(
         context_.properties(), prefix+"Odometry2dPublishInterval", 0 );
 
     const int odometryReadTimeout = 500; // [ms]
@@ -162,7 +155,7 @@ NetThread::work()
             odometry2dI_->localSetAndSend( odometry2dData );
 	    driveBicycleI_->localSetAndSend( driveBicycleData );
             publishTimer.restart();
-        } 
+        }
         else {
             odometry2dI_->localSet( odometry2dData );
         }
@@ -202,7 +195,7 @@ NetThread::limit( hydrointerfaces::Bicycle::Command &cmd )
 // This is a direct callback from the DriveBicycleImpl object.
 // It's executed in Ice thread.
 // Here we convert to our internal format pass it to HwThread
-void 
+void
 NetThread::handleData(const orca::DriveBicycleCommand& command)
 {
     stringstream ss;

@@ -97,10 +97,10 @@ MainThread::initialise()
 
     for ( size_t i=0; i < powerbaseNames.size(); i++ )
     {
-        std::string stripPrefix = "";
+        std::string stripPrefix = prefix;
         if ( powerbaseNames.size() > 1 )
         {
-            stripPrefix = powerbaseNames[i]+".";
+            stripPrefix += powerbaseNames[i]+".";
         }
         std::auto_ptr<hydrointerfaces::SegwayRmp> hydroDriver( 
             driverFactory->createDriver( powerbaseNames[i], context_.toHydroContext(stripPrefix) ) );

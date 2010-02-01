@@ -61,8 +61,20 @@ namespace wifiutil {
     };
     
     //! Wireless data structure for data obtainable from /etc/proc
-    struct ProcData
-    {
+    struct ProcData {
+        ProcData()
+        : interfaceName(""), 
+          status(-1), 
+          linkQuality(-1), 
+          signalLevel(-1), 
+          noiseLevel(-1), 
+          numInvalidNwid(-1), 
+          numInvalidCrypt(-1), 
+          numInvalidFrag(-1),
+          numRetries(-1),
+          numInvalidMisc(-1),
+          numMissedBeacons(-1) 
+        {}
         std::string interfaceName;
         int status;
         int linkQuality;
@@ -98,6 +110,12 @@ namespace wifiutil {
     //! Wireless config data structure
     struct WirelessConfig
     {
+        WirelessConfig()
+        : interfaceName(""),
+          mode(OperationModeUnknown),
+          bitrate(-1),
+          accessPoint("") 
+        {}
         std::string interfaceName;
         OperationMode mode;
         int bitrate;
@@ -118,6 +136,17 @@ namespace wifiutil {
     //! Wireless data structure for ioctl-obtainable data
     struct IoctlData
     {
+        IoctlData()
+        : interfaceName(""),
+          throughPut(-1),
+          linkType(LinkQualityTypeUnknown),
+          linkQuality(-1),
+          signalLevel(-1),
+          noiseLevel(-1),
+          maxLinkQuality(-1),
+          maxSignalLevel(-1),
+          maxNoiseLevel(-1)
+        {}
         std::string interfaceName;
         int throughPut;
         LinkQualityType linkType;

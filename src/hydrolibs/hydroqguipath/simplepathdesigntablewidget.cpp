@@ -1,17 +1,13 @@
 #include <iostream>
-#include <QPainter>
-#include <QDialog>
-#include <QFile>
-#include <QFileDialog>
 #include <QTextStream>
-#include <QComboBox>
-#include <QShortcut>
 #include <QSpinBox>
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QSettings>
+#include <QHeaderView>
+#include <QCloseEvent>
 #include <sstream>
 #include <hydroqgui/guiicons.h>
 #include <hydroqguipath/ipathinput.h>
@@ -37,24 +33,39 @@ SimplePathDesignTableWidget::SimplePathDesignTableWidget( IPathInput *pathInput,
     : pathInput_(pathInput),
       designScreen_(designScreen)
 {
+    const int buttonSizeX = 100;
+    const int buttonSizeY = 30;
+    const int buttonSpacing = 10;
+
     // icons
     QPixmap openIcon(fileopen_xpm);
     QPixmap savePathIcon(filesave_path_xpm);
+    QPixmap sendIcon(send_xpm);
+    QPixmap cancelIcon(cancel_xpm);
     
     setWindowTitle("Path Design");
     wpTable_ = new SimplePathDesignTable( this, pathInput, guiPath, humanManager );
     
-    QPushButton *savePath = new QPushButton(savePathIcon, tr("Save Path"), this);
-    QPushButton *loadPath = new QPushButton(openIcon, tr("Load Path"), this);
-    QPushButton *loadPreviousPath = new QPushButton(openIcon, tr("Load Previous Path"), this);
+    QPushButton *savePath = new QPushButton(savePathIcon, tr("Save As..."), this);
+    savePath->setFixedSize(buttonSizeX, buttonSizeY );
+    QPushButton *loadPath = new QPushButton(openIcon, tr("Load..."), this);
+    loadPath->setFixedSize(buttonSizeX, buttonSizeY );
+    QPushButton *loadPreviousPath = new QPushButton(openIcon, tr("Previous"), this);
+    loadPreviousPath->setFixedSize(buttonSizeX, buttonSizeY );
+    QPushButton *sendPath = new QPushButton(sendIcon, tr("Send"), this);
+    sendPath->setFixedSize(1.5*buttonSizeX,buttonSizeY);
+    QPushButton *cancelPath = new QPushButton(cancelIcon, tr("Discard"), this);
+    cancelPath->setFixedSize(1.5*buttonSizeX, buttonSizeY );
     QObject::connect(savePath,SIGNAL(clicked()),this,SLOT(savePath()));
     QObject::connect(loadPath,SIGNAL(clicked()),this,SLOT(loadPath()));
     QObject::connect(loadPreviousPath,SIGNAL(clicked()),this,SLOT(loadPreviousPath()));
-    
+    QObject::connect(sendPath,SIGNAL(clicked()),this,SLOT(sendPath()));
+    QObject::connect(cancelPath,SIGNAL(clicked()),this,SLOT(cancelPath()));
+
     QVBoxLayout *globalLayout = new QVBoxLayout;
     globalLayout->addWidget(wpTable_);
 
-    QLabel *speedLabel = new QLabel("Approach speed default [m/s]:", this);
+    QLabel *speedLabel = new QLabel("Approach speed [m/s]:", this);
     QDoubleSpinBox *maxApproachSpeedSpin = new QDoubleSpinBox(this);
     maxApproachSpeedSpin->setFixedSize ( 70, 22 );
     maxApproachSpeedSpin->setMinimum(0.0);
@@ -63,7 +74,7 @@ SimplePathDesignTableWidget::SimplePathDesignTableWidget( IPathInput *pathInput,
     maxApproachSpeedSpin->setSingleStep(0.1);
     QObject::connect(maxApproachSpeedSpin,SIGNAL(valueChanged(double)),this,SLOT(updateMaxApproachSpeedSetting(double)));
 
-    QLabel *tolLabel = new QLabel("Distance tolerance default [m]:", this);
+    QLabel *tolLabel = new QLabel("Distance tolerance [m]:", this);
     QDoubleSpinBox *maxDistToleranceSpin = new QDoubleSpinBox(this);
     maxDistToleranceSpin->setFixedSize ( 70, 22 );
     maxDistToleranceSpin->setMinimum(0.0);
@@ -77,45 +88,67 @@ SimplePathDesignTableWidget::SimplePathDesignTableWidget( IPathInput *pathInput,
     grid->addWidget( maxApproachSpeedSpin, 0, 1, Qt::AlignLeft);
     grid->addWidget( tolLabel, 1, 0, Qt::AlignLeft );
     grid->addWidget( maxDistToleranceSpin, 1, 1, Qt::AlignLeft);
-    grid->addWidget( loadPath, 2, 0);
-    grid->addWidget( loadPreviousPath, 3, 0);
-    grid->addWidget( savePath, 4, 0);
-
-    globalLayout->addLayout(grid);
-
+    globalLayout->addLayout( grid );
     // the second column can be stretched much more than the first (which stays fixed)
     grid->setColumnStretch(1,1000);
+
+    QHBoxLayout *hBox1 = new QHBoxLayout;
+    hBox1->setSpacing( 2*buttonSpacing );
+    hBox1->addWidget( sendPath );
+    hBox1->addWidget( cancelPath );
+    hBox1->addStretch();
+    globalLayout->addLayout( hBox1 );
+
+    QHBoxLayout *hBox2 = new QHBoxLayout;
+    hBox2->setSpacing( buttonSpacing );
+    hBox2->addWidget( loadPath );
+    hBox2->addWidget( loadPreviousPath );
+    hBox2->addWidget( savePath );
+    hBox2->addStretch();
+    globalLayout->addLayout( hBox2 );
+
     setLayout( globalLayout );
 
     readSettings();
+
     this->show();
 }
 
 SimplePathDesignTableWidget::~SimplePathDesignTableWidget()
 {
+//     cout << "SimplePathDesignTableWidget: destructor" << endl;
     writeSettings();
+}
+
+void 
+SimplePathDesignTableWidget::closeEvent( QCloseEvent * event )
+{
+//     cout << "SimplePathDesignTableWidget: closeEvent" << endl;
+    pathInput_->cancelPath();
+    event->accept();
 }
 
 void SimplePathDesignTableWidget::readSettings()
 {
-    QSettings settings("Marathon Robotics", "RoverControl");
-    QPoint pos = settings.value("simplepathdesigntable/pos", QPoint(200, 200)).toPoint();
-    QSize size = settings.value("simplepathdesigntable/size", QSize(400, 400)).toSize();
-    resize(size);
-    move(pos);
+    QSettings settings;
+    settings.beginGroup("SimplePathDesignTableWidget");
+    resize(settings.value("size", QSize(400, 400)).toSize());
+    move(settings.value("pos", QPoint(200, 200)).toPoint());
+    settings.endGroup();
 }
 
 void SimplePathDesignTableWidget::writeSettings()
 {
-    QSettings settings("Marathon Robotics", "RoverControl");
-    settings.setValue("simplepathdesigntable/pos", pos());
-    settings.setValue("simplepathdesigntable/size", size());
+    QSettings settings;
+    settings.beginGroup("SimplePathDesignTableWidget");
+    settings.setValue("size", size());
+    settings.setValue("pos", pos());
+    settings.endGroup();
 }
 
 void 
 SimplePathDesignTableWidget::refreshTable()
 {
-//     wpTable_->computeVelocities();
     wpTable_->refreshTable();
 }
 
@@ -137,17 +170,17 @@ SimplePathDesignTableWidget::loadPreviousPath()
     pathInput_->loadPreviousPath();   
 }
 
-// void 
-// SimplePathDesignTableWidget::sendPath()
-// {
-//     pathInput_->sendPath();
-// }
+void 
+SimplePathDesignTableWidget::sendPath()
+{
+    pathInput_->sendPath();
+}
 
-// void 
-// SimplePathDesignTableWidget::cancelPath()
-// {
-//     pathInput_->cancelPath();
-// }
+void 
+SimplePathDesignTableWidget::cancelPath()
+{
+    pathInput_->cancelPath();
+}
 
 
 void 
@@ -205,6 +238,7 @@ SimplePathDesignTable::SimplePathDesignTable( QWidget *parent,
     setHorizontalHeaderLabels( columnHeaders );
 
     resizeColumnsToContents();
+    this->horizontalHeader()->setStretchLastSection( true );
     
     QObject::connect(this,SIGNAL(cellChanged(int,int)),this,SLOT(updateDataStorage(int,int)));
     QObject::connect(this,SIGNAL(cellClicked(int,int)),this,SLOT(setWaypointFocus(int,int)));
@@ -213,6 +247,11 @@ SimplePathDesignTable::SimplePathDesignTable( QWidget *parent,
     // Note that cellChanged refers to the cell content having changed whereas currentCellChanged does not
     QObject::connect(this,SIGNAL(currentCellChanged (int,int,int,int)),this,SLOT(setWaypointFocus(int,int,int,int)));
     
+}
+
+SimplePathDesignTable::~SimplePathDesignTable()
+{
+//     cout << "SimplePathDesignTable: destructor" << endl;
 }
 
 void SimplePathDesignTable::refreshTable()

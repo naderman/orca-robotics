@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
@@ -7,21 +7,22 @@
  * the LICENSE file included in this distribution.
  *
  */
- 
+
 #include <orcaifaceutil/test.h>
 #include <iostream>
 using namespace std;
 
 int main( int argc, char **argv )
-{    
+{
     try {
     {
+        cout<<"testing enum..."<<endl;
         test::MyEnum in;
         in = test::Low;
         cout<<ifaceutil::toString( in )<<endl;
     }
     {
-        cout<<"testing structure...";
+        cout<<"testing structure..."<<endl;
         test::MyStruct0 in;
         in.mBool = 0;
         in.mByte = 1;
@@ -38,6 +39,7 @@ int main( int argc, char **argv )
         cout<<ifaceutil::toString( in, 0 )<<endl;
     }
     {
+        cout<<"testing structure seq..."<<endl;
         test::MyStruct0Seq in;
         test::MyStruct0 elem;
         elem.mBool = 0;
@@ -58,6 +60,7 @@ int main( int argc, char **argv )
         cout<<ifaceutil::toString( in, 999, 1 )<<endl;
     }
     {
+        cout<<"testing structure dict..."<<endl;
         test::MyStruct0Dict in;
         test::MyStruct0 elem;
         elem.mBool = 0;
@@ -78,6 +81,24 @@ int main( int argc, char **argv )
         cout<<ifaceutil::toString( in, 999, 1 )<<endl;
     }
     {
+        cout<<"testing nested namespace (repeat struct)"<<endl;
+        test::subtest::MyStruct0 in;
+        in.mInt = 3;
+        cout<<endl<<"RECURSE=FULL"<<endl;
+        cout<<ifaceutil::toString( in )<<endl;
+        cout<<endl<<"RECURSE=0"<<endl;
+        cout<<ifaceutil::toString( in, 0 )<<endl;
+    }
+    {
+        cout<<"testing nested namespace (new struct) ...";
+        test::subtest::MyStruct3 in;
+        in.mInt = 3;
+        cout<<endl<<"RECURSE=FULL"<<endl;
+        cout<<ifaceutil::toString( in )<<endl;
+        cout<<endl<<"RECURSE=0"<<endl;
+        cout<<ifaceutil::toString( in, 0 )<<endl;
+    }
+    {
         cout<<"testing classes...";
         test::MyClass9Ptr in = new test::MyClass9;
         in->mDouble = 6.;
@@ -91,10 +112,16 @@ int main( int argc, char **argv )
     cout<<endl<<"printing null class pointer...";
     {
         test::MyClass0Ptr in;
-        try {
+        // no longer throws exception
+//         try {
             cout<<ifaceutil::toString( in )<<endl;
-        }
-        catch (...) {}
+//         }
+//         catch (...) {}
+    }
+    cout<<endl<<"printing a struct with null class pointer...";
+    {
+        test::MyStruct2 in;
+        cout<<ifaceutil::toString( in )<<endl;
     }
     cout<<"ok"<<endl;
     // base class

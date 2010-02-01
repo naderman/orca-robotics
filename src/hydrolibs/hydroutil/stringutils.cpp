@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
@@ -13,6 +13,7 @@
 #include <sstream>
 #include <iostream>
 #include <iomanip> // for setw()
+#include <algorithm>
 
 using namespace std;
 
@@ -74,6 +75,15 @@ toString( const std::vector<std::string>& seq, const char delim )
 }
 
 std::string
+toSortedString( const std::vector<std::string>& seq, const char delim )
+{
+    std::vector<std::string> sortedSeq = seq;
+    std::sort( sortedSeq.begin(), sortedSeq.end() );
+
+    return toString( sortedSeq, delim );
+}
+
+std::string
 toLowerCase( const std::string & s )
 {
     std::string s2 = s;
@@ -96,18 +106,18 @@ toUpperCase( const std::string & s )
 int toIntVector( const std::string& s, std::vector<int>& obj )
 {
     std::istringstream ss( s );
-    
+
     //check that there's something in the input stream
     if ( !ss )
     {
         return -1;
     }
-    
+
     int tmp;
     while ( true )
     {
         ss >> tmp;
-        
+
         // if we're not at the end of the line but something went wrong, return error
         if ( !ss && !ss.eof() )
         {
@@ -115,14 +125,14 @@ int toIntVector( const std::string& s, std::vector<int>& obj )
         }
 
         obj.push_back( tmp );
-    
+
         // check if we're at the end of the line
         if ( ss.eof() )
         {
             break;
         }
     }
-    
+
     // success
     return 0;
 }
@@ -130,39 +140,39 @@ int toIntVector( const std::string& s, std::vector<int>& obj )
 int toDoubleVector( const std::string& s, std::vector<double>& obj )
 {
     std::istringstream ss( s );
-    
+
     //check that there's something in the input stream
     if ( !ss )
     {
         return -1;
     }
-    
+
     double tmp;
     while ( true )
     {
         ss >> tmp;
-        
+
         // if we're not at the end of the line but something went wrong, return error
         if ( !ss && !ss.eof() )
         {
             return -1;
         }
-        
+
         obj.push_back( tmp );
-    
+
         // check if we're at the end of the line
         if ( ss.eof() )
         {
             break;
         }
     }
-    
+
     // success
     return 0;
 }
 
-void 
-substitute( string& v, const vector<string>& parameters, 
+void
+substitute( string& v, const vector<string>& parameters,
             const map<string,string>& values, const map<string,string>& defaults )
 {
     string::size_type beg = 0;
@@ -219,7 +229,7 @@ substitute( string& v, const vector<string>& parameters,
     }
 };
 
-std::string 
+std::string
 toFixedWidth( const std::string& s, int width, char filler, bool adjustLeft )
 {
     if ( width<0 )
@@ -228,35 +238,35 @@ toFixedWidth( const std::string& s, int width, char filler, bool adjustLeft )
     if ( s.size()<(unsigned int)width ) {
         // need padding
         stringstream ss;
-        if ( adjustLeft ) 
+        if ( adjustLeft )
             ss<<std::left;
 
         ss<<std::setfill(filler)<<std::setw(width)<<s;
         return ss.str();
-    } 
+    }
     else if ( s.size()>(unsigned int)width ) {
         // need trunkating
         return s.substr(0,width);
-    } 
+    }
     else {
         // needs no change
         return s;
     }
 }
 
-std::string 
+std::string
 orcaVersion()
 {
     return std::string(PROJECT_VERSION);
 }
 
-std::string 
+std::string
 basename( const std::string & path, bool removeExtension )
 {
     string filename;
 
     // path delimeters are OS-dependent.
-#ifndef WIN32 
+#ifndef WIN32
     char delim = '/';
 #else
     char delim = '\\';
@@ -270,13 +280,13 @@ basename( const std::string & path, bool removeExtension )
     return filename;
 }
 
-std::string 
+std::string
 dirname( const std::string & path )
 {
     std::string dir;
 
     // path delimeters are OS-dependent.
-#ifndef WIN32 
+#ifndef WIN32
     char delim = '/';
 #else
     char delim = '\\';

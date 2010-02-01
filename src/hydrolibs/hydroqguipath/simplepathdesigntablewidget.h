@@ -11,13 +11,8 @@
 #ifndef SIMPLEPATHDESIGN_TABLE_H
 #define SIMPLEPATHDESIGN_TABLE_H
 
-#include <vector>
-#include <QWidget>
 #include <QTableWidget>
-
 #include <hydroqguipath/pathutils.h>
-
-class QSpinBox;
 
 namespace hydroqguielementutil {
     class IHumanManager;
@@ -30,7 +25,7 @@ class IPathInput;
 class PathDesignScreen;
 
 //!
-//! A class used to design paths by manipulating values in a table
+//! A widget for designing paths by manipulating values in a table
 //!
 //! @author Tobias Kaupp
 //! 
@@ -61,10 +56,13 @@ class SimplePathDesignTableWidget : public QWidget
         void savePath();
         void loadPath();
         void loadPreviousPath();
-//         void sendPath();
-//         void cancelPath();
+        void sendPath();
+        void cancelPath();
         void updateMaxApproachSpeedSetting(double);
         void updateDistToleranceSetting(double);
+
+    protected:
+        virtual void closeEvent ( QCloseEvent * event );
     
 };
 
@@ -77,6 +75,8 @@ class SimplePathDesignTable : public QTableWidget
                                IPathInput  *pathInput,
                                GuiPath     &guiPath,
                                hydroqguielementutil::IHumanManager &humanManager );
+        ~SimplePathDesignTable();
+        
         void refreshTable();
         
     private:
@@ -84,9 +84,6 @@ class SimplePathDesignTable : public QTableWidget
         IPathInput *pathInput_;
         GuiPath &guiPath_;
         hydroqguielementutil::IHumanManager &humanManager_;
-        
-        // not part of the path representation
-        std::vector<float> velocities_;
         
         // lock up the cellUpdate signal: it should only be emitted if the user changes cell entries
         // not if we programmatically change them (as in refreshTable)

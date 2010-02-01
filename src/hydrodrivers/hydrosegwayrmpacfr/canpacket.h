@@ -38,10 +38,10 @@ public:
     // Always use all 8 bytes
     static const int CAN_DATA_SIZE = 8;
 
-    CanPacket( uint32_t id=0 );
+    CanPacket( uint32_t id=-1 );
     
     // Sets the ID (what the RMP docs call the header)
-    void setId( uint32_t id ) { id_ = id; }
+    void setId( uint32_t id );
 
     // RMP has fixed-size messages
     const uint16_t dataLengthCode() { return 0x0008; }

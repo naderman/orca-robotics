@@ -9,7 +9,7 @@
 
 using namespace std;
 
-namespace propserver {
+namespace hydropropertydb {
 
 PropertyDb::PropertyDb()
 {
