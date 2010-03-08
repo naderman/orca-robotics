@@ -7,7 +7,7 @@ Provides.Camera.DefaultName=camera
 # Required Interfaces
 
 # Config Parameters
-Config.DriverLib.Comment=Valid values are at least: { 'libHydroImageCvCamera.so', 'libHydroImageFile.so', 'libHydroImageFake.so' }
+Config.DriverLib.Comment=Valid values are at least: { 'libHydroImageCvCamera.so', 'libHydroImageDC1394.so' , 'libHydroImageFile.so', 'libHydroImageFake.so' }
 Config.DriverLib.Default=libHydroImageFake.so
 
 Config.Offset.Comment=x[m] y[m] z[m] roll[deg] pitch[deg] yaw[deg]
