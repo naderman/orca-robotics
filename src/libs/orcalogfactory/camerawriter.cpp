@@ -54,20 +54,20 @@ CameraWriter::initJpegLogWriter(const orca::CameraDescriptionPtr &descr)
     // depth of 8, no utility available to obtain depth
     // no utility available to obtain number of channels
     // number of channels 3 for RGB8 and BGR8,
-    // number of channels 1 for MONO8 and RAW8
+    // number of channels 1 for MONO8, GRAY8 and RAW8
     // otherwise throw an exemption
 #ifdef OPENCV_FOUND
     int numOfChannels;
     if ( (descr->format == "RGB8") || (descr->format == "BGR8")){
         numOfChannels=3;
     }
-    else if ( (descr->format == "RAW8") || (descr->format == "MONO8")){
+    else if ( (descr->format == "RAW8") || (descr->format == "MONO8") || (descr->format == "GRAY8")){
         numOfChannels=1;
     }
     else{
         stringstream ss;
         ss << "Camera LogWriter 'jpeg' " << descr->format ;
-        ss << " Only BGR8/RGB8/RAW8/MONO8 logging supported." ;
+        ss << " Only BGR8/RGB8/RAW8/GRAY8/MONO8 logging supported." ;
         throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
     }
 
