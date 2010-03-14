@@ -16,8 +16,11 @@
 
 #include "camerareader.h"
 
+#include <iomanip>
+
 #ifdef OPENCV_FOUND
     #include <highgui.h>
+    #include <hydroimage/formats.h>
 #endif
 
 using namespace std;
@@ -25,6 +28,7 @@ using namespace orcalogfactory;
 
 CameraReader::CameraReader()
 {
+  dataCounter_=1;
 }
 
 CameraReader::~CameraReader()
@@ -60,6 +64,13 @@ CameraReader::readFromFile( std::ifstream                   *file,
         std::stringstream ss( line );
         fromLogString( ss, *obj );
 
+	hydroimage::ImageFormat imageFormat = hydroimage::ImageFormat::find( obj->format );
+	numOfChannels_ = imageFormat.getNumberOfChannels();
+
+	//Read sub directory where the images are stored
+        std::getline ( *file, directoryPrefix_ );
+	std::cout << "Directory Prefix:" << directoryPrefix_ << std::endl;
+
     }
     else
     {
@@ -93,13 +104,18 @@ CameraReader::readFromFile( std::ifstream     *file,
             std::string line;
             std::getline( *file, line );
 
+	    //std::cout << "Read from:" << line << std::endl;
+
             std::stringstream ss( line );
 
             fromLogString( ss, *obj );
-            std::string filename;
-            ss >> filename; 
-            
-            loadJpegData( filename, *obj );
+
+            // image filename (different file for each image)
+            std::stringstream filename;
+            filename << ".//" << directoryPrefix_ << "//"
+		     << "image" << std::setw(5) << std::setfill('0') << dataCounter_++ << ".jpg";
+
+            loadJpegData( filename.str(), *obj );
         }    
     else
     {
@@ -113,19 +129,21 @@ void
 CameraReader::loadJpegData( const std::string &filename,
                             orca::ImageData   &obj )
 {
-    
+
     #ifdef OPENCV_FOUND
     {
-        //TODO: Number of channels not yet known from image
-        //previous version of ORCA had the utility to detect the number of channels
-        //int nChannels_ = orcaimage::numChannels( data_.format );
-        int nChannels =3;
-
         // load compressed image into opencv struct
         IplImage* cvImage = cvLoadImage( filename.c_str(), -1);
+
+	if (cvImage == NULL)
+	{
+	    stringstream ss;
+	    ss <<  "Could not load: " << filename.c_str();
+	    throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
+	}
         
         // resize object buffer to fit image
-        int imageSize = (int)ceil( nChannels * obj.description->height * obj.description->width );
+        int imageSize = (int)ceil( numOfChannels_ * obj.description->height * obj.description->width );
         obj.pixelData.resize( imageSize );
         
         // load image from opencv struct to orca object

@@ -19,11 +19,8 @@
 
 #ifdef OPENCV_FOUND
 	#include <highgui.h>
+	#include <hydroimage/formats.h>
 #endif
-
-//alen - currently missing conversion utilities
-//#include <orcaimage/colourconversions.h>
-//#include <orcaimage/imageutils.h>
 
 //alen - Added the below to create a directory to save images
 #include <sys/stat.h>
@@ -50,19 +47,13 @@ void
 CameraWriter::initJpegLogWriter(const orca::CameraDescriptionPtr &descr)
 {
     // setup opencv image
-    // alen HACK current assumptions:
-    // depth of 8, no utility available to obtain depth
-    // no utility available to obtain number of channels
-    // number of channels 3 for RGB8 and BGR8,
-    // number of channels 1 for MONO8, GRAY8 and RAW8
+    // with depth obtained from hydro formats utility
     // otherwise throw an exemption
 #ifdef OPENCV_FOUND
     int numOfChannels;
-    if ( (descr->format == "RGB8") || (descr->format == "BGR8")){
-        numOfChannels=3;
-    }
-    else if ( (descr->format == "RAW8") || (descr->format == "MONO8") || (descr->format == "GRAY8")){
-        numOfChannels=1;
+    hydroimage::ImageFormat imageFormat = hydroimage::ImageFormat::find( descr->format );
+    if ( (descr->format == "RGB8") || (descr->format == "BGR8") || (descr->format == "MONO8") || (descr->format == "GRAY8") || (descr->format == "RAW8")){
+      numOfChannels = imageFormat.getNumberOfChannels();
     }
     else{
         stringstream ss;
@@ -71,8 +62,10 @@ CameraWriter::initJpegLogWriter(const orca::CameraDescriptionPtr &descr)
         throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
     }
 
-    cvImage_  = cvCreateImage( cvSize( descr->width, descr->height ),  8, numOfChannels );
-    imageSize_=descr->width*descr->height*numOfChannels;
+    int bitsPerChannel = imageFormat.getBitsPerPixel() / imageFormat.getBytesPerPixel();
+
+    cvImage_  = cvCreateImage( cvSize( descr->width, descr->height ),  bitsPerChannel, numOfChannels );
+    imageSize_= descr->width*descr->height*numOfChannels;
 #endif
 }
 
@@ -107,8 +100,10 @@ CameraWriter::logToFile( std::ofstream *file, const std::string &format, orcaice
 #else
         initJpegLogWriter(obj);
 #endif
-        //Log the Camera Description to an ascii file nevertheless
+        //Log the Camera Description to an ascii file
         (*file) << toLogString(obj) << endl;
+	//Log the Directory Prefix the file will be saved
+	(*file) << directoryPrefix_ << endl;
     }
     else{
         stringstream ss;

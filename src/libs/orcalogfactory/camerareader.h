@@ -45,7 +45,15 @@ private:
 
     #ifdef OPENCV_FOUND
         IplImage* cvImage_;
+
     #endif
+
+    //Number of Channels in image
+    int numOfChannels_;
+    //Directory prefix where images have been saved
+    std::string directoryPrefix_;
+    //Frame number
+    int dataCounter_;
 
 };
 
