@@ -16,7 +16,6 @@ if( build )
     include( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     include( ${GEARBOX_USE_FILE} )
     include( ${ORCA_CMAKE_DIR}/UseIceUtil.cmake )
-#    INCLUDE (${ORCA_CMAKE_DIR}/UseOpenCV.cmake)
 
     file( GLOB hdrs *.h )
     file( GLOB srcs *.cpp )

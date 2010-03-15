@@ -36,10 +36,15 @@ Otherwise connects to the camera using specified width*height
   - The number of buffers that libdc1394 should use for each camera.
   - Default: 16
 
-- @c DC1394.N.ShutterSpeed (int) [unitless value]
-    - Desired shutter time of camera. 
-    - The actual value in Msec depends on both the value set and the frame width and height.
-    - Default: 'Auto'
+- @c DC1394.N.Feature (int) [unitless value]
+  - Desired feature value on camera. Where feature can be any of the strings described below in 'Available Features'.
+  - Note: For feature 'Shutter' the actual shutter time in seconds depends on both the value set and the frame width and height.
+  - Default: 'Auto'
+
+- @c DC1394.N.FeatureAbs (float) [value depends on feature]
+  - Desired value on camera using an absolute value setting.
+  - For example, for feature 'Shutter' the value is in seconds.
+  - Default: 'Auto'
 
 @par Dependencies.
 - dc1394
@@ -53,6 +58,30 @@ Otherwise connects to the camera using specified width*height
 Directly uses the dc1394 driver to create a multicamera interface, rather than using OpenCV. This driver achieves similar functionality but avoids the 'middleman' of OpenCV, and as a consequence allows better robustness and the ability to edit camera parameters that are not available through the OpenCV driver.
 
 Also implements a buffer synchronisation routine to guarantee that the frames in a multiimage data structure are synchronised frames. The OpenCV multiimage driver does not implement this function.
+
+@section Available Features
+- Brightness
+- Exposure
+- Sharpness 
+- White Balance 
+- Hue 
+- Saturation
+- Gamma
+- Shutter
+- Gain
+- Iris
+- Focus
+- Temperature
+- Trigger
+- TriggerDelay
+- WhiteShading
+- FrameRate
+- Zoom
+- Pan
+- Tilt
+- OpticalFilter
+- CaptureSize
+- CaptureQuality
 
 @section Troubleshooting
 1. If the frame size is large (1024x768 or greater) and the number of specified buffers is also large (>16), the dc1394 driver may not be able to allocate enough memory and will throw an error about being unable to set ISO bandwidth. Try reducing the NumBufs value.

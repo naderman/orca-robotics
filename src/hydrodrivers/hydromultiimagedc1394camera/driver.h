@@ -34,14 +34,16 @@ private:
 
     void cleanup( dc1394camera_t* camera );
     
-    int grabFrame(int cam_index);
+    int grabFrame(int camIndex);
     
-    int synchroniseBuffers(uint64_t last_stamp);
+    bool synchroniseBuffers(uint64_t last_stamp);
+    bool setFeature(unsigned int camIndex, dc1394feature_t feature, const char*& featureString, dc1394feature_mode_t mode, unsigned int value);
+    bool setFeatureAbs(unsigned int camIndex, dc1394feature_t feature, const char*& featureString, dc1394feature_mode_t 	mode, float value);
 
     MultiImage::Config config_;
     hydroutil::Context context_;
 
-    std::vector<dc1394camera_t*> camera;
+    std::vector<dc1394camera_t*> camera_;
     std::vector<dc1394video_frame_t*> frame_;
     dc1394error_t	err_;
 
@@ -51,7 +53,7 @@ private:
     std::vector<bool >               format7_;
     std::vector<dc1394operation_mode_t> isoMode_;
     std::vector<dc1394speed_t >      isoSpeed_;
-    std::vector<unsigned int> numBufs;
+    std::vector<unsigned int> numBufs_;
 };
 
 // Used for dynamically loading driver

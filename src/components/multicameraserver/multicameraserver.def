@@ -33,4 +33,3 @@ Config.0.FrameRate.Comment=Valid values are at least: {'1.875', '3.75', '7.5', '
 Config.0.FrameRate.Default=30
 Config.DC1394.IsoMode.Default=1394A
 Config.DC1394.NumBufs.Default=16
-Config.DC1394.0.ShutterSpeed.Default=Auto
